@@ -101,11 +101,11 @@ function App() {
 
       <Routes>
         <Route path="/auth" element={<Auth />} />
+        <Route
+          path="/"
+          element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />}
+        />
         <Route element={<PrivateRoute darkMode={darkMode} />}>
-          <Route
-            path="/"
-            element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />}
-          />
           <Route path="/home" element={<LandingPage />} />
           <Route path="/forge" element={<Forge darkMode={darkMode} />}>
             <Route index path="dashboard" element={<FDashboard />} />
