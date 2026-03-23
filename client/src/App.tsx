@@ -100,13 +100,13 @@ function App() {
       />
 
       <Routes>
-        <Route path="/home" element={<LandingPage />} />
         <Route path="/auth" element={<Auth />} />
         <Route element={<PrivateRoute darkMode={darkMode} />}>
           <Route
             path="/"
             element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />}
           />
+          <Route path="/home" element={<LandingPage />} />
           <Route path="/forge" element={<Forge darkMode={darkMode} />}>
             <Route index path="dashboard" element={<FDashboard />} />
             <Route path="docs" element={<FDoc />} />
