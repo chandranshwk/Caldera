@@ -1,6 +1,5 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
-import LandingPage from "./Pages/landingPage";
 import Auth from "./Pages/Auth";
 import { toast, ToastContainer } from "react-toastify";
 import Home from "./Pages/Home";
@@ -23,6 +22,7 @@ import CDashboard from "./Pages/Canvas/CDashboard";
 import CNew from "./Pages/Canvas/CNew";
 import CViewAll from "./Pages/Canvas/CViewAll";
 import HDashboard from "./Pages/Hearth/HDashboard";
+import LandingPage from "./Pages/landingPage";
 
 function App() {
   const navigate = useNavigate();
