@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 import "./App.css";
 import Auth from "./Pages/Auth";
 import { toast, ToastContainer } from "react-toastify";
@@ -100,11 +100,12 @@ function App() {
       />
 
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/home" element={<LandingPage />} />
         <Route element={<PrivateRoute darkMode={darkMode} />}>
           <Route
-            path="/"
+            path="/home"
             element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />}
           />
           <Route path="/forge" element={<Forge darkMode={darkMode} />}>
