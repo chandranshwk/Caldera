@@ -7,7 +7,6 @@ import {
   BiUser,
 } from "react-icons/bi";
 import { FiActivity, FiEdit3, FiPenTool } from "react-icons/fi";
-import { GiSparkles } from "react-icons/gi";
 import { LuFolderKanban } from "react-icons/lu";
 
 import { useNavigate } from "react-router-dom";
