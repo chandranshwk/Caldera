@@ -7,6 +7,10 @@ import Home from "./Pages/Home";
 import PrivateRoute from "./Routes/privateRoute";
 import { supabase } from "./lib/supabase";
 import { useEffect } from "react";
+import Forge from "./Pages/Forge/Forge";
+import Nexus from "./Pages/Nexus/Nexus";
+import Hearth from "./Pages/Hearth/Hearth";
+import Canvas from "./Pages/Canvas/Canvas";
 
 function App() {
   const navigate = useNavigate();
@@ -51,10 +55,14 @@ function App() {
     <>
       <ToastContainer />
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/home" element={<LandingPage />} />
         <Route path="/auth" element={<Auth />} />
         <Route element={<PrivateRoute />}>
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/forge" element={<Forge />} />
+          <Route path="/nexus" element={<Nexus />} />
+          <Route path="/hearth" element={<Hearth />} />
+          <Route path="/canvas" element={<Canvas />} />
         </Route>
       </Routes>
     </>

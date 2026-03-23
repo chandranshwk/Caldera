@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FiEdit3, FiPenTool } from "react-icons/fi";
 import { faker } from "@faker-js/faker";
 import { getInitials } from "../assets/functions";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,6 +19,8 @@ const Sidebar = () => {
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
 
   const [search, setSearch] = useState<string>("");
+
+  const navigate = useNavigate();
 
   return (
     <motion.div
@@ -89,32 +92,35 @@ const Sidebar = () => {
               icon: <FiEdit3 size={22} />,
               label: "The Forge",
               subLinks: [
-                { name: "Dashboard" },
-                { name: "Doc" },
-                { name: "Excel" },
+                { name: "Dashboard", link: "/forge/dashboard" },
+                { name: "Doc", link: "/forge/doc" },
+                { name: "Excel", link: "/forge/excel" },
               ],
             },
             {
               icon: <BiCheckSquare size={22} />,
               label: "The Nexus",
               subLinks: [
-                { name: "Dashboard" },
-                { name: "Manage Tasks" },
-                { name: "Calendar" },
+                { name: "Dashboard", link: "/nexus/dashboard" },
+                { name: "Manage Tasks", link: "/nexus/manage" },
+                { name: "Calendar", link: "/nexus/calendar" },
               ],
             },
             {
               icon: <BiMessageSquare size={22} />,
               label: "The Hearth",
-              subLinks: [{ name: "Personal" }, { name: "Channels" }],
+              subLinks: [
+                { name: "Personal", link: "/hearth/personal" },
+                { name: "Channels", link: "/hearth/channels" },
+              ],
             },
             {
               icon: <FiPenTool size={22} />,
               label: "The Canvas",
               subLinks: [
-                { name: "Dashboard" },
-                { name: "New" },
-                { name: "View all" },
+                { name: "Dashboard", link: "/canvas/dashboard" },
+                { name: "New", link: "/canvas/new" },
+                { name: "View all", link: "/canvas/view" },
               ],
             },
           ].map((item, index) => {
@@ -257,7 +263,10 @@ const Sidebar = () => {
             </motion.div>
           ))}
         </div>
-        <div className="flex items-center gap-3 p-2 mt-auto border-t border-slate-100">
+        <div
+          className="flex items-center gap-3 p-2 mt-auto border-t border-slate-100"
+          onClick={() => navigate("/")}
+        >
           {/* Avatar */}
           <div className="bg-green-800 size-8 rounded-full shrink-0 shadow-sm flex items-center justify-center uppercase font-bold text-white">
             {getInitials(testUser)}
