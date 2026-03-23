@@ -6,11 +6,23 @@ import { toast, ToastContainer } from "react-toastify";
 import Home from "./Pages/Home";
 import PrivateRoute from "./Routes/privateRoute";
 import { supabase } from "./lib/supabase";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Forge from "./Pages/Forge/Forge";
 import Nexus from "./Pages/Nexus/Nexus";
 import Hearth from "./Pages/Hearth/Hearth";
 import Canvas from "./Pages/Canvas/Canvas";
+import FDashboard from "./Pages/Forge/FDashboard";
+import FDoc from "./Pages/Forge/FDoc";
+import FSheets from "./Pages/Forge/FSheets";
+import NDashboard from "./Pages/Nexus/NDashboard";
+import Calendar from "./Pages/Nexus/Calendar";
+import NManage from "./Pages/Nexus/NManage";
+import Personal from "./Pages/Hearth/Personal";
+import Channels from "./Pages/Hearth/Channels";
+import CDashboard from "./Pages/Canvas/CDashboard";
+import CNew from "./Pages/Canvas/CNew";
+import CViewAll from "./Pages/Canvas/CViewAll";
+import HDashboard from "./Pages/Hearth/HDashboard";
 
 function App() {
   const navigate = useNavigate();
@@ -51,18 +63,70 @@ function App() {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    const savedTheme = localStorage.getItem("darkMode");
+    return savedTheme === "true";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("darkMode", darkMode.toString());
+  }, [darkMode]);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const body = document.body;
+
+    if (darkMode) {
+      // Matte Dark
+      root.style.backgroundColor = "#212122";
+      body.style.backgroundColor = "#212122";
+      root.classList.add("dark");
+    } else {
+      // Light
+      root.style.backgroundColor = "#ffffff";
+      body.style.backgroundColor = "#fafafa";
+      root.classList.remove("dark");
+    }
+
+    // Keep localStorage in sync so the index.html script works on next reload
+    localStorage.setItem("darkMode", darkMode.toString());
+  }, [darkMode]);
+
   return (
     <>
-      <ToastContainer />
+      <ToastContainer
+        theme={darkMode ? "dark" : "light"}
+        position="bottom-right"
+      />
+
       <Routes>
         <Route path="/home" element={<LandingPage />} />
         <Route path="/auth" element={<Auth />} />
-        <Route element={<PrivateRoute />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/forge" element={<Forge />} />
-          <Route path="/nexus" element={<Nexus />} />
-          <Route path="/hearth" element={<Hearth />} />
-          <Route path="/canvas" element={<Canvas />} />
+        <Route element={<PrivateRoute darkMode={darkMode} />}>
+          <Route
+            path="/"
+            element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />}
+          />
+          <Route path="/forge" element={<Forge darkMode={darkMode} />}>
+            <Route index path="dashboard" element={<FDashboard />} />
+            <Route path="docs" element={<FDoc />} />
+            <Route path="sheets" element={<FSheets />} />
+          </Route>
+          <Route path="/nexus" element={<Nexus darkMode={darkMode} />}>
+            <Route index path="dashboard" element={<NDashboard />} />
+            <Route path="calendar" element={<Calendar />} />
+            <Route path="manage" element={<NManage />} />
+          </Route>
+          <Route path="/hearth" element={<Hearth darkMode={darkMode} />}>
+            <Route index path="dashboard" element={<HDashboard />} />
+            <Route path="personal" element={<Personal />} />
+            <Route path="channels" element={<Channels />} />
+          </Route>
+          <Route path="/canvas" element={<Canvas darkMode={darkMode} />}>
+            <Route index path="dashboard" element={<CDashboard />} />
+            <Route path="new" element={<CNew />} />
+            <Route path="viewAll" element={<CViewAll />} />
+          </Route>
         </Route>
       </Routes>
     </>

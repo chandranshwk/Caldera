@@ -10,8 +10,13 @@ import { FiEdit3, FiPenTool } from "react-icons/fi";
 import { faker } from "@faker-js/faker";
 import { getInitials } from "../assets/functions";
 import { useNavigate } from "react-router-dom";
+import ProjectEye from "./ProjectEye";
 
-const Sidebar = () => {
+interface SidebarProps {
+  darkMode: boolean;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ darkMode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [testUser] = useState(faker.person.fullName());
   const [testEmail] = useState(faker.internet.email());
@@ -30,7 +35,7 @@ const Sidebar = () => {
         setActiveMenu(null);
       }}
       animate={{ width: isOpen ? "240px" : "55px" }}
-      className="h-[calc(100vh-1rem)] m-2 bg-white shadow-lg rounded-lg p-4 overflow-hidden border border-slate-100"
+      className={`h-[calc(100vh-1rem)] m-2 mx-1 ${darkMode ? "bg-[#18181b] text-white border-[#242425ab]" : "bg-white border-slate-100"} shadow-lg rounded-lg p-4 pb-0 overflow-hidden border `}
     >
       <div className="flex items-center flex-col gap-4 justify-between h-full">
         <div
@@ -38,15 +43,17 @@ const Sidebar = () => {
     flex items-center w-full h-10 transition-all duration-300 rounded-xl overflow-hidden
     ${
       isOpen
-        ? "bg-slate-100/80 px-3 border-none" // Use a light background instead of border
+        ? darkMode
+          ? "bg-[#0f0f11] px-3 border-none"
+          : "bg-slate-100/80 px-3 border-none"
         : "bg-transparent justify-center px-0 border-none"
     }
-    focus-within:bg-slate-200/50 /* Subtle darken on focus instead of outline-none */
+    ${darkMode ? "focus-within:bg-[#27272bd4]" : "focus-within:bg-slate-200/50"} 
   `}
         >
           <BiSearch
             size={22}
-            className={`shrink-0 transition-colors ${isOpen ? "text-slate-500" : "text-slate-600"}`}
+            className={`shrink-0 transition-colors ${isOpen ? (darkMode ? "text-slate-50" : "text-slate-500") : darkMode ? "text-100" : "text-slate-600"}`}
           />
 
           <AnimatePresence mode="wait">
@@ -63,7 +70,7 @@ const Sidebar = () => {
                   placeholder="Search..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-transparent text-sm font-medium text-slate-700 placeholder:text-slate-400 outline-none border-none focus:ring-0"
+                  className={`w-full bg-transparent text-sm font-medium ${darkMode ? "text-white placeholder-text-slate-50" : "text-slate-700 placeholder:text-slate-400"} outline-none border-none focus:ring-0`}
                 />
               </motion.div>
             )}
@@ -76,7 +83,9 @@ const Sidebar = () => {
             {isOpen ? (
               <div className="flex items-center gap-3 w-full opacity-60">
                 <hr className="flex-1 border-t border-slate-300" />
-                <span className="font-bold uppercase text-[10px] text-slate-900 tracking-widest whitespace-nowrap">
+                <span
+                  className={`font-bold uppercase text-[10px] ${darkMode ? "text-white" : "text-slate-900"} tracking-widest whitespace-nowrap`}
+                >
                   Main
                 </span>
                 <hr className="flex-1 border-t border-slate-300" />
@@ -93,8 +102,8 @@ const Sidebar = () => {
               label: "The Forge",
               subLinks: [
                 { name: "Dashboard", link: "/forge/dashboard" },
-                { name: "Doc", link: "/forge/doc" },
-                { name: "Excel", link: "/forge/excel" },
+                { name: "Documents", link: "/forge/docs" }, // Changed to plural
+                { name: "Sheets", link: "/forge/sheets" }, // Changed Excel to Sheets
               ],
             },
             {
@@ -110,6 +119,7 @@ const Sidebar = () => {
               icon: <BiMessageSquare size={22} />,
               label: "The Hearth",
               subLinks: [
+                { name: "Dashboard", link: "/hearth/dashboard" }, // Added for consistency
                 { name: "Personal", link: "/hearth/personal" },
                 { name: "Channels", link: "/hearth/channels" },
               ],
@@ -120,7 +130,7 @@ const Sidebar = () => {
               subLinks: [
                 { name: "Dashboard", link: "/canvas/dashboard" },
                 { name: "New", link: "/canvas/new" },
-                { name: "View all", link: "/canvas/view" },
+                { name: "View All", link: "/canvas/viewAll" }, // Fixed camelCase
               ],
             },
           ].map((item, index) => {
@@ -135,11 +145,13 @@ const Sidebar = () => {
                   }
                   className={`
             flex items-center w-full gap-4 transition-all duration-300 cursor-pointer group p-2 rounded-xl
-            ${isOpen ? "justify-start hover:bg-slate-50" : "justify-center"}
+            ${isOpen ? (darkMode ? "justify-start hover:bg-[#27272bd4]" : "justify-start hover:bg-slate-50") : "justify-center"}
           `}
                 >
                   {/* Gradient Icon logic preserved */}
-                  <div className="shrink-0 text-slate-600 group-hover:text-indigo-600 transition-colors">
+                  <div
+                    className={`shrink-0 ${darkMode ? "text-slate-200 group-hover:text-white" : "text-slate-600 group-hover:text-indigo-600"}  transition-colors`}
+                  >
                     {item.icon}
                   </div>
 
@@ -151,7 +163,9 @@ const Sidebar = () => {
                         exit={{ opacity: 0, x: -5 }}
                         className="flex items-center justify-between flex-1 overflow-hidden"
                       >
-                        <span className="whitespace-nowrap font-semibold text-slate-700 text-sm">
+                        <span
+                          className={`whitespace-nowrap font-semibold ${darkMode ? "text-slate-50" : "text-slate-700"}  text-sm`}
+                        >
                           {item.label}
                         </span>
                         <motion.div
@@ -177,7 +191,8 @@ const Sidebar = () => {
                       {item.subLinks.map((sub, sIdx) => (
                         <span
                           key={sIdx}
-                          className="text-xs font-medium text-slate-500 hover:text-indigo-600 py-1.5 cursor-pointer transition-colors"
+                          className={`text-xs font-medium ${darkMode ? "text-slate-100 hover:text-white/80" : "text-slate-500 hover:text-indigo-600"}  py-1.5 cursor-pointer transition-colors`}
+                          onClick={() => navigate(sub.link)}
                         >
                           {sub.name}
                         </span>
@@ -198,7 +213,9 @@ const Sidebar = () => {
             {isOpen ? (
               <div className="flex items-center gap-3 w-full opacity-60">
                 <hr className="flex-1 border-t border-slate-300" />
-                <span className="font-bold uppercase text-[10px] text-slate-900 tracking-widest whitespace-nowrap">
+                <span
+                  className={`font-bold uppercase text-[10px] ${darkMode ? "text-white" : "text-slate-900"} tracking-widest whitespace-nowrap`}
+                >
                   Projects
                 </span>
                 <hr className="flex-1 border-t border-slate-300" />
@@ -216,7 +233,7 @@ const Sidebar = () => {
             },
             {
               label: "Llama TB",
-              color: "from-emerald-500 to-teal-600",
+              color: "from-emerald-500 to-teal-800",
             },
             {
               label: "Caldera",
@@ -226,27 +243,20 @@ const Sidebar = () => {
               label: "Samridh",
               color: "from-blue-500 to-cyan-500",
             },
+
+            {
+              label: "Heelos",
+              color: "from-yellow-500 to-orange-500",
+            },
           ].map((item, index) => (
             <motion.div
               key={index}
               whileHover={{ x: isOpen ? 5 : 0 }} // Subtle shift on hover
-              className={`
-      flex items-center w-full gap-4 cursor-pointer group transition-all justify-center duration-300 group
-      ${isOpen ? "justify-start px-2 py-1.5 rounded-xl hover:bg-slate-50" : "justify-center"}
-    `}
+              className={`flex items-center w-full gap-4 cursor-pointer group transition-all justify-center duration-300 group ${isOpen ? (darkMode ? "justify-start px-2 py-1.5 rounded-xl hover:bg-[#27272bd4]" : "justify-start px-2 py-1.5 rounded-xl hover:bg-slate-50") : "justify-center"}`}
             >
               {/* Gradient Icon Wrapper */}
-              <div
-                className={`
-      shrink-0 transition-transform duration-300 group-hover:scale-110
-      bg-linear-to-br ${item.color} 
-      p-px rounded-lg /* This creates a faint glow border */
-    `}
-              >
-                <div className="bg-white rounded-[7px] p-1 group-hover:translate-x-0.5 group-hover:translate-y-[0.1px] transition-all duration-500">
-                  {" "}
-                </div>
-              </div>
+
+              <ProjectEye color={item.color} />
 
               <AnimatePresence>
                 {isOpen && (
@@ -254,7 +264,7 @@ const Sidebar = () => {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -5 }}
-                    className="whitespace-nowrap text-sm font-semibold relative -top-0.5 text-slate-600 group-hover:text-slate-900 transition-colors flex-1"
+                    className={`whitespace-nowrap text-sm font-semibold relative ${darkMode ? "text-slate-200 group-hover:text-slate-100" : "text-slate-600 group-hover:text-slate-900"}  transition-colors flex-1`}
                   >
                     {item.label}
                   </motion.span>
@@ -264,11 +274,11 @@ const Sidebar = () => {
           ))}
         </div>
         <div
-          className="flex items-center gap-3 p-2 mt-auto border-t border-slate-100"
+          className={`flex items-center gap-3 p-2 ${isOpen ? "ml-5" : "m-0"} mt-auto border-t pb-4 border-slate-100/50 transistion-all duration-100 ${darkMode ? "hover:bg-[#27272bd4]" : "hover:bg-slate-50/80"} `}
           onClick={() => navigate("/")}
         >
           {/* Avatar */}
-          <div className="bg-green-800 size-8 rounded-full shrink-0 shadow-sm flex items-center justify-center uppercase font-bold text-white">
+          <div className="bg-green-800 size-8 rounded-full shrink-0 shadow-sm flex items-center justify-center uppercase font-bold text-white text-xs">
             {getInitials(testUser)}
           </div>
 
@@ -280,17 +290,21 @@ const Sidebar = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
-                className="flex flex-col min-w-0 justify-center leading-tight"
+                className="flex flex-col min-w-0 justify-center leading-tight flex-wrap"
               >
-                <span className="text-[13px] font-bold text-slate-900 truncate">
+                <span
+                  className={`text-[13px] font-bold ${darkMode ? "text-slate-100" : "text-slate-900"}  truncate`}
+                >
                   {testUser}
                 </span>
-                <span className="text-[11px] text-slate-500 truncate">
+                <span
+                  className={`text-[11px] ${darkMode ? "text-slate-400" : "text-slate-500"}  truncate`}
+                >
                   {testEmail}
                 </span>
-                {/* Separator: Thin border-t is cleaner than a 0.1px hr */}
-                <div className="border-t border-slate-100 my-1 w-full" />
-                <span className="text-[10px] font-semibold text-indigo-500 uppercase tracking-wider truncate">
+                <span
+                  className={`text-[10px] font-semibold ${darkMode ? "text-indigo-200" : "text-indigo-500"}  uppercase tracking-wider truncate w-48 text-wrap mt-1 `}
+                >
                   {testRole}
                 </span>
               </motion.div>

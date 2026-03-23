@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --site-color-scheme: class;
+}
+
+/* Fix the hardcoded background */
 body {
-  background: rgb(240, 240, 240);
+  transition: background 0.3s ease; /* Smooth Apple-like transition */
 }
