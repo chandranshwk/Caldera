@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import Auth from "./Pages/Auth";
 import { toast, ToastContainer } from "react-toastify";
