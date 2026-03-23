@@ -50,7 +50,7 @@ const LandingPage = () => {
               transition={{ duration: 0.6 }}
             >
               <img
-                src="../../public/icon-caldera.png"
+                src="/icon-caldera.png"
                 className="h-10 w-10 rounded-full border border-black"
               />
               <span className="tracking-wider text-white font-bold text-4xl">
@@ -463,9 +463,10 @@ const LandingPage = () => {
             transition={{ duration: 0.8 }}
           >
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-linear-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg shadow-amber-500/50">
-                <GiSparkles className="w-5 h-5 text-white" />
-              </div>
+              <img
+                src="/icon-caldera.png"
+                className="h-10 w-10 rounded-full border border-black"
+              />
               <span className="text-sm text-slate-950">
                 © 2026 Caldera. Desktop-first Work OS.
               </span>

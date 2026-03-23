@@ -67,8 +67,8 @@ const Auth = () => {
           {/* Logo */}
           <div className="flex items-center gap-2 mb-12">
             <img
-              src="../../public/icon-caldera.png"
-              className="w-10 h-10 box-border border border-black rounded-full"
+              src="/icon-caldera.png"
+              className="h-10 w-10 rounded-full border border-black"
             />
             <span className="text-slate-900 font-bold tracking-tight text-xl">
               CALDERA

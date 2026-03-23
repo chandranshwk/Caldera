@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 import "./App.css";
 import Auth from "./Pages/Auth";
 import { toast, ToastContainer } from "react-toastify";
@@ -26,15 +26,14 @@ import LandingPage from "./Pages/LandingPage";
 
 function App() {
   const navigate = useNavigate();
+
   useEffect(() => {
     const syncAuth = async () => {
-      // getUser() forces a server-side check and is better at catching redirects
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
       if (user) {
-        // If user exists, ensure session is synced to your custom token
         const {
           data: { session },
         } = await supabase.auth.getSession();
@@ -50,13 +49,14 @@ function App() {
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         localStorage.setItem("token", session.access_token);
-        // This is critical for catching the redirect event
+        // REDIRECT FIX: If user logs in successfully, send them to the internal dashboard
         if (window.location.pathname === "/auth") {
           toast.success("Logged In Successfully");
-          navigate("/home");
+          navigate("/dashboard");
         }
       } else if (event === "SIGNED_OUT") {
         localStorage.removeItem("token");
+        navigate("/");
       }
     });
 
@@ -69,26 +69,19 @@ function App() {
   });
 
   useEffect(() => {
-    localStorage.setItem("darkMode", darkMode.toString());
-  }, [darkMode]);
-
-  useEffect(() => {
     const root = window.document.documentElement;
     const body = document.body;
 
     if (darkMode) {
-      // Matte Dark
       root.style.backgroundColor = "#212122";
       body.style.backgroundColor = "#212122";
       root.classList.add("dark");
     } else {
-      // Light
       root.style.backgroundColor = "#ffffff";
       body.style.backgroundColor = "#fafafa";
       root.classList.remove("dark");
     }
 
-    // Keep localStorage in sync so the index.html script works on next reload
     localStorage.setItem("darkMode", darkMode.toString());
   }, [darkMode]);
 
@@ -97,38 +90,57 @@ function App() {
       <ToastContainer
         theme={darkMode ? "dark" : "light"}
         position="bottom-right"
+        autoClose={3000}
       />
 
       <Routes>
+        {/* PUBLIC ROUTES */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path="/home" element={<LandingPage />} />
+
+        {/* PRIVATE ROUTES (Protected by Shell) */}
         <Route element={<PrivateRoute darkMode={darkMode} />}>
+          {/* Internal Home / Dashboard */}
           <Route
-            path="/home"
+            path="/dashboard"
             element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />}
           />
+
+          {/* Module: The Forge */}
           <Route path="/forge" element={<Forge darkMode={darkMode} />}>
-            <Route index path="dashboard" element={<FDashboard />} />
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<FDashboard />} />
             <Route path="docs" element={<FDoc />} />
             <Route path="sheets" element={<FSheets />} />
           </Route>
+
+          {/* Module: The Nexus */}
           <Route path="/nexus" element={<Nexus darkMode={darkMode} />}>
-            <Route index path="dashboard" element={<NDashboard />} />
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<NDashboard />} />
             <Route path="calendar" element={<Calendar />} />
             <Route path="manage" element={<NManage />} />
           </Route>
+
+          {/* Module: The Hearth */}
           <Route path="/hearth" element={<Hearth darkMode={darkMode} />}>
-            <Route index path="dashboard" element={<HDashboard />} />
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<HDashboard />} />
             <Route path="personal" element={<Personal />} />
             <Route path="channels" element={<Channels />} />
           </Route>
+
+          {/* Module: The Canvas */}
           <Route path="/canvas" element={<Canvas darkMode={darkMode} />}>
-            <Route index path="dashboard" element={<CDashboard />} />
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<CDashboard />} />
             <Route path="new" element={<CNew />} />
             <Route path="viewAll" element={<CViewAll />} />
           </Route>
         </Route>
+
+        {/* CATCH-ALL REDIRECT */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
