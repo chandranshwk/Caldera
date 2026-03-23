@@ -22,7 +22,7 @@ import CDashboard from "./Pages/Canvas/CDashboard";
 import CNew from "./Pages/Canvas/CNew";
 import CViewAll from "./Pages/Canvas/CViewAll";
 import HDashboard from "./Pages/Hearth/HDashboard";
-import LandingPage from "./Pages/landingPage";
+import LandingPage from "./Pages/LandingPage";
 
 function App() {
   const navigate = useNavigate();
