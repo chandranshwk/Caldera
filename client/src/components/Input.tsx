@@ -10,6 +10,8 @@ interface InputProps {
   setInput: (value: string) => void;
   type: string;
   size?: "sm" | "md" | "lg";
+  autocomplete?: boolean;
+  extra?: string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -21,6 +23,8 @@ const Input: React.FC<InputProps> = ({
   setInput,
   type,
   size = "md",
+  autocomplete,
+  extra,
 }) => {
   const isFilled = input.length > 0;
 
@@ -55,6 +59,7 @@ const Input: React.FC<InputProps> = ({
   };
 
   const s = sizes[size];
+  const autoCompleteValue = autocomplete ? "on" : "new-password";
 
   return (
     <div className="group relative w-full">
@@ -67,6 +72,7 @@ const Input: React.FC<InputProps> = ({
           darkMode
             ? "bg-black/95 backdrop-blur-xl border-white/10 group-focus-within:border-white/50"
             : "bg-white border-slate-200 group-focus-within:border-yellow-500 shadow-sm",
+          extra ?? "",
         )}
       >
         {/* Adaptive Icon */}
@@ -91,16 +97,19 @@ const Input: React.FC<InputProps> = ({
             id={label + Math.random}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            // Placeholder is used here to trigger peer-placeholder-shown
+            autoComplete={autoCompleteValue}
             placeholder={placeholder}
             className={clsx(
-              "peer w-full h-full bg-transparent px-4 outline-none transition-all",
+              "peer w-full h-full bg-transparent px-4 outline-none transition-all relative -top-2",
               "placeholder:transition-opacity placeholder:duration-300 placeholder:opacity-0 focus:placeholder:opacity-100",
               s.input,
               darkMode
                 ? "text-slate-100 placeholder:text-slate-600 bg-black"
                 : "text-slate-900 placeholder:text-slate-400 ",
               icon ? s.iconPadding : "pl-4",
+              darkMode
+                ? "autofill:shadow-[0_0_0_1000px_#000000_inset] autofill:h-max autofill:w-max"
+                : "autofill:shadow-[0_0_0_1000px_#ffffff_inset] autofill:h-max autofill:w-max",
             )}
           />
 
