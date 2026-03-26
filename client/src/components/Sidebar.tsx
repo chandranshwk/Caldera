@@ -102,8 +102,9 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode }) => {
               label: "The Forge",
               subLinks: [
                 { name: "Dashboard", link: "/forge/dashboard" },
-                { name: "Documents", link: "/forge/docs" }, // Changed to plural
-                { name: "Sheets", link: "/forge/sheets" }, // Changed Excel to Sheets
+                { name: "Documents", link: "/forge/docs" },
+                { name: "Sheets", link: "/forge/sheets" },
+                { name: "Pdfs", link: "/forge/pdfs" },
               ],
             },
             {
@@ -275,7 +276,7 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode }) => {
         </div>
         <div
           className={`flex items-center gap-3 p-2 ${isOpen ? "ml-5" : "m-0"} mt-auto border-t pb-4 border-slate-100/50 transistion-all duration-100 ${darkMode ? "hover:bg-[#27272bd4]" : "hover:bg-slate-50/80"} `}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/dashboard")}
         >
           {/* Avatar */}
           <div className="bg-green-800 size-8 rounded-full shrink-0 shadow-sm flex items-center justify-center uppercase font-bold text-white text-xs">

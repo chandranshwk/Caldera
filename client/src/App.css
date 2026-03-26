@@ -8,3 +8,33 @@
 body {
   transition: background 0.3s ease; /* Smooth Apple-like transition */
 }
+
+/* Target the root for a global effect */
+:root {
+  /* For Firefox Support */
+  scrollbar-width: thin;
+  scrollbar-color: #26262a00 #0f0f1000;
+}
+
+/* For Chrome, Edge, and Safari */
+::-webkit-scrollbar {
+  width: 0px;
+  display: hidden;
+}
+
+::-webkit-scrollbar-track {
+  width: 0px;
+  background: #0f0f10; /* Match your dashboard background */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #26262a; /* Slightly lighter thumb */
+  border-radius: 20px;
+  width: 0px;
+  border: 3px solid #0f0f10; /* Creates the 'floating' effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  width: 0px;
+  background-color: #3b82f6; /* Blue accent on hover */
+}

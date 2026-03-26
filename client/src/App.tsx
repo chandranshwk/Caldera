@@ -23,6 +23,7 @@ import CNew from "./Pages/Canvas/CNew";
 import CViewAll from "./Pages/Canvas/CViewAll";
 import HDashboard from "./Pages/Hearth/HDashboard";
 import LandingPage from "./Pages/LandingPage";
+import FPdfs from "./Pages/Forge/FPdfs";
 
 function App() {
   const navigate = useNavigate();
@@ -109,9 +110,13 @@ function App() {
           {/* Module: The Forge */}
           <Route path="/forge" element={<Forge darkMode={darkMode} />}>
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<FDashboard />} />
+            <Route
+              path="dashboard"
+              element={<FDashboard darkMode={darkMode} />}
+            />
             <Route path="docs" element={<FDoc />} />
             <Route path="sheets" element={<FSheets />} />
+            <Route path="pdfs" element={<FPdfs />} />
           </Route>
 
           {/* Module: The Nexus */}
