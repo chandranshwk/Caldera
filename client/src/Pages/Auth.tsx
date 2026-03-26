@@ -16,22 +16,29 @@ const Auth = () => {
   const navigate = useNavigate();
 
   const signInWithGitHub = async () => {
+    // Automatically detects http://localhost:3000 or https://caldera-workspace.vercel.app
+    const redirectUrl = `${window.location.origin}/auth`;
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: "http://localhost:3000/auth",
+        redirectTo: redirectUrl,
       },
     });
+
     if (error) toast.error(error.message);
   };
 
   const signInWithGoogle = async () => {
+    const redirectUrl = `${window.location.origin}/auth`;
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "http://localhost:3000/auth",
+        redirectTo: redirectUrl,
       },
     });
+
     if (error) toast.error(error.message);
   };
 
