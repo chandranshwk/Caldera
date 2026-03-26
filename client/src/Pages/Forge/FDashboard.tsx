@@ -1,11 +1,20 @@
 import React from "react";
 import { faker } from "@faker-js/faker";
-import { FiDownload, FiShare, FiPlus, FiMoreVertical } from "react-icons/fi";
+import { FiDownload, FiShare, FiPlus } from "react-icons/fi";
 import { SiGoogledocs, SiGooglesheets } from "react-icons/si";
 import { FaFilePdf } from "react-icons/fa";
 import { RECENT_FILES } from "../../assets/assets";
-import { BiDownload, BiShare } from "react-icons/bi";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { BiDownload } from "react-icons/bi";
+import {
+  HiOutlineBookOpen,
+  HiOutlineDotsHorizontal,
+  HiOutlineDownload,
+  HiOutlineShare,
+  HiOutlineTrash,
+} from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
+import Dropdown from "../../components/Dropdown";
+import { IoIosArrowForward } from "react-icons/io";
 
 interface FdashboardProps {
   darkMode: boolean;
@@ -16,16 +25,18 @@ const METRICS = [
   {
     id: "excel",
     icon: <SiGooglesheets />,
-    name: "Excel",
+    name: "Sheet",
     color: "bg-emerald-500",
     des: "Create professional excel sheets.",
+    link: "/forge/sheets",
   },
   {
     id: "words",
     icon: <SiGoogledocs />,
-    name: "Words",
+    name: "Docs",
     color: "bg-blue-600",
     des: "Create a comprehensive document for the team!",
+    link: "/forge/docs",
   },
   {
     id: "pdf",
@@ -33,6 +44,7 @@ const METRICS = [
     name: "PDFs",
     color: "bg-red-600",
     des: "Create, merge, convert from or to PDFs.",
+    link: "/forge/pdfs",
   },
   {
     id: "downloads",
@@ -48,6 +60,8 @@ const FDashboard: React.FC<FdashboardProps> = ({ darkMode }) => {
   const cardBg = darkMode ? "bg-[#1a1a1c]" : "bg-white";
   const subText = darkMode ? "text-gray-400" : "text-gray-500";
 
+  const navigate = useNavigate();
+
   return (
     <div
       className={`p-6 h-screen overflow-y-auto transition-colors duration-300 my-scrollbar ${darkMode ? "bg-[#0f0f1000]" : "bg-gray-50"}`}
@@ -58,6 +72,7 @@ const FDashboard: React.FC<FdashboardProps> = ({ darkMode }) => {
           <div
             key={data.id}
             className={`flex items-center p-4 rounded-xl shadow-sm border ${darkMode ? "border-gray-800" : "border-gray-100"} ${cardBg} hover:shadow-md transition-all cursor-pointer group`}
+            onClick={() => navigate(data.link ?? "")}
           >
             <span
               className={`text-2xl rounded-lg ${data.color} text-white p-3 group-hover:scale-110 transition-transform`}
@@ -125,15 +140,8 @@ const FDashboard: React.FC<FdashboardProps> = ({ darkMode }) => {
           {RECENT_FILES.slice(0, 6).map((file) => (
             <div
               key={file.id}
-              className={`
-        group relative flex items-center gap-4 p-4 rounded-2xl transition-all duration-300
-        ${
-          darkMode
-            ? "bg-[#18181b] border-white/5 hover:bg-gray-800/60 shadow-xl"
-            : "bg-white border-gray-100 hover:bg-gray-50 shadow-sm"
-        }
-        border hover:-translate-y-0.5 cursor-pointer
-      `}
+              className={`group relative z-0 flex items-center gap-4 p-4 rounded-2xl transition-all shadow-sm duration-300 ${darkMode ? "bg-[#18181b] border-white/5 hover:bg-gray-800/60 shadow-xl" : "bg-white border-gray-100 hover:bg-gray-50 shadow-sm"}border hover:-translate-y-0.5 cursor-pointer`}
+              onClick={() => {}}
             >
               {/* File Icon with Glass Effect */}
               <div
@@ -210,14 +218,9 @@ const FDashboard: React.FC<FdashboardProps> = ({ darkMode }) => {
               </div>
 
               {/* Action Button - Hidden until hover for a cleaner look */}
-              <button
-                className={`
-          opacity-0 group-hover:opacity-100 transition-all duration-200
-          ${subText} hover:text-blue-500 p-2 rounded-lg hover:bg-blue-500/10
-        `}
-              >
-                <FiMoreVertical className="w-5 h-5" />
-              </button>
+              <div className="shadow-md h-max w-max p-1 rounded-full group-hover:translate-x-1 transition-all duration-150">
+                <IoIosArrowForward size={15} />
+              </div>
 
               {/* Modern Gradient Border (Dark Mode Only) */}
               {darkMode && (
@@ -228,8 +231,13 @@ const FDashboard: React.FC<FdashboardProps> = ({ darkMode }) => {
         </div>
       </div>
 
+      {/* Table */}
       <div
-        className={`${cardBg} rounded-4xl mt-6 border ${darkMode ? "border-white/5 bg-[#1c1c1e]/80" : "border-black/5 bg-[#f5f5f7]/50"} shadow-md overflow-hidden backdrop-blur-xl`}
+        className={`${cardBg} rounded-[2.5rem] mt-6 border ${
+          darkMode
+            ? "border-white/5 bg-[#1c1c1e]/80"
+            : "border-black/5 bg-[#f5f5f7]/50"
+        } shadow-md overflow-hidden backdrop-blur-xl`} // Cleaned link string
       >
         <div className="overflow-x-auto px-4 py-2">
           <table className="w-full text-left border-separate border-spacing-y-2">
@@ -247,10 +255,10 @@ const FDashboard: React.FC<FdashboardProps> = ({ darkMode }) => {
               {RECENT_FILES.map((file, idx) => (
                 <tr
                   key={idx}
-                  className={`group transition-all duration-300 ease-out 
+                  className={`group transition-all duration-300 ease-out relative hover:z-10
               ${darkMode ? "hover:bg-white/3" : "hover:bg-white"} 
               hover:shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:-translate-y-0.5
-              ${idx % 2 === 0 ? "bg-transparent" : darkMode ? "bg-black/1 dark:bg-white/1" : "bg-black/1 dark:bg-black/3"}`}
+              ${idx % 2 === 0 ? "bg-transparent" : darkMode ? "bg-white/1" : "bg-black/3"}`}
                 >
                   {/* File Column */}
                   <td className="px-6 py-4 first:rounded-l-2xl">
@@ -279,25 +287,25 @@ const FDashboard: React.FC<FdashboardProps> = ({ darkMode }) => {
                         >
                           {file.name}
                         </div>
-                        <span className="text-[9px] font-black tracking-widest uppercase opacity-40">
+                        <span className="text-[9px] font-black tracking-widest uppercase opacity-40 leading-none">
                           {file.extension.replace(".", "")}
                         </span>
                       </div>
                     </div>
                   </td>
 
-                  {/* Description */}
+                  {/* Description - Simplified for clean truncation */}
                   <td
-                    className={`px-6 py-4 text-sm font-light ${darkMode ? "text-neutral-400" : "text-neutral-500"} max-w-96 truncate line-clamp-1 text-wrap
-                    `}
+                    className={`px-6 py-4 text-sm font-light ${darkMode ? "text-neutral-400" : "text-neutral-500"} max-w-96 truncate`}
                   >
                     {file.des}
                   </td>
 
-                  {/* Stats - Centered and grouped for better scannability */}
+                  {/* Stats */}
                   <td className="px-6 py-4 text-center">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/5 text-[12px] font-medium">
-                      {file.sharedCount} <BiShare className="opacity-50" />
+                      {file.sharedCount}{" "}
+                      <HiOutlineShare className="opacity-50" />
                     </div>
                   </td>
 
@@ -311,11 +319,43 @@ const FDashboard: React.FC<FdashboardProps> = ({ darkMode }) => {
                     {file.editedAt}
                   </td>
 
-                  {/* Action Button - Smoother interaction */}
+                  {/* Action Button */}
                   <td className="px-6 py-4 text-right last:rounded-r-2xl">
-                    <button className="p-2.5 rounded-xl text-neutral-400 hover:bg-black/5 dark:hover:bg-white/10 transition-all duration-200">
-                      <HiOutlineDotsHorizontal size={18} />
-                    </button>
+                    <Dropdown
+                      darkMode={darkMode}
+                      width="w-52"
+                      trigger={
+                        <button
+                          className={`group-hover:bg-neutral-100 group-hover:text-black p-2.5 rounded-xl text-neutral-400 ${darkMode ? "hover:text-white" : "hover:text-black"} transition-colors duration-200`}
+                        >
+                          <HiOutlineDotsHorizontal size={18} />
+                        </button>
+                      }
+                      items={[
+                        {
+                          label: "Open File",
+                          icon: <HiOutlineBookOpen />,
+                          onClick: () => {},
+                        },
+                        {
+                          label: "Download File",
+                          icon: <HiOutlineShare />,
+                          onClick: () => {},
+                        },
+                        {
+                          label: "Download File",
+                          icon: <HiOutlineDownload />,
+                          onClick: () => {},
+                        },
+                        {
+                          label: "Delete Forever",
+                          variant: "destructive",
+                          separator: true,
+                          icon: <HiOutlineTrash />,
+                          onClick: () => {},
+                        },
+                      ]}
+                    />
                   </td>
                 </tr>
               ))}
