@@ -101,7 +101,7 @@ const Hearth: React.FC<Props> = ({ darkMode }) => {
         </span>
       </div>
 
-      {/* Content Render Area (where Chat/DMs appear) */}
+      {/* Content Render Area  */}
       <div className="flex-1 overflow-auto hearth-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
         <Outlet />
       </div>

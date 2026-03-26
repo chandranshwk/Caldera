@@ -326,7 +326,7 @@ const FDashboard: React.FC<FdashboardProps> = ({ darkMode }) => {
                       width="w-52"
                       trigger={
                         <button
-                          className={`group-hover:bg-neutral-100 group-hover:text-black p-2.5 rounded-xl text-neutral-400 ${darkMode ? "hover:text-white" : "hover:text-black"} transition-colors duration-200`}
+                          className={`group-hover:bg-neutral-100 group-hover:text-black p-2.5 rounded-xl text-neutral-400 ${darkMode ? "hover:text-black" : "hover:text-black"} transition-colors duration-200`}
                         >
                           <HiOutlineDotsHorizontal size={18} />
                         </button>

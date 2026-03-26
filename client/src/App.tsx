@@ -115,8 +115,8 @@ function App() {
               element={<FDashboard darkMode={darkMode} />}
             />
             <Route path="docs" element={<FDoc darkMode={darkMode} />} />
-            <Route path="sheets" element={<FSheets />} />
-            <Route path="pdfs" element={<FPdfs />} />
+            <Route path="sheets" element={<FSheets darkMode={darkMode} />} />
+            <Route path="pdfs" element={<FPdfs darkMode={darkMode} />} />
           </Route>
 
           {/* Module: The Nexus */}

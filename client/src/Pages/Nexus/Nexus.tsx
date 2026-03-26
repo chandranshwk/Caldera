@@ -91,7 +91,6 @@ const Nexus: React.FC<Props> = ({ darkMode }) => {
           </p>
         </div>
 
-        {/* Version Indicator */}
         <span
           className={`text-[12px] mt-4 uppercase tracking-tighter font-bold ${
             darkMode ? "text-slate-700" : "text-slate-300"
@@ -101,7 +100,6 @@ const Nexus: React.FC<Props> = ({ darkMode }) => {
         </span>
       </div>
 
-      {/* Content Injection Point (Where Kanban/Calendar appears) */}
       <div className="flex-1 overflow-auto nexus-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
         <Outlet />
       </div>

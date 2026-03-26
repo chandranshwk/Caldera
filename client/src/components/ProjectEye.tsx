@@ -38,10 +38,6 @@ const ProjectEye: React.FC<ProjectEyeProps> = ({ color }) => {
       ref={containerRef}
       className={`shrink-0 size-4 transition-transform duration-300 group-hover:scale-110 border bg-linear-to-br ${color} p-px rounded-full flex items-center justify-center`}
     >
-      {/* 
-        The "Backdrop" is now transparent. 
-        The spark now floats directly against the Sidebar background.
-      */}
       <div className="size-full rounded-full flex items-center justify-center bg-transparent">
         <motion.div
           style={{ x: pupilX, y: pupilY }}

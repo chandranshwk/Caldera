@@ -51,7 +51,6 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
 
     return (
       <div className="relative inline-block text-left" ref={dropdownRef}>
-        {/* 3. Attach the forwarded 'ref' to this div */}
         <div
           ref={ref}
           onClick={(e) => {

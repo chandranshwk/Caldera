@@ -13,7 +13,6 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ darkMode }) => {
       className={`flex w-screen min-h-screen ${darkMode ? "bg-[#000000d4]" : "bg-[#f0f0f0]"}]`}
     >
       <Sidebar darkMode={darkMode} />
-      {/* flex-1 expands to fill all space not taken by Sidebar */}
       <main className="flex-1 h-screen overflow-auto">
         <Outlet />
       </main>

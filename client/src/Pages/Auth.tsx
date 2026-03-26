@@ -183,7 +183,7 @@ const Auth = () => {
         </motion.div>
       </div>
 
-      {/* Right Side: High-End Marketing Panel */}
+      {/* Right Side */}
       <div className="hidden lg:flex flex-1 bg-slate-50 flex-col justify-center items-center p-24 relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-150 h-150 bg-indigo-100/50 blur-[120px] rounded-full -mr-48 -mt-48" />
@@ -209,7 +209,6 @@ const Auth = () => {
             {/* Mini Testimonial */}
             <div className="pt-12 border-t border-slate-200">
               <p className="text-slate-500 italic">
-                {/* Use a template literal to keep the positive structure while varying the keywords */}
                 "Caldera has not only helped me to better{" "}
                 {faker.person.jobDescriptor().toLowerCase()} with my team but
                 has also helped me to improve my own {faker.word.adjective()}{" "}

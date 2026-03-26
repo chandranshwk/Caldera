@@ -149,7 +149,6 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode }) => {
             ${isOpen ? (darkMode ? "justify-start hover:bg-[#27272bd4]" : "justify-start hover:bg-slate-50") : "justify-center"}
           `}
                 >
-                  {/* Gradient Icon logic preserved */}
                   <div
                     className={`shrink-0 ${darkMode ? "text-slate-200 group-hover:text-white" : "text-slate-600 group-hover:text-indigo-600"}  transition-colors`}
                   >
