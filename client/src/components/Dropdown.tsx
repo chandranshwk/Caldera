@@ -50,10 +50,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
     }, []);
 
     return (
-      <div
-        className="relative inline-block text-left z-[99999999999999999999999999999]"
-        ref={dropdownRef}
-      >
+      <div className="relative inline-block text-left" ref={dropdownRef}>
         {/* 3. Attach the forwarded 'ref' to this div */}
         <div
           ref={ref}

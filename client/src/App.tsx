@@ -114,7 +114,7 @@ function App() {
               path="dashboard"
               element={<FDashboard darkMode={darkMode} />}
             />
-            <Route path="docs" element={<FDoc />} />
+            <Route path="docs" element={<FDoc darkMode={darkMode} />} />
             <Route path="sheets" element={<FSheets />} />
             <Route path="pdfs" element={<FPdfs />} />
           </Route>
