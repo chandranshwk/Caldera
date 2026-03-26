@@ -16,29 +16,22 @@ const Auth = () => {
   const navigate = useNavigate();
 
   const signInWithGitHub = async () => {
-    // Automatically detects http://localhost:3000 or https://caldera-workspace.vercel.app
-    const redirectUrl = `${window.location.origin}/auth`;
-
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: redirectUrl,
+        redirectTo: "http://localhost:3000/auth",
       },
     });
-
     if (error) toast.error(error.message);
   };
 
   const signInWithGoogle = async () => {
-    const redirectUrl = `${window.location.origin}/auth`;
-
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: redirectUrl,
+        redirectTo: "http://localhost:3000/auth",
       },
     });
-
     if (error) toast.error(error.message);
   };
 
@@ -58,7 +51,7 @@ const Auth = () => {
       if (data?.session) {
         localStorage.setItem("token", data.session.access_token);
         toast.success(`Logged In Successfully`);
-        navigate("/home");
+        navigate("/dashboard");
       } else {
         // 2. If no session, they probably need to check email
         toast.info("Check your email to confirm your account!");
