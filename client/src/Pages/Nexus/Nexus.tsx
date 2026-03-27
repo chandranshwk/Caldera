@@ -17,11 +17,11 @@ const Nexus: React.FC<Props> = ({ darkMode }) => {
     <div
       className={`h-screen w-full p-8 pt-5 transition-colors duration-300 border-l flex flex-col ${
         darkMode
-          ? "bg-slate-900 border-slate-800 text-slate-100"
+          ? "bg-[#18181b] border-slate-800 text-slate-100"
           : "bg-white border-slate-200 text-slate-900"
       }`}
     >
-      {/* Breadcrumb Header Section */}
+      {/* Header Section */}
       <div
         className={`flex mb-5 border-b justify-between pb-4 transition-colors ${
           darkMode ? "border-slate-800" : "border-slate-100"
@@ -31,7 +31,7 @@ const Nexus: React.FC<Props> = ({ darkMode }) => {
           <div className="flex items-center gap-2">
             {/* Root Link (Muted) */}
             <Link
-              to="/nexus/dashboard"
+              to="/forge/dashboard"
               className={`text-lg font-semibold transition-colors ${
                 darkMode
                   ? "text-slate-500 hover:text-slate-400"
@@ -48,38 +48,12 @@ const Nexus: React.FC<Props> = ({ darkMode }) => {
             </span>
 
             {/* Dynamic Breadcrumb Logic */}
-            {formattedPage === "Dashboard" ? (
-              <h1
-                className={`text-lg font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}
-              >
-                Dashboard
-              </h1>
-            ) : (
-              <>
-                <Link
-                  to="/nexus/dashboard"
-                  className={`text-lg font-semibold transition-colors ${
-                    darkMode
-                      ? "text-slate-500 hover:text-slate-400"
-                      : "text-slate-400 hover:text-slate-500"
-                  }`}
-                >
-                  Dashboard
-                </Link>
 
-                <span
-                  className={`text-lg font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
-                >
-                  /
-                </span>
-
-                <h1
-                  className={`text-lg font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}
-                >
-                  {formattedPage}
-                </h1>
-              </>
-            )}
+            <h1
+              className={`text-lg font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}
+            >
+              {formattedPage}
+            </h1>
           </div>
 
           <p
@@ -91,6 +65,7 @@ const Nexus: React.FC<Props> = ({ darkMode }) => {
           </p>
         </div>
 
+        {/* Version Indicator */}
         <span
           className={`text-[12px] mt-4 uppercase tracking-tighter font-bold ${
             darkMode ? "text-slate-700" : "text-slate-300"
@@ -100,7 +75,8 @@ const Nexus: React.FC<Props> = ({ darkMode }) => {
         </span>
       </div>
 
-      <div className="flex-1 overflow-auto nexus-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
+      {/* Content Injection Point */}
+      <div className="flex-1 overflow-auto forge-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
         <Outlet />
       </div>
     </div>

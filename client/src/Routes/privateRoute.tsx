@@ -8,17 +8,19 @@ interface PrivateRouteProps {
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ darkMode }) => {
   const token = localStorage.getItem("token");
 
-  return token ? (
+  if (!token) return <Navigate to="/auth" replace />;
+
+  return (
     <div
-      className={`flex w-screen min-h-screen ${darkMode ? "bg-[#000000d4]" : "bg-[#f0f0f0]"}]`}
+      className={`flex w-screen h-screen overflow-hidden ${darkMode ? "bg-[#0b0b0d]" : "bg-[#f0f0f0]"}`}
     >
+      {/* Sidebar is now global for all protected routes */}
       <Sidebar darkMode={darkMode} />
+
       <main className="flex-1 h-screen overflow-auto">
         <Outlet />
       </main>
     </div>
-  ) : (
-    <Navigate to={"/auth"} replace />
   );
 };
 

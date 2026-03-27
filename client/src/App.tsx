@@ -24,6 +24,8 @@ import CViewAll from "./Pages/Canvas/CViewAll";
 import HDashboard from "./Pages/Hearth/HDashboard";
 import LandingPage from "./Pages/LandingPage";
 import FPdfs from "./Pages/Forge/FPdfs";
+import CommandBar from "./components/CommandBar";
+import ProjectView from "./Pages/ProjectView";
 
 function App() {
   const navigate = useNavigate();
@@ -53,7 +55,7 @@ function App() {
         // REDIRECT FIX: If user logs in successfully, send them to the internal dashboard
         if (window.location.pathname === "/auth") {
           toast.success("Logged In Successfully");
-          navigate("/dashboard");
+          navigate("/profile");
         }
       } else if (event === "SIGNED_OUT") {
         localStorage.removeItem("token");
@@ -86,6 +88,21 @@ function App() {
     localStorage.setItem("darkMode", darkMode.toString());
   }, [darkMode]);
 
+  const [openCommandBar, setOpenCommandBar] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleCommands = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setOpenCommandBar((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleCommands);
+    return () => {
+      window.removeEventListener("keydown", handleCommands);
+    };
+  }, []);
+
   return (
     <>
       <ToastContainer
@@ -93,6 +110,15 @@ function App() {
         position="bottom-right"
         autoClose={3000}
       />
+
+      {openCommandBar && (
+        <CommandBar
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+          isOpen={openCommandBar}
+          onClose={() => setOpenCommandBar(false)}
+        />
+      )}
 
       <Routes>
         {/* PUBLIC ROUTES */}
@@ -103,8 +129,13 @@ function App() {
         <Route element={<PrivateRoute darkMode={darkMode} />}>
           {/* Internal Home / Dashboard */}
           <Route
-            path="/dashboard"
+            path="/profile"
             element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />}
+          />
+
+          <Route
+            path="/project/:projectId"
+            element={<ProjectView darkMode={darkMode} />}
           />
 
           {/* Module: The Forge */}
@@ -143,9 +174,6 @@ function App() {
             <Route path="viewAll" element={<CViewAll />} />
           </Route>
         </Route>
-
-        {/* CATCH-ALL REDIRECT */}
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );

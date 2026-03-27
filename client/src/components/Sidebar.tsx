@@ -1,16 +1,18 @@
-import { useState } from "react";
-import {
-  BiCheckSquare,
-  BiChevronDown,
-  BiMessageSquare,
-  BiSearch,
-} from "react-icons/bi";
+import { useEffect, useState } from "react";
+import { BiCheckSquare, BiChevronDown, BiMessageSquare } from "react-icons/bi";
 import { AnimatePresence, motion } from "framer-motion";
-import { FiEdit3, FiPenTool } from "react-icons/fi";
+import { FiEdit3, FiLayers } from "react-icons/fi";
 import { faker } from "@faker-js/faker";
 import { getInitials } from "../assets/functions";
-import { useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  type NavigateFunction,
+} from "react-router-dom";
 import ProjectEye from "./ProjectEye";
+import type { MenuItem } from "./Dropdown";
+import { IoIosArrowForward } from "react-icons/io";
+import Dropdown from "./Dropdown";
 
 interface SidebarProps {
   darkMode: boolean;
@@ -20,299 +22,437 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [testUser] = useState(faker.person.fullName());
   const [testEmail] = useState(faker.internet.email());
-  const [testRole] = useState(faker.person.jobTitle());
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
-
-  const [search, setSearch] = useState<string>("");
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
-  return (
-    <motion.div
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => {
-        setIsOpen(false);
-        setActiveMenu(null);
-      }}
-      animate={{ width: isOpen ? "240px" : "55px" }}
-      className={`h-[calc(100vh-1rem)] m-2 mx-1 ${darkMode ? "bg-[#18181b] text-white border-[#242425ab]" : "bg-white border-slate-100"} shadow-lg rounded-lg p-4 pb-0 overflow-hidden border `}
-    >
-      <div className="flex items-center flex-col gap-4 justify-between h-full">
-        <div
-          className={`
-    flex items-center w-full h-10 transition-all duration-300 rounded-xl overflow-hidden
-    ${
-      isOpen
-        ? darkMode
-          ? "bg-[#0f0f11] px-3 border-none"
-          : "bg-slate-100/80 px-3 border-none"
-        : "bg-transparent justify-center px-0 border-none"
+  const NAVITEMS = [
+    {
+      label: "Grifty",
+      color: "from-indigo-500 to-purple-600",
+      link: "/project/grifty",
+    },
+    {
+      label: "Llama TB",
+      color: "from-emerald-500 to-teal-800",
+      link: "/project/llamatb",
+    },
+    {
+      label: "Caldera",
+      color: "from-orange-400 to-rose-500",
+      link: "/project/caldera",
+    },
+    {
+      label: "Samridh",
+      color: "from-blue-500 to-cyan-500",
+      link: "/project/samridh",
+    },
+  ];
+
+  const PAGES = [
+    {
+      icon: <FiEdit3 size={22} />,
+      label: "The Forge",
+      subLinks: [
+        { name: "Dashboard", link: "/forge/dashboard" },
+        { name: "Documents", link: "/forge/docs" },
+        { name: "Sheets", link: "/forge/sheets" },
+        { name: "Pdfs", link: "/forge/pdfs" },
+      ],
+    },
+    {
+      icon: <BiCheckSquare size={22} />,
+      label: "The Nexus",
+      subLinks: [
+        { name: "Dashboard", link: "/nexus/dashboard" },
+        { name: "Manage Tasks", link: "/nexus/manage" },
+        { name: "Calendar", link: "/nexus/calendar" },
+      ],
+    },
+    {
+      icon: <BiMessageSquare size={22} />,
+      label: "The Hearth",
+      subLinks: [
+        { name: "Dashboard", link: "/hearth/dashboard" }, // Added for consistency
+        { name: "Personal", link: "/hearth/personal" },
+        { name: "Channels", link: "/hearth/channels" },
+      ],
+    },
+    {
+      icon: <FiLayers size={22} />,
+      label: "The Canvas",
+      subLinks: [
+        { name: "Dashboard", link: "/canvas/dashboard" },
+        { name: "New", link: "/canvas/new" },
+        { name: "View All", link: "/canvas/viewAll" }, // Fixed camelCase
+      ],
+    },
+  ];
+
+  const [currentSite, setCurrentSide] = useState<{
+    name: string;
+    icon: React.ReactNode;
+  }>({ name: "Caldera", icon: null }); // Set a safe initial state
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const pathParts = location.pathname.split("/");
+
+    // 1. Check if we are in a project route (e.g., /project/grifty)
+    if (location.pathname.startsWith("/project") && pathParts[2]) {
+      const projectId = pathParts[2];
+
+      // Find the matching item in NAVITEMS to get its specific color
+      const matchedProject = NAVITEMS.find(
+        (item) => item.link === `/project/${projectId}`,
+      );
+
+      if (matchedProject) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setCurrentSide({
+          name: matchedProject.label,
+          icon: (
+            <div
+              className={`h-8 w-8 rounded-full hover:scale-110 relative shrink-0 size-5 transition-transform duration-300 group-hover:scale-110 border bg-linear-to-br ${matchedProject.color} p-px rounded-full flex items-center justify-center shadow-lg shadow-orange-500/10`}
+            />
+          ),
+        });
+        return; // Exit early if found
+      }
     }
-    ${darkMode ? "focus-within:bg-[#27272bd4]" : "focus-within:bg-slate-200/50"} 
-  `}
-        >
-          <BiSearch
-            size={22}
-            className={`shrink-0 transition-colors ${isOpen ? (darkMode ? "text-slate-50" : "text-slate-500") : darkMode ? "text-100" : "text-slate-600"}`}
+
+    // 2. Default Fallback (Caldera)
+    setCurrentSide({
+      name: "Caldera",
+      icon: (
+        <img
+          src="/icon-caldera.png"
+          alt="Logo"
+          className={`h-8 w-8 rounded-full border transition-transform duration-300 group-hover:scale-110 relative ${
+            darkMode
+              ? "border-slate-700 shadow-lg"
+              : "border-slate-200 shadow-sm"
+          }`}
+        />
+      ),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname, darkMode]);
+
+  const filteredItems = NAVITEMS.filter(
+    (item) => item.link !== location.pathname,
+  );
+
+  const formatProjectMenuItems = (
+    items: typeof NAVITEMS,
+    navigate: NavigateFunction, // Fixed the 'any' error here
+    currentPath: string,
+  ): MenuItem[] => {
+    // 1. Filter out the active project
+    // We use .startsWith to handle sub-routes like /project/grifty/settings
+    const filtered = items.filter((item) => item.link !== currentPath);
+
+    // 2. Map to MenuItem interface
+    const mappedItems: MenuItem[] = filtered.map((item) => ({
+      label: item.label,
+      icon: <ProjectEye color={item.color} />,
+      onClick: () => navigate(item.link),
+      variant: "default",
+    }));
+
+    // 3. Add "Global Dashboard" if inside a project
+    if (currentPath.startsWith("/project")) {
+      mappedItems.push({
+        label: "Global Dashboard",
+        icon: (
+          <img
+            src="/icon-caldera.png"
+            alt="Caldera"
+            className="size-5 rounded-full border border-slate-700 shadow-sm"
           />
+        ),
+        onClick: () => navigate("/profile"),
+        variant: "primary",
+        separator: true,
+      });
+    }
 
-          <AnimatePresence mode="wait">
-            {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: "auto" }}
-                exit={{ opacity: 0, width: 0 }}
-                transition={{ duration: 0.15 }}
-                className="flex-1 ml-3"
-              >
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className={`w-full bg-transparent text-sm font-medium ${darkMode ? "text-white placeholder-text-slate-50" : "text-slate-700 placeholder:text-slate-400"} outline-none border-none focus:ring-0`}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+    return mappedItems;
+  };
 
-        <div className="flex flex-col gap-3 w-full">
-          {/* Divider / Section Label */}
-          <div className="flex items-center h-6 w-full px-1">
-            {isOpen ? (
-              <div className="flex items-center gap-3 w-full opacity-60">
-                <hr className="flex-1 border-t border-slate-300" />
-                <span
-                  className={`font-bold uppercase text-[10px] ${darkMode ? "text-white" : "text-slate-900"} tracking-widest whitespace-nowrap`}
-                >
-                  Main
-                </span>
-                <hr className="flex-1 border-t border-slate-300" />
-              </div>
-            ) : (
-              <hr className="w-full border-slate-200" />
-            )}
-          </div>
-
-          {/* Nav Items */}
-          {[
-            {
-              icon: <FiEdit3 size={22} />,
-              label: "The Forge",
-              subLinks: [
-                { name: "Dashboard", link: "/forge/dashboard" },
-                { name: "Documents", link: "/forge/docs" },
-                { name: "Sheets", link: "/forge/sheets" },
-                { name: "Pdfs", link: "/forge/pdfs" },
-              ],
-            },
-            {
-              icon: <BiCheckSquare size={22} />,
-              label: "The Nexus",
-              subLinks: [
-                { name: "Dashboard", link: "/nexus/dashboard" },
-                { name: "Manage Tasks", link: "/nexus/manage" },
-                { name: "Calendar", link: "/nexus/calendar" },
-              ],
-            },
-            {
-              icon: <BiMessageSquare size={22} />,
-              label: "The Hearth",
-              subLinks: [
-                { name: "Dashboard", link: "/hearth/dashboard" }, // Added for consistency
-                { name: "Personal", link: "/hearth/personal" },
-                { name: "Channels", link: "/hearth/channels" },
-              ],
-            },
-            {
-              icon: <FiPenTool size={22} />,
-              label: "The Canvas",
-              subLinks: [
-                { name: "Dashboard", link: "/canvas/dashboard" },
-                { name: "New", link: "/canvas/new" },
-                { name: "View All", link: "/canvas/viewAll" }, // Fixed camelCase
-              ],
-            },
-          ].map((item, index) => {
-            const isExpanded = activeMenu === index && isOpen;
-
-            return (
-              <div key={index} className="flex flex-col w-full">
-                {/* Main Link Container */}
-                <div
-                  onClick={() =>
-                    isOpen && setActiveMenu(isExpanded ? null : index)
-                  }
-                  className={`
-            flex items-center w-full gap-4 transition-all duration-300 cursor-pointer group p-2 rounded-xl
-            ${isOpen ? (darkMode ? "justify-start hover:bg-[#27272bd4]" : "justify-start hover:bg-slate-50") : "justify-center"}
-          `}
-                >
-                  <div
-                    className={`shrink-0 ${darkMode ? "text-slate-200 group-hover:text-white" : "text-slate-600 group-hover:text-indigo-600"}  transition-colors`}
-                  >
-                    {item.icon}
-                  </div>
-
-                  <AnimatePresence>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -5 }}
-                        className="flex items-center justify-between flex-1 overflow-hidden"
-                      >
-                        <span
-                          className={`whitespace-nowrap font-semibold ${darkMode ? "text-slate-50" : "text-slate-700"}  text-sm`}
-                        >
-                          {item.label}
-                        </span>
-                        <motion.div
-                          animate={{ rotate: isExpanded ? 180 : 0 }}
-                          className="text-slate-400"
-                        >
-                          <BiChevronDown size={18} />
-                        </motion.div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* Submenu Logic */}
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden flex flex-col pl-12 mt-1 gap-1 border-l-2 border-slate-100 ml-5"
-                    >
-                      {item.subLinks.map((sub, sIdx) => (
-                        <span
-                          key={sIdx}
-                          className={`text-xs font-medium ${darkMode ? "text-slate-100 hover:text-white/80" : "text-slate-500 hover:text-indigo-600"}  py-1.5 cursor-pointer transition-colors`}
-                          onClick={() => navigate(sub.link)}
-                        >
-                          {sub.name}
-                        </span>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
-        </div>
-
+  return (
+    <div className="mr-1">
+      <motion.div
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => {
+          setIsOpen(false);
+          setActiveMenu(null);
+        }}
+        animate={{ width: isOpen ? "240px" : "55px" }}
+        /* 1. SINGLE CONTAINER: Essential for consistent animation speed */
+        className={`relative h-[calc(100vh-1rem)] justify-evenly gap-2 m-2 mt-2 mx-1 flex flex-col rounded-lg transition-colors duration-300 overflow-visible z-50 border-0`}
+      >
+        {/* TOP SECTION: Project Switcher */}
         <div
-          className={`flex flex-col ${isOpen ? "gap-1" : "gap-5"} justify-center item-center w-full`}
+          className={`flex items-center p-3 gap-3 h-16 shrink-0 border-b border-transparent rounded-lg ${darkMode ? "bg-[#18181b] text-white border-[#242425ab]" : "bg-white border-slate-100"}`}
         >
-          {/* Divider / Section Label */}
-          <div className="flex items-center h-6 w-full">
-            {isOpen ? (
-              <div className="flex items-center gap-3 w-full opacity-60">
-                <hr className="flex-1 border-t border-slate-300" />
-                <span
-                  className={`font-bold uppercase text-[10px] ${darkMode ? "text-white" : "text-slate-900"} tracking-widest whitespace-nowrap`}
-                >
-                  Projects
-                </span>
-                <hr className="flex-1 border-t border-slate-300" />
-              </div>
-            ) : (
-              <hr className="w-full border-slate-200" />
+          <div className="relative shrink-0 flex items-center justify-center">
+            {currentSite.icon}
+            {darkMode && (
+              <div className="absolute inset-0 bg-orange-500/10 blur-md rounded-full -z-10" />
             )}
           </div>
 
-          {/* Nav Items */}
-          {[
-            {
-              label: "Grifty",
-              color: "from-indigo-500 to-purple-600",
-            },
-            {
-              label: "Llama TB",
-              color: "from-emerald-500 to-teal-800",
-            },
-            {
-              label: "Caldera",
-              color: "from-orange-400 to-rose-500",
-            },
-            {
-              label: "Samridh",
-              color: "from-blue-500 to-cyan-500",
-            },
-
-            {
-              label: "Heelos",
-              color: "from-yellow-500 to-orange-500",
-            },
-          ].map((item, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ x: isOpen ? 5 : 0 }} // Subtle shift on hover
-              className={`flex items-center w-full gap-4 cursor-pointer group transition-all justify-center duration-300 group ${isOpen ? (darkMode ? "justify-start px-2 py-1.5 rounded-xl hover:bg-[#27272bd4]" : "justify-start px-2 py-1.5 rounded-xl hover:bg-slate-50") : "justify-center"}`}
-            >
-              {/* Gradient Icon Wrapper */}
-
-              <ProjectEye color={item.color} />
-
-              <AnimatePresence>
-                {isOpen && (
-                  <motion.span
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -5 }}
-                    className={`whitespace-nowrap text-sm font-semibold relative ${darkMode ? "text-slate-200 group-hover:text-slate-100" : "text-slate-600 group-hover:text-slate-900"}  transition-colors flex-1`}
-                  >
-                    {item.label}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
-        </div>
-        <div
-          className={`flex items-center gap-3 p-2 ${isOpen ? "ml-5" : "m-0"} mt-auto border-t pb-4 border-slate-100/50 transistion-all duration-100 ${darkMode ? "hover:bg-[#27272bd4]" : "hover:bg-slate-50/80"} `}
-          onClick={() => navigate("/dashboard")}
-        >
-          {/* Avatar */}
-          <div className="bg-green-800 size-8 rounded-full shrink-0 shadow-sm flex items-center justify-center uppercase font-bold text-white text-xs">
-            {getInitials(testUser)}
-          </div>
-
-          {/* Animated Text Container */}
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             {isOpen && (
               <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.2 }}
-                className="flex flex-col min-w-0 justify-center leading-tight flex-wrap"
+                className="flex-1 min-w-0 flex items-center justify-between ml-1"
               >
-                <span
-                  className={`text-[13px] font-bold ${darkMode ? "text-slate-100" : "text-slate-900"}  truncate`}
+                <div
+                  className={`font-bold tracking-tight text-sm truncate ${darkMode ? "text-slate-100" : "text-slate-900"}`}
                 >
-                  {testUser}
-                </span>
-                <span
-                  className={`text-[11px] ${darkMode ? "text-slate-400" : "text-slate-500"}  truncate`}
-                >
-                  {testEmail}
-                </span>
-                <span
-                  className={`text-[10px] font-semibold ${darkMode ? "text-indigo-200" : "text-indigo-500"}  uppercase tracking-wider truncate w-48 text-wrap mt-1 `}
-                >
-                  {testRole}
-                </span>
+                  {currentSite.name}
+                </div>
+
+                <div className="relative">
+                  <Dropdown
+                    darkMode={darkMode}
+                    width="w-60"
+                    items={formatProjectMenuItems(
+                      NAVITEMS,
+                      navigate,
+                      location.pathname,
+                    )}
+                    trigger={
+                      <div
+                        className={`p-1 rounded-md transition-transform rotate-90 ${darkMode ? "bg-[#232326cf]" : "bg-slate-100 shadow-sm"} hover:scale-110 cursor-pointer ${openDialog ? "-rotate-90" : "rotate-90"} transition-all duration-150`}
+                        onClick={() => setOpenDialog((prev) => !prev)}
+                      >
+                        <IoIosArrowForward
+                          size={14}
+                          className={`${openDialog ? "-rotate-180" : "rotate-0"} transition-all duration-150`}
+                        />
+                      </div>
+                    }
+                  />
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
-      </div>
-    </motion.div>
+
+        {/* NAVIGATION BODY: Scrollable area */}
+        <div
+          className={`flex-1 overflow-y-auto rounded-lg overflow-x-hidden justify-between flex flex-col p-3 pt-2 custom-scrollbar ${darkMode ? "bg-[#18181b] text-white border-[#242425ab]" : "bg-white border-slate-100"}`}
+        >
+          <div>
+            <div className="flex flex-col gap-4 mt-2">
+              {/* Main Divider */}
+              <div className="flex items-center h-2 pt-2 w-full px-1">
+                {isOpen ? (
+                  <div className="flex items-center gap-3 w-full opacity-60">
+                    <hr className="flex-1 border-t border-slate-300" />
+                    <span
+                      className={`font-bold uppercase text-[10px] ${darkMode ? "text-white" : "text-slate-900"} tracking-widest`}
+                    >
+                      Main
+                    </span>
+                    <hr className="flex-1 border-t border-slate-300" />
+                  </div>
+                ) : (
+                  <hr className="w-full border-slate-200" />
+                )}
+              </div>
+
+              {/* PAGES Mapping */}
+              {PAGES.map((item, index) => {
+                const isExpanded = activeMenu === index && isOpen;
+
+                return (
+                  <div key={index} className="flex flex-col w-full">
+                    <div
+                      onClick={() =>
+                        isOpen && setActiveMenu(isExpanded ? null : index)
+                      }
+                      className={`flex items-center w-full gap-4 transition-all duration-300 cursor-pointer group p-2 rounded-xl 
+                  ${isOpen ? (darkMode ? "justify-start hover:bg-[#27272bd4]" : "justify-start hover:bg-slate-50") : "justify-center"}`}
+                    >
+                      <div
+                        className={`shrink-0 ${darkMode ? "text-slate-200 group-hover:text-white" : "text-slate-600 group-hover:text-indigo-600"}`}
+                      >
+                        {item.icon}
+                      </div>
+
+                      <AnimatePresence>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -5 }}
+                            className="flex items-center justify-between flex-1 overflow-hidden"
+                          >
+                            <span
+                              className={`whitespace-nowrap font-semibold ${darkMode ? "text-slate-50" : "text-slate-700"} text-sm`}
+                            >
+                              {item.label}
+                            </span>
+                            <motion.div
+                              animate={{ rotate: isExpanded ? 180 : 0 }}
+                              className="text-slate-400"
+                            >
+                              <BiChevronDown size={18} />
+                            </motion.div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Submenu Logic */}
+                    <AnimatePresence>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="overflow-hidden flex flex-col pl-10 mt-1 gap-1 border-l-2 border-slate-100 ml-4"
+                        >
+                          {item.subLinks.map((sub, sIdx) => (
+                            <span
+                              key={sIdx}
+                              className={`text-xs font-medium py-1.5 cursor-pointer transition-colors ${darkMode ? "text-slate-100 hover:text-white/80" : "text-slate-500 hover:text-indigo-600"}`}
+                              onClick={() => navigate(sub.link)}
+                            >
+                              {sub.name}
+                            </span>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div
+              className={`flex flex-col mt-4 ${isOpen ? "gap-1" : "gap-3"} justify-center item-center w-full`}
+            >
+              {/* Divider / Section Label */}
+              <div className="flex items-center h-6 w-full">
+                {isOpen ? (
+                  <div className="flex items-center gap-3 w-full opacity-60">
+                    <hr className="flex-1 border-t border-slate-300" />
+                    <span
+                      className={`font-bold uppercase text-[10px] ${darkMode ? "text-white" : "text-slate-900"} tracking-widest whitespace-nowrap`}
+                    >
+                      Recent Projects
+                    </span>
+                    <hr className="flex-1 border-t border-slate-300" />
+                  </div>
+                ) : (
+                  <hr className="w-full border-slate-200" />
+                )}
+              </div>
+
+              {/* Projects Items */}
+              <div className="flex flex-col gap-1">
+                {/* 1. MAP PROJECT ITEMS */}
+                <div className="flex flex-col gap-1">
+                  <AnimatePresence initial={false}>
+                    {filteredItems.map((item) => (
+                      <motion.div
+                        layout // 1. CRITICAL: Smoothly slides other items into new positions
+                        key={item.label} // 2. MUST use a unique ID (not index) for layout to work
+                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{
+                          opacity: 0,
+                          scale: 0.9,
+                          transition: { duration: 0.15 },
+                        }}
+                        whileHover={{ x: isOpen ? 5 : 0 }}
+                        className={`flex items-center w-full gap-4 cursor-pointer group transition-all duration-300 
+          ${isOpen ? "justify-start px-2 py-1.5 rounded-xl" : "justify-center p-2 rounded-2xl"}
+          ${darkMode ? "hover:bg-[#27272bd4]" : "hover:bg-slate-50"}
+        `}
+                        onClick={() => navigate(item.link)}
+                      >
+                        <div className="shrink-0 flex items-center justify-center w-6">
+                          <ProjectEye color={item.color} />
+                        </div>
+
+                        <AnimatePresence mode="wait">
+                          {isOpen && (
+                            <motion.span
+                              layout // Ensures text stays aligned with the sliding container
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              exit={{ opacity: 0, x: -5 }}
+                              className={`whitespace-nowrap text-[13px] font-bold flex-1 
+                ${darkMode ? "text-slate-200 group-hover:text-slate-100" : "text-slate-600 group-hover:text-slate-900"}`}
+                            >
+                              {item.label}
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className={`flex items-center gap-3 flex-col  ${isOpen ? "pl-2" : "pl-0"} py-3 border-slate-100/50 transistion-all duration-100 ${darkMode ? "hover:bg-[#27272bd4] hover:rounded-md" : "hover:bg-slate-50/80 hover:rounded-md"} `}
+            onClick={() => navigate("/profile")}
+          >
+            <div className="flex items-center h-2 pt-2 w-full px-1">
+              {isOpen ? (
+                <div className="flex items-center gap-3 w-full opacity-60">
+                  <hr className="flex-1 border-t border-slate-300" />
+                </div>
+              ) : (
+                <hr className="w-full border-slate-200" />
+              )}
+            </div>
+            <div className="flex items-center gap-4">
+              {/* Avatar */}
+              <div className="bg-green-800 size-8 rounded-full shrink-0 shadow-sm flex items-center justify-center uppercase font-bold text-white text-xs">
+                {getInitials(testUser)}
+              </div>
+
+              {/* Animated Text Container */}
+              <AnimatePresence mode="wait">
+                {isOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex flex-col min-w-0 justify-center leading-tight flex-wrap"
+                  >
+                    <span
+                      className={`text-[13px] font-bold ${darkMode ? "text-slate-100" : "text-slate-900"}  truncate`}
+                    >
+                      {testUser}
+                    </span>
+                    <span
+                      className={`text-[11px] ${darkMode ? "text-slate-400" : "text-slate-500"}  truncate`}
+                    >
+                      {testEmail}
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
   );
 };
 

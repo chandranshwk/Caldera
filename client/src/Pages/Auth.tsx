@@ -51,7 +51,7 @@ const Auth = () => {
       if (data?.session) {
         localStorage.setItem("token", data.session.access_token);
         toast.success(`Logged In Successfully`);
-        navigate("/dashboard");
+        navigate("/profile");
       } else {
         // 2. If no session, they probably need to check email
         toast.info("Check your email to confirm your account!");
