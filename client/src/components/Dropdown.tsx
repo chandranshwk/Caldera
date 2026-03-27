@@ -25,7 +25,6 @@ interface DropdownProps {
 // 1. Wrap the component in forwardRef
 const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
   ({ trigger, items, darkMode, width = "w-48" }, ref) => {
-    // 2. Add 'ref' as the second argument
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 

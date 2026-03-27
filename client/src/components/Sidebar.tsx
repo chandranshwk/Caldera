@@ -181,6 +181,10 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
     return mappedItems;
   };
 
+  useEffect(() => {
+    setOpenDialog(false);
+  }, [isOpen]);
+
   return (
     <div className="mr-1">
       <motion.div
@@ -218,7 +222,7 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
                   {currentSite.name}
                 </div>
 
-                <div className="relative">
+                <div className="relative mt-2">
                   <Dropdown
                     darkMode={darkMode}
                     width="w-60"
@@ -229,12 +233,12 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
                     )}
                     trigger={
                       <div
-                        className={`p-1 rounded-md transition-transform rotate-90 ${darkMode ? "bg-[#232326cf]" : "bg-slate-100 shadow-sm"} hover:scale-110 cursor-pointer ${openDialog ? "-rotate-90" : "rotate-90"} transition-all duration-150`}
+                        className={`p-1 rounded-md transition-all duration-300 cursor-pointer shadow-sm ${darkMode ? "bg-[#232326cf]" : "bg-slate-100"}  ${openDialog ? "rotate-180" : "rotate-90"}  hover:scale-110`}
                         onClick={() => setOpenDialog((prev) => !prev)}
                       >
                         <IoIosArrowForward
                           size={14}
-                          className={`${openDialog ? "-rotate-180" : "rotate-0"} transition-all duration-150`}
+                          className="transition-transform duration-300"
                         />
                       </div>
                     }
@@ -406,7 +410,7 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
             </div>
           </div>
           <div
-            className={`flex items-center gap-3 flex-col  ${isOpen ? "pl-2" : "pl-0"} py-3 border-slate-100/50 transistion-all duration-100 ${darkMode ? "hover:bg-[#27272bd4] hover:rounded-md" : "hover:bg-slate-50/80 hover:rounded-md"} `}
+            className={`flex items-center gap-3 flex-col justify-between  ${isOpen ? "pl-2" : "pl-0"} py-3 border-slate-100/50 transistion-all duration-100 ${darkMode ? "hover:bg-[#27272bd4] hover:rounded-md" : "hover:bg-slate-200/20 hover:rounded-md hover:shadow-md hover:-translate-y-2"} `}
             onClick={() => navigate("/profile")}
           >
             <div className="flex items-center h-2 pt-2 w-full px-1">
@@ -418,7 +422,7 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
                 <hr className="w-full border-slate-200" />
               )}
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-10 justify-between">
               {/* Avatar */}
               <div className="bg-green-800 size-8 rounded-full shrink-0 shadow-sm flex items-center justify-center uppercase font-bold text-white text-xs">
                 {getInitials(fullName)}
