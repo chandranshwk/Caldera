@@ -1,11 +1,14 @@
+import type { User } from "@supabase/supabase-js";
 import { Outlet, Link, useLocation } from "react-router-dom";
 
 interface Props {
   darkMode: boolean;
+  user: User;
 }
 
-const Forge: React.FC<Props> = ({ darkMode }) => {
+const Forge: React.FC<Props> = ({ darkMode, user }) => {
   const location = useLocation();
+  console.log(user.email);
 
   // Logic to extract the sub-page name for the breadcrumb
   const pathParts = location.pathname.split("/").filter(Boolean);
@@ -79,7 +82,7 @@ const Forge: React.FC<Props> = ({ darkMode }) => {
 
       {/* Content Injection Point */}
       <div className="flex-1 overflow-auto forge-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
-        <Outlet />
+        <Outlet context={{ user, darkMode }} />
       </div>
     </div>
   );

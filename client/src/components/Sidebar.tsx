@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { BiCheckSquare, BiChevronDown, BiMessageSquare } from "react-icons/bi";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiEdit3, FiLayers } from "react-icons/fi";
-import { faker } from "@faker-js/faker";
 import { getInitials } from "../assets/functions";
 import {
   useLocation,
@@ -13,15 +12,17 @@ import ProjectEye from "./ProjectEye";
 import type { MenuItem } from "./Dropdown";
 import { IoIosArrowForward } from "react-icons/io";
 import Dropdown from "./Dropdown";
+import type { User } from "@supabase/supabase-js";
 
 interface SidebarProps {
   darkMode: boolean;
+  user: User;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ darkMode }) => {
+const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [testUser] = useState(faker.person.fullName());
-  const [testEmail] = useState(faker.internet.email());
+  const fullName = user?.user_metadata?.full_name || "User";
+  const email = user?.email;
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
@@ -150,8 +151,6 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode }) => {
     navigate: NavigateFunction, // Fixed the 'any' error here
     currentPath: string,
   ): MenuItem[] => {
-    // 1. Filter out the active project
-    // We use .startsWith to handle sub-routes like /project/grifty/settings
     const filtered = items.filter((item) => item.link !== currentPath);
 
     // 2. Map to MenuItem interface
@@ -422,7 +421,7 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode }) => {
             <div className="flex items-center gap-4">
               {/* Avatar */}
               <div className="bg-green-800 size-8 rounded-full shrink-0 shadow-sm flex items-center justify-center uppercase font-bold text-white text-xs">
-                {getInitials(testUser)}
+                {getInitials(fullName)}
               </div>
 
               {/* Animated Text Container */}
@@ -438,12 +437,12 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode }) => {
                     <span
                       className={`text-[13px] font-bold ${darkMode ? "text-slate-100" : "text-slate-900"}  truncate`}
                     >
-                      {testUser}
+                      {fullName}
                     </span>
                     <span
                       className={`text-[11px] ${darkMode ? "text-slate-400" : "text-slate-500"}  truncate`}
                     >
-                      {testEmail}
+                      {email}
                     </span>
                   </motion.div>
                 )}

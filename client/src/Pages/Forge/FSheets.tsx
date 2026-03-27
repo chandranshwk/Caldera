@@ -13,12 +13,15 @@ import { BiDownload } from "react-icons/bi";
 import { SiGoogledocs, SiGooglesheets } from "react-icons/si";
 import { FaFilePdf } from "react-icons/fa";
 import { RECENT_FILES } from "../../assets/assets";
+import { useOutletContext } from "react-router-dom";
+import type { User } from "@supabase/supabase-js";
 
-interface FSheets {
-  darkMode: boolean;
-}
-
-const FSheets: React.FC<FSheets> = ({ darkMode }) => {
+const FSheets = () => {
+  const { user, darkMode } = useOutletContext<{
+    user: User;
+    darkMode: boolean;
+  }>();
+  console.log(user.email);
   const cardBg = darkMode ? "bg-[#1a1a1c]" : "bg-white";
   return (
     <div

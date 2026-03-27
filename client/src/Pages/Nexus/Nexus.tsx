@@ -1,10 +1,13 @@
+import type { User } from "@supabase/supabase-js";
 import { Outlet, Link, useLocation } from "react-router-dom";
 
 interface Props {
   darkMode: boolean;
+  user: User;
 }
 
-const Nexus: React.FC<Props> = ({ darkMode }) => {
+const Nexus: React.FC<Props> = ({ darkMode, user }) => {
+  console.log(user.email);
   const location = useLocation();
 
   // Logic to extract the sub-page name for the breadcrumb

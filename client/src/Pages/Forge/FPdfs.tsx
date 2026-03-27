@@ -1,4 +1,3 @@
-import React from "react";
 import {
   HiOutlineDocumentText,
   HiOutlineDuplicate,
@@ -17,12 +16,15 @@ import { BiDownload } from "react-icons/bi";
 import { FaFilePdf } from "react-icons/fa";
 import { RECENT_FILES } from "../../assets/assets";
 import { SiGoogledocs, SiGooglesheets } from "react-icons/si";
+import { useOutletContext } from "react-router-dom";
+import type { User } from "@supabase/supabase-js";
 
-interface FPdfsProps {
-  darkMode: boolean;
-}
-
-const FPdfs: React.FC<FPdfsProps> = ({ darkMode }) => {
+const FPdfs = () => {
+  const { user, darkMode } = useOutletContext<{
+    user: User;
+    darkMode: boolean;
+  }>();
+  console.log(user.email);
   const cardBg = darkMode ? "bg-[#1a1a1c]" : "bg-white";
 
   return (

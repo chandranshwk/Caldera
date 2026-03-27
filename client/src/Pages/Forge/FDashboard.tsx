@@ -1,4 +1,3 @@
-import React from "react";
 import { faker } from "@faker-js/faker";
 import { FiDownload, FiShare, FiPlus } from "react-icons/fi";
 import { SiGoogledocs, SiGooglesheets } from "react-icons/si";
@@ -12,13 +11,10 @@ import {
   HiOutlineShare,
   HiOutlineTrash,
 } from "react-icons/hi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import Dropdown from "../../components/Dropdown";
 import { IoIosArrowForward } from "react-icons/io";
-
-interface FdashboardProps {
-  darkMode: boolean;
-}
+import type { User } from "@supabase/supabase-js";
 
 // 1. Centralized Data Config
 const METRICS = [
@@ -55,12 +51,16 @@ const METRICS = [
   { id: "shared", icon: <FiShare />, name: "Shared", color: "bg-purple-600" },
 ];
 
-const FDashboard: React.FC<FdashboardProps> = ({ darkMode }) => {
+const FDashboard = () => {
+  const navigate = useNavigate();
+  const { user, darkMode } = useOutletContext<{
+    user: User;
+    darkMode: boolean;
+  }>();
+  console.log(user.email);
   const textColor = darkMode ? "text-gray-100" : "text-gray-800";
   const cardBg = darkMode ? "bg-[#1a1a1c]" : "bg-white";
   const subText = darkMode ? "text-gray-400" : "text-gray-500";
-
-  const navigate = useNavigate();
 
   return (
     <div

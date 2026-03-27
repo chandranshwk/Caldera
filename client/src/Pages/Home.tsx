@@ -1,11 +1,14 @@
+import type { User } from "@supabase/supabase-js";
 import { FiSun, FiMoon } from "react-icons/fi"; // Using Feather icons for the Apple look
 
 interface HomeProps {
   darkMode: boolean;
   setDarkMode: (value: boolean) => void;
+  user: User;
 }
 
-const Home = ({ darkMode, setDarkMode }: HomeProps) => {
+const Home: React.FC<HomeProps> = ({ darkMode, setDarkMode, user }) => {
+  console.log(user.email);
   return (
     <div
       className={`h-full w-[calc(100%-0.4rem)] p-6 transition-all duration-300 border ${

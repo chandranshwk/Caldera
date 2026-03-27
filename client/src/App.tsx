@@ -1,95 +1,107 @@
 import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
-import "./App.css";
-import Auth from "./Pages/Auth";
-import { toast, ToastContainer } from "react-toastify";
-import Home from "./Pages/Home";
-import PrivateRoute from "./Routes/privateRoute";
-import { supabase } from "./lib/supabase";
 import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import { supabase } from "./lib/supabase";
+
+// Pages
+import Auth from "./Pages/Auth";
+import Home from "./Pages/Home";
+import LandingPage from "./Pages/LandingPage";
+import ProjectView from "./Pages/ProjectView";
+
+// Forge
 import Forge from "./Pages/Forge/Forge";
-import Nexus from "./Pages/Nexus/Nexus";
-import Hearth from "./Pages/Hearth/Hearth";
-import Canvas from "./Pages/Canvas/Canvas";
 import FDashboard from "./Pages/Forge/FDashboard";
 import FDoc from "./Pages/Forge/FDoc";
 import FSheets from "./Pages/Forge/FSheets";
+import FPdfs from "./Pages/Forge/FPdfs";
+
+// Nexus
+import Nexus from "./Pages/Nexus/Nexus";
 import NDashboard from "./Pages/Nexus/NDashboard";
 import Calendar from "./Pages/Nexus/Calendar";
 import NManage from "./Pages/Nexus/NManage";
+
+// Hearth
+import Hearth from "./Pages/Hearth/Hearth";
+import HDashboard from "./Pages/Hearth/HDashboard";
 import Personal from "./Pages/Hearth/Personal";
 import Channels from "./Pages/Hearth/Channels";
+
+// Canvas
+import Canvas from "./Pages/Canvas/Canvas";
 import CDashboard from "./Pages/Canvas/CDashboard";
 import CNew from "./Pages/Canvas/CNew";
 import CViewAll from "./Pages/Canvas/CViewAll";
-import HDashboard from "./Pages/Hearth/HDashboard";
-import LandingPage from "./Pages/LandingPage";
-import FPdfs from "./Pages/Forge/FPdfs";
+
+// Components & Routes
+import PrivateRoute from "./Routes/privateRoute";
 import CommandBar from "./components/CommandBar";
-import ProjectView from "./Pages/ProjectView";
+import "./App.css";
+import type { User } from "@supabase/supabase-js";
 
 function App() {
   const navigate = useNavigate();
+  const [user, setUser] = useState<User>({} as User);
+  const [openCommandBar, setOpenCommandBar] = useState<boolean>(false);
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    const savedTheme = localStorage.getItem("darkMode");
+    return savedTheme === "true";
+  });
 
+  // --- AUTHENTICATION LOGIC ---
   useEffect(() => {
-    const syncAuth = async () => {
+    // 1. Initial Session Check
+    const getInitialSession = async () => {
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (user) {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (session) {
-          localStorage.setItem("token", session.access_token);
-        }
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) {
+        setUser(session.user);
+        localStorage.setItem("token", session.access_token);
       }
     };
-    syncAuth();
+    getInitialSession();
 
+    // 2. Listen for Auth Changes (Login, Logout, Signup)
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
+        setUser(session.user);
         localStorage.setItem("token", session.access_token);
-        // REDIRECT FIX: If user logs in successfully, send them to the internal dashboard
+
         if (window.location.pathname === "/auth") {
-          toast.success("Logged In Successfully");
+          const name = session.user.user_metadata?.full_name || "User";
+          toast.success(`Welcome back, ${name}`);
           navigate("/profile");
         }
-      } else if (event === "SIGNED_OUT") {
+      } else {
+        setUser({} as User);
         localStorage.removeItem("token");
-        navigate("/");
+        if (event === "SIGNED_OUT") navigate("/");
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    const savedTheme = localStorage.getItem("darkMode");
-    return savedTheme === "true";
-  });
-
+  // --- DARK MODE LOGIC ---
   useEffect(() => {
     const root = window.document.documentElement;
-    const body = document.body;
-
     if (darkMode) {
       root.style.backgroundColor = "#212122";
-      body.style.backgroundColor = "#212122";
+      document.body.style.backgroundColor = "#212122";
       root.classList.add("dark");
     } else {
       root.style.backgroundColor = "#ffffff";
-      body.style.backgroundColor = "#fafafa";
+      document.body.style.backgroundColor = "#fafafa";
       root.classList.remove("dark");
     }
-
     localStorage.setItem("darkMode", darkMode.toString());
   }, [darkMode]);
 
-  const [openCommandBar, setOpenCommandBar] = useState<boolean>(false);
-
+  // --- COMMAND BAR SHORTCUT ---
   useEffect(() => {
     const handleCommands = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
@@ -98,9 +110,7 @@ function App() {
       }
     };
     window.addEventListener("keydown", handleCommands);
-    return () => {
-      window.removeEventListener("keydown", handleCommands);
-    };
+    return () => window.removeEventListener("keydown", handleCommands);
   }, []);
 
   return (
@@ -125,33 +135,38 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<Auth />} />
 
-        {/* PRIVATE ROUTES (Protected by Shell) */}
-        <Route element={<PrivateRoute darkMode={darkMode} />}>
-          {/* Internal Home / Dashboard */}
+        {/* PRIVATE ROUTES */}
+        {/* Note: Pass 'user' into context if your PrivateRoute/Shell uses OutletContext */}
+        <Route element={<PrivateRoute darkMode={darkMode} user={user} />}>
           <Route
             path="/profile"
-            element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />}
+            element={
+              <Home user={user} darkMode={darkMode} setDarkMode={setDarkMode} />
+            }
           />
 
           <Route
             path="/project/:projectId"
-            element={<ProjectView darkMode={darkMode} />}
+            element={<ProjectView user={user} darkMode={darkMode} />}
           />
 
           {/* Module: The Forge */}
-          <Route path="/forge" element={<Forge darkMode={darkMode} />}>
+          <Route
+            path="/forge"
+            element={<Forge user={user} darkMode={darkMode} />}
+          >
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route
-              path="dashboard"
-              element={<FDashboard darkMode={darkMode} />}
-            />
-            <Route path="docs" element={<FDoc darkMode={darkMode} />} />
-            <Route path="sheets" element={<FSheets darkMode={darkMode} />} />
-            <Route path="pdfs" element={<FPdfs darkMode={darkMode} />} />
+            <Route path="dashboard" element={<FDashboard />} />
+            <Route path="docs" element={<FDoc />} />
+            <Route path="sheets" element={<FSheets />} />
+            <Route path="pdfs" element={<FPdfs />} />
           </Route>
 
           {/* Module: The Nexus */}
-          <Route path="/nexus" element={<Nexus darkMode={darkMode} />}>
+          <Route
+            path="/nexus"
+            element={<Nexus user={user} darkMode={darkMode} />}
+          >
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<NDashboard />} />
             <Route path="calendar" element={<Calendar />} />
@@ -159,7 +174,10 @@ function App() {
           </Route>
 
           {/* Module: The Hearth */}
-          <Route path="/hearth" element={<Hearth darkMode={darkMode} />}>
+          <Route
+            path="/hearth"
+            element={<Hearth user={user} darkMode={darkMode} />}
+          >
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<HDashboard />} />
             <Route path="personal" element={<Personal />} />
@@ -167,7 +185,10 @@ function App() {
           </Route>
 
           {/* Module: The Canvas */}
-          <Route path="/canvas" element={<Canvas darkMode={darkMode} />}>
+          <Route
+            path="/canvas"
+            element={<Canvas user={user} darkMode={darkMode} />}
+          >
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<CDashboard />} />
             <Route path="new" element={<CNew />} />
