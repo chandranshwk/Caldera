@@ -6,7 +6,7 @@ interface Props {
   user: User;
 }
 
-const Canvas: React.FC<Props> = ({ darkMode, user }) => {
+const Strata: React.FC<Props> = ({ darkMode, user }) => {
   console.log(user.email);
   const location = useLocation();
 
@@ -41,7 +41,7 @@ const Canvas: React.FC<Props> = ({ darkMode, user }) => {
                   : "text-slate-400 hover:text-slate-500"
               }`}
             >
-              The Canvas
+              The Strata
             </Link>
 
             <span
@@ -80,10 +80,10 @@ const Canvas: React.FC<Props> = ({ darkMode, user }) => {
 
       {/* Content Injection Point */}
       <div className="flex-1 overflow-auto forge-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
-        <Outlet />
+        <Outlet context={{ user, darkMode }} />
       </div>
     </div>
   );
 };
 
-export default Canvas;
+export default Strata;

@@ -87,13 +87,13 @@ const CommandBar: React.FC<CommandBarProps> = ({
         hideByDefault: true,
       },
       {
-        id: "new-canvas",
+        id: "new-Strata",
         icon: <FiLayers />,
-        title: "New Canvas",
-        shortcut: "/n-canvas",
-        module: "Canvas",
+        title: "New Strata",
+        shortcut: "/n-strata",
+        module: "Strata",
         category: "Quick Actions",
-        action: () => navigate("/canvas"),
+        action: () => navigate("/Strata"),
       },
       {
         id: "open",
@@ -142,13 +142,13 @@ const CommandBar: React.FC<CommandBarProps> = ({
         action: () => navigate("/hearth"),
       },
       {
-        id: "canvas",
+        id: "Strata",
         icon: <BiCheckSquare />,
-        title: "Canvas",
-        shortcut: "/canvas",
+        title: "Strata",
+        shortcut: "/strata",
         module: "Management",
         category: "Modules",
-        action: () => navigate("/canvas"),
+        action: () => navigate("/Strata"),
       },
     ],
     [setDarkMode, navigate],
@@ -181,7 +181,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
         // Space-agnostic sub-command parsing
         if (query.includes("-docs")) navigate("/forge/docs");
         else if (query.includes("-sheets")) navigate("/forge/sheets");
-        else if (query.includes("-canvas")) navigate("/canvas");
+        else if (query.includes("-Strata")) navigate("/Strata");
         else navigate("/profile");
       }
     }
@@ -296,7 +296,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
                     exit={{ opacity: 0, x: 10 }}
                     className="text-[10px] font-medium text-blue-500 animate-pulse pr-4 whitespace-nowrap"
                   >
-                    Try -docs, -sheets, or -canvas
+                    Try -docs, -sheets, or -Strata
                   </motion.span>
                 )}
               </AnimatePresence>

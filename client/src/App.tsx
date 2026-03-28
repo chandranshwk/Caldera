@@ -28,11 +28,11 @@ import HDashboard from "./Pages/Hearth/HDashboard";
 import Personal from "./Pages/Hearth/Personal";
 import Channels from "./Pages/Hearth/Channels";
 
-// Canvas
-import Canvas from "./Pages/Canvas/Canvas";
-import CDashboard from "./Pages/Canvas/CDashboard";
-import CNew from "./Pages/Canvas/CNew";
-import CViewAll from "./Pages/Canvas/CViewAll";
+//Strata
+import Strata from "./Pages/Strata/Strata";
+import SDashboard from "./Pages/Strata/SDashboard";
+import SNew from "./Pages/Strata/SNew";
+import SViewAll from "./Pages/Strata/SViewAll";
 
 // Components & Routes
 import PrivateRoute from "./Routes/privateRoute";
@@ -184,15 +184,15 @@ function App() {
             <Route path="channels" element={<Channels />} />
           </Route>
 
-          {/* Module: The Canvas */}
+          {/* Module: The Strata */}
           <Route
-            path="/canvas"
-            element={<Canvas user={user} darkMode={darkMode} />}
+            path="/Strata"
+            element={<Strata user={user} darkMode={darkMode} />}
           >
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<CDashboard />} />
-            <Route path="new" element={<CNew />} />
-            <Route path="viewAll" element={<CViewAll />} />
+            <Route path="dashboard" element={<SDashboard />} />
+            <Route path="new" element={<SNew />} />
+            <Route path="viewAll" element={<SViewAll />} />
           </Route>
         </Route>
       </Routes>

@@ -82,11 +82,11 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
     },
     {
       icon: <FiLayers size={22} />,
-      label: "The Canvas",
+      label: "The Strata",
       subLinks: [
-        { name: "Dashboard", link: "/canvas/dashboard" },
-        { name: "New", link: "/canvas/new" },
-        { name: "View All", link: "/canvas/viewAll" }, // Fixed camelCase
+        { name: "Dashboard", link: "/Strata/dashboard" },
+        { name: "New", link: "/Strata/new" },
+        { name: "View All", link: "/Strata/viewAll" }, // Fixed camelCase
       ],
     },
   ];

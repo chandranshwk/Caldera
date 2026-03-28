@@ -249,7 +249,7 @@ const LandingPage = () => {
                 </div>
               </motion.div>
 
-              {/* The Canvas */}
+              {/* The Strata */}
               <motion.div
                 className="group p-8 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 hover:bg-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all"
                 initial={{ opacity: 0, y: 40 }}
@@ -265,7 +265,7 @@ const LandingPage = () => {
                 >
                   <FiPenTool className="w-7 h-7 text-white" />
                 </motion.div>
-                <h3 className="mb-3 text-slate-900">The Canvas</h3>
+                <h3 className="mb-3 text-slate-900">The Strata</h3>
                 <p className="text-slate-600 mb-4">
                   Infinite 2D space for visual brainstorming, flowcharts, and
                   wireframes. Export ideas directly into the word editor to
@@ -273,7 +273,7 @@ const LandingPage = () => {
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <span className="px-3 py-1 bg-emerald-100 border border-emerald-200 rounded-full text-sm text-emerald-800">
-                    Infinite Canvas
+                    Infinite Strata
                   </span>
                   <span className="px-3 py-1 bg-emerald-100 border border-emerald-200 rounded-full text-sm text-emerald-800">
                     Export to Docs

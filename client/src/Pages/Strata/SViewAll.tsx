@@ -1,14 +1,14 @@
 import type { User } from "@supabase/supabase-js";
 import { useOutletContext } from "react-router-dom";
 
-const CViewAll = () => {
+const SViewAll = () => {
   const { user, darkMode } = useOutletContext<{
     user: User;
     darkMode: boolean;
   }>();
   console.log(darkMode);
   console.log(user.email);
-  return <div>CViewAll</div>;
+  return <div>SViewAll</div>;
 };
 
-export default CViewAll;
+export default SViewAll;
