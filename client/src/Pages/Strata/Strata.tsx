@@ -26,15 +26,15 @@ const Strata: React.FC<Props> = ({ darkMode, user }) => {
     >
       {/* Header Section */}
       <div
-        className={`flex mb-5 border-b justify-between pb-4 transition-colors ${
+        className={`flex border-b justify-between transition-colors ${
           darkMode ? "border-slate-800" : "border-slate-100"
-        }`}
+        } ${location.pathname === "/strata/new" ? "mb-0 pb-0 hidden" : "mb-5 pb-4"}`}
       >
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
             {/* Root Link (Muted) */}
             <Link
-              to="/forge/dashboard"
+              to="/strata/dashboard"
               className={`text-lg font-semibold transition-colors ${
                 darkMode
                   ? "text-slate-500 hover:text-slate-400"

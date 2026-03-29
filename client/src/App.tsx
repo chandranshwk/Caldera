@@ -32,7 +32,6 @@ import Channels from "./Pages/Hearth/Channels";
 import Strata from "./Pages/Strata/Strata";
 import SDashboard from "./Pages/Strata/SDashboard";
 import SNew from "./Pages/Strata/SNew";
-import SViewAll from "./Pages/Strata/SViewAll";
 
 // Components & Routes
 import PrivateRoute from "./Routes/privateRoute";
@@ -192,7 +191,6 @@ function App() {
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<SDashboard />} />
             <Route path="new" element={<SNew />} />
-            <Route path="viewAll" element={<SViewAll />} />
           </Route>
         </Route>
       </Routes>

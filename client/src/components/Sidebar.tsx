@@ -86,7 +86,6 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
       subLinks: [
         { name: "Dashboard", link: "/Strata/dashboard" },
         { name: "New", link: "/Strata/new" },
-        { name: "View All", link: "/Strata/viewAll" }, // Fixed camelCase
       ],
     },
   ];

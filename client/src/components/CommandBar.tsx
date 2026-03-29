@@ -93,7 +93,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
         shortcut: "/n-strata",
         module: "Strata",
         category: "Quick Actions",
-        action: () => navigate("/Strata"),
+        action: () => navigate("/strata/new"),
       },
       {
         id: "open",
@@ -224,7 +224,6 @@ const CommandBar: React.FC<CommandBarProps> = ({
   }, [isOpen, filteredActions, selectedIndex]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedIndex(-1);
   }, [search]);
 

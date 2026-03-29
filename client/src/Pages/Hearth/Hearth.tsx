@@ -34,7 +34,7 @@ const Hearth: React.FC<Props> = ({ darkMode, user }) => {
           <div className="flex items-center gap-2">
             {/* Root Link (Muted) */}
             <Link
-              to="/forge/dashboard"
+              to="/hearth/dashboard"
               className={`text-lg font-semibold transition-colors ${
                 darkMode
                   ? "text-slate-500 hover:text-slate-400"

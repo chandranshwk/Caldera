@@ -1,5 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 import { useOutletContext } from "react-router-dom";
+import ToolbarStrata from "../../components/ToolbarStrata";
 
 const SNew = () => {
   const { user, darkMode } = useOutletContext<{
@@ -8,7 +9,11 @@ const SNew = () => {
   }>();
   console.log(darkMode);
   console.log(user.email);
-  return <div>SNew</div>;
+  return (
+    <div>
+      <ToolbarStrata darkMode={darkMode} />
+    </div>
+  );
 };
 
 export default SNew;
