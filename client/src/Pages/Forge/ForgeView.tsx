@@ -16,6 +16,7 @@ export interface ToolbarButtonProps {
   title: string;
   color: string;
   onClick?: () => void;
+  isActive?: boolean;
 }
 
 const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
@@ -128,6 +129,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
         </div>
         {/* Upper dock Toolbar */}
         <UpperToolBar
+          editor={editor}
           darkMode={darkMode}
           topPage={topPage}
           hoveredTopId={hoveredTopId}
@@ -167,10 +169,10 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
           </div>
         </div>
         <LowerToolBar
+          editor={editor}
           darkMode={darkMode}
           hoveredId={hoveredId}
           setHoveredId={setHoveredId}
-          activeTool={activeTool}
           setActiveTool={setActiveTool}
         />
       </div>

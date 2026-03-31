@@ -3,20 +3,21 @@ import Dropdown from "../../components/Dropdown";
 import { AnimatePresence, motion } from "motion/react";
 import type { ToolbarButtonProps } from "./ForgeView";
 import { useForgeTools } from "./ForgeTools";
+import type { Editor } from "@tiptap/react";
 
 interface LowerToolBarProps {
+  editor: Editor | null;
   darkMode: boolean;
   hoveredId: string | null;
   setHoveredId: (id: string | null) => void;
-  activeTool: ToolbarButtonProps | null;
   setActiveTool: (tool: ToolbarButtonProps | null) => void;
 }
 
 const LowerToolBar: React.FC<LowerToolBarProps> = ({
+  editor,
   darkMode,
   hoveredId,
   setHoveredId,
-  activeTool,
   setActiveTool,
 }) => {
   const {
@@ -25,7 +26,7 @@ const LowerToolBar: React.FC<LowerToolBarProps> = ({
     HEADINGSOPTIONS,
     FONTSOPTIONS,
     activeFont,
-  } = useForgeTools();
+  } = useForgeTools(editor);
   return (
     <div>
       {/* Lower dock Toolbar */}
@@ -55,8 +56,11 @@ const LowerToolBar: React.FC<LowerToolBarProps> = ({
             </div>
             <div
               key={tool.id}
-              className={`relative flex flex-col group items-center px-1 py-2 rounded-xl transition-all hover:border-0.5 group duration-200  ${darkMode ? "hover:bg-slate-50" : "hover:bg-slate-950"} border border-transparent ${darkMode ? "hover:border-white/10" : "hover:border-slate-950 group "} ${activeTool?.id === tool.id ? (darkMode ? "bg-slate-50 scale-110" : "bg-slate-950 scale-110") : "hover:bg-slate-50"}`}
-              onClick={() => setActiveTool(tool)}
+              className={`relative flex flex-col group items-center px-1 py-2 rounded-xl transition-all hover:border-0.5 group duration-200  ${darkMode ? "hover:bg-slate-50" : "hover:bg-slate-950"} border border-transparent ${darkMode ? "hover:border-white/10" : "hover:border-slate-950 group "} ${tool.isActive ? (darkMode ? "bg-slate-50 scale-110" : "bg-slate-950 scale-110") : "hover:bg-slate-50"}  `}
+              onClick={() => {
+                setActiveTool(tool);
+                tool.onClick?.();
+              }}
               onMouseEnter={() => setHoveredId(tool.title)}
               onMouseLeave={() => setHoveredId(null)}
             >
@@ -66,7 +70,7 @@ const LowerToolBar: React.FC<LowerToolBarProps> = ({
               >
                 {/* Render icon with a consistent size */}
                 <span
-                  className={`text-md ${darkMode ? (activeTool?.id === tool.id ? "text-black" : "text-slate-100") : activeTool?.id === tool.id ? "text-white" : "text-slate-600"} ${darkMode ? "group-hover:text-black" : "group-hover:text-white"} `}
+                  className={`text-md ${darkMode ? (tool.isActive ? "text-black" : "text-slate-100") : tool.isActive ? "text-white" : "text-slate-600"} ${darkMode ? "group-hover:text-black" : "group-hover:text-white"} `}
                 >
                   {tool.icon}
                 </span>
@@ -74,7 +78,7 @@ const LowerToolBar: React.FC<LowerToolBarProps> = ({
 
               {/* The Indicator Dot */}
               <div
-                className={`size-2 rounded-full absolute -bottom-1 transition-all duration-300 ${activeTool?.id === tool.id ? `scale-100 opacity-100 ${tool.color}` : "scale-50 bg-transparent"} `}
+                className={`size-2 rounded-full absolute -bottom-1 transition-all duration-300 ${tool.isActive ? `scale-100 opacity-100 ${tool.color}` : "scale-50 bg-transparent"} `}
               />
             </div>
             {idx === LOWERTOOLS.length - 1 && (

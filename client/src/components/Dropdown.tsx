@@ -4,6 +4,7 @@ import React, {
   useRef,
   type ReactNode,
   forwardRef,
+  useCallback,
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -32,7 +33,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
 
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const checkPosition = () => {
+    const checkPosition = useCallback(() => {
       if (dropdownRef.current) {
         const rect = dropdownRef.current.getBoundingClientRect();
         const vw = window.innerWidth;
@@ -57,7 +58,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
           setHorizontalAlign("center"); // Default or preferred offset
         }
       }
-    };
+    }, [items.length]);
 
     useEffect(() => {
       if (isOpen) {
@@ -69,7 +70,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
         window.removeEventListener("scroll", checkPosition, true);
         window.removeEventListener("resize", checkPosition);
       };
-    }, [isOpen]);
+    }, [isOpen, checkPosition]);
 
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
@@ -120,7 +121,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
               transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
               style={{ originY: isUpward ? 1 : 0 }}
               className={`
-                absolute ${width} z-[999]
+                absolute ${width} z-999
                 rounded-2xl border backdrop-blur-xl shadow-2xl overflow-hidden
                 ${getHorizontalClass()}
                 ${isUpward ? "bottom-full mb-2" : "top-full mt-2"}

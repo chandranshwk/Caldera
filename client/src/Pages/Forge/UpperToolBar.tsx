@@ -3,8 +3,10 @@ import React, { useEffect } from "react";
 import type { ToolbarButtonProps } from "./ForgeView";
 import { useForgeTools } from "./ForgeTools";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
+import type { Editor } from "@tiptap/react";
 
 interface UpperToolBarProps {
+  editor: Editor | null;
   darkMode: boolean;
   topPage: number;
   hoveredTopId: string | null;
@@ -15,6 +17,7 @@ interface UpperToolBarProps {
 }
 
 const UpperToolBar: React.FC<UpperToolBarProps> = ({
+  editor,
   darkMode,
   topPage,
   hoveredTopId,
@@ -23,7 +26,7 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
   activeTool,
   setActiveTool,
 }) => {
-  const { TOPTOOLS } = useForgeTools();
+  const { TOPTOOLS } = useForgeTools(editor);
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Only trigger if Alt is held (Option on Mac)
@@ -44,7 +47,7 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [setTopPage, TOPTOOLS.length]); // Added dependencies for safety
   return (
     <div>
       {" "}

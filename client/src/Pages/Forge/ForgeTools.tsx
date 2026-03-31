@@ -1,4 +1,4 @@
-import { useCurrentEditor } from "@tiptap/react";
+import { Editor, useEditorState } from "@tiptap/react";
 import {
   BiBold,
   BiCheckDouble,
@@ -34,10 +34,19 @@ import { useMemo, useState } from "react";
 import type { ToolbarButtonProps } from "./ForgeView";
 import { MdOutlineSettingsBackupRestore } from "react-icons/md";
 
-export const useForgeTools = () => {
+export const useForgeTools = (editor: Editor | null) => {
   const [activeFont, setActiveFont] = useState<string>("Inter");
-  // 1. Get the live editor instance from Context
-  const { editor } = useCurrentEditor();
+  const states = useEditorState({
+    editor,
+    selector: (ctx) => ({
+      isBold: ctx.editor?.isActive("bold"),
+      isItalic: ctx.editor?.isActive("italic"),
+      isUnderline: ctx.editor?.isActive("underline"),
+      isStrike: ctx.editor?.isActive("strike"),
+      isHeading1: ctx.editor?.isActive("heading", { level: 1 }),
+      // Add any other states you need to track here
+    }),
+  });
   const LOWERTOOLS: ToolbarButtonProps[] = useMemo(() => {
     return [
       {
@@ -46,6 +55,7 @@ export const useForgeTools = () => {
         title: "Bold",
         color: "bg-[#e74c3c]",
         onClick: () => editor?.chain().focus().toggleBold().run(),
+        isActive: editor?.isActive("bold") ?? false,
       },
       {
         id: "italic",
@@ -53,6 +63,7 @@ export const useForgeTools = () => {
         title: "Italic",
         color: "bg-[#3498db]",
         onClick: () => editor?.chain().focus().toggleItalic().run(),
+        isActive: editor?.isActive("italic") ?? false,
       },
       {
         id: "underline",
@@ -60,6 +71,7 @@ export const useForgeTools = () => {
         title: "Underline",
         color: "bg-[#2ecc71]",
         onClick: () => editor?.chain().focus().toggleUnderline().run(),
+        isActive: editor?.isActive("underline") ?? false,
       },
       {
         id: "strike_through",
@@ -67,9 +79,10 @@ export const useForgeTools = () => {
         title: "Strike Through",
         color: "bg-[#E77E3C]",
         onClick: () => editor?.chain().focus().toggleStrike().run(),
+        isActive: editor?.isActive("strike") ?? false,
       },
     ];
-  }, [editor]);
+  }, [editor, states]);
   const TOPTOOLS: ToolbarButtonProps[][] = useMemo(() => {
     return [
       // PAGE 1: ARCHITECTURE & LAYOUT (Alt + 1)
@@ -231,7 +244,7 @@ export const useForgeTools = () => {
         },
       ],
     ];
-  }, []);
+  }, [editor, states]);
 
   const TEXTSIZESOPTIONS = useMemo(() => {
     // 1. Return the array itself
@@ -249,18 +262,13 @@ export const useForgeTools = () => {
 
   const HEADINGSOPTIONS = useMemo(() => {
     return Array.from({ length: 6 }, (_, i) => {
-      const level = i + 1;
+      const level = (i + 1) as 1 | 2 | 3 | 4 | 5 | 6;
       const label = `Heading ${level}`;
 
       // 2. Return the object for each iteration
       return {
         label,
-        onClick: () =>
-          editor
-            ?.chain()
-            .focus()
-            .toggleHeading({ level: level as number })
-            .run(),
+        onClick: () => editor?.chain().focus().toggleHeading({ level }).run(),
       };
     });
   }, [editor]); // Added editor dependency so clicking H1 actually works
