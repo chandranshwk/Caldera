@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import React, { useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import type { ForgeDocument } from "../../assets/assets";
@@ -5,10 +7,71 @@ import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import UpperToolBar from "./UpperToolBar";
 import LowerToolBar from "./LowerToolBar";
+import { TextStyle } from "@tiptap/extension-text-style";
+import FontFamily from "@tiptap/extension-font-family";
+import { Extension } from "@tiptap/core";
+import TextAlign from "@tiptap/extension-text-align";
+import HighlightExtension from "@tiptap/extension-highlight";
+import { Table } from "@tiptap/extension-table";
+import TableCell from "@tiptap/extension-table-cell";
+import TableHeader from "@tiptap/extension-table-header";
+import TableRow from "@tiptap/extension-table-row";
+import HardBreak from "@tiptap/extension-hard-break";
+import Blockquote from "@tiptap/extension-blockquote";
+import { InlineQuote } from "../../assets/InlineQuote";
+import { InlineList } from "../../assets/InlineList";
 
 interface ProjectViewProps {
   darkMode: boolean;
 }
+
+export const FontSize = Extension.create({
+  name: "fontSize",
+
+  // Change: addOptions must be a function that returns the object
+  addOptions() {
+    return {
+      types: ["textStyle"],
+    };
+  },
+
+  addGlobalAttributes() {
+    return [
+      {
+        types: this.options.types,
+        attributes: {
+          fontSize: {
+            default: null,
+            parseHTML: (element) =>
+              element.style.fontSize.replace(/['"]+/g, ""),
+            renderHTML: (attributes) => {
+              if (!attributes.fontSize) return {};
+              return { style: `font-size: ${attributes.fontSize}` };
+            },
+          },
+        },
+      },
+    ];
+  },
+
+  addCommands() {
+    return {
+      setFontSize:
+        (fontSize: string) =>
+        ({ chain }) => {
+          return chain().setMark("textStyle", { fontSize }).run();
+        },
+      unsetFontSize:
+        () =>
+        ({ chain }) => {
+          return chain()
+            .setMark("textStyle", { fontSize: null })
+            .removeEmptyTextStyle()
+            .run();
+        },
+    };
+  },
+});
 
 export interface ToolbarButtonProps {
   id: string;
@@ -49,7 +112,69 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
   const [topPage, setTopPage] = useState(0);
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit.configure({
+        bulletList: {
+          HTMLAttributes: {
+            class: "list-disc list-outside leading-relaxed ml-4",
+          },
+        },
+        orderedList: {
+          HTMLAttributes: {
+            class: "list-decimal list-outside leading-relaxed ml-4",
+          },
+        },
+        heading: {
+          levels: [1, 2, 3, 4, 5, 6],
+        },
+        codeBlock: false,
+      }),
+      HardBreak.extend({
+        addKeyboardShortcuts() {
+          return {
+            Enter: () => {
+              // 1. If we are inside a List or a CodeBlock, do NOT use HardBreak
+              // This allows Tiptap to create the next <li> automatically
+              if (
+                this.editor.isActive("bulletList") ||
+                this.editor.isActive("orderedList") ||
+                this.editor.isActive("blockquote") ||
+                this.editor.isActive("codeBlock")
+              ) {
+                return false; // Let the default Enter behavior take over
+              }
+
+              // 2. Otherwise, in normal text, insert a single line break
+              return this.editor.commands.setHardBreak();
+            },
+          };
+        },
+      }),
+      TextAlign.configure({
+        types: ["heading", "paragraph"], // Allow alignment on these tags
+        alignments: ["left", "center", "right", "justify"], // Optional: restrict options
+        defaultAlignment: "left",
+      }),
+      HighlightExtension.configure({
+        multicolor: true, // Allow multiple highlights on the same text
+      }),
+      Table.configure({
+        resizable: true,
+      }),
+      Blockquote.configure({
+        HTMLAttributes: {
+          class: "border-l-4 border-slate-300 pl-4 italic",
+        },
+      }),
+      InlineList,
+      InlineQuote,
+      TableRow,
+      TableHeader,
+      TableCell,
+      TextStyle,
+      FontFamily,
+      FontSize,
+    ],
     content: doc.des || "<p>Hello World!</p>",
     editorProps: {
       attributes: {

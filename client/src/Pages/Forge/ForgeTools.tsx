@@ -6,10 +6,10 @@ import {
   BiCodeBlock,
   BiCommentDetail,
   BiExport,
+  BiHighlight,
   BiItalic,
   BiListOl,
   BiListUl,
-  BiSearch,
   BiShieldQuarter,
   BiStrikethrough,
   BiUnderline,
@@ -24,15 +24,12 @@ import {
   BiAlignLeft,
   BiPaste,
 } from "react-icons/bi";
-import {
-  RiDoubleQuotesL,
-  RiFootprintLine,
-  RiFileSettingsLine,
-} from "react-icons/ri";
+import { RiDoubleQuotesL, RiFileSettingsLine } from "react-icons/ri";
 
 import { useMemo, useState } from "react";
 import type { ToolbarButtonProps } from "./ForgeView";
 import { MdOutlineSettingsBackupRestore } from "react-icons/md";
+import { FiAlignCenter } from "react-icons/fi";
 
 export const useForgeTools = (editor: Editor | null) => {
   const [activeFont, setActiveFont] = useState<string>("Inter");
@@ -83,31 +80,13 @@ export const useForgeTools = (editor: Editor | null) => {
       },
     ];
   }, [editor, states]);
+
   const TOPTOOLS: ToolbarButtonProps[][] = useMemo(() => {
+    if (!editor) return [];
+
     return [
-      // PAGE 1: ARCHITECTURE & LAYOUT (Alt + 1)
+      // PAGE 1: CORE WRITING (High-Frequency Actions)
       [
-        {
-          id: "layout",
-          icon: <BiLayout />,
-          title: "Page Setup",
-          color: "bg-blue-500",
-          onClick: () => console.log("Margins/Orientation"),
-        },
-        {
-          id: "columns",
-          icon: <BiColumns />,
-          title: "Columns",
-          color: "bg-indigo-500",
-          onClick: () => console.log("Column Split"),
-        },
-        {
-          id: "align",
-          icon: <BiAlignLeft />,
-          title: "Alignment",
-          color: "bg-slate-500",
-          onClick: () => console.log("Alignment"),
-        },
         {
           id: "lists_ul",
           icon: <BiListUl />,
@@ -122,23 +101,48 @@ export const useForgeTools = (editor: Editor | null) => {
           color: "bg-emerald-500",
           onClick: () => console.log("Ordered List"),
         },
+
+        {
+          id: "align_left", // Split alignment for better UX or use a dropdown
+          icon: <BiAlignLeft />,
+          title: "Align Left",
+          color: "bg-slate-500",
+          onClick: () => editor.chain().focus().setTextAlign("left").run(),
+        },
+        {
+          id: "align_center",
+          icon: <FiAlignCenter />,
+          title: "Align Center",
+          color: "bg-slate-600",
+          onClick: () => editor.chain().focus().setTextAlign("center").run(),
+        },
         {
           id: "indent",
           icon: <BiPaste />,
           title: "Indents",
           color: "bg-cyan-500",
-          onClick: () => console.log("Tab Spacing"),
+          onClick: () => console.log("Tab Spacing"), // Requires Indent extension
         },
         {
-          id: "search",
-          icon: <BiSearch />,
-          title: "Find",
-          color: "bg-sky-500",
-          onClick: () => console.log("Search/Replace"),
+          id: "quotes",
+          icon: <RiDoubleQuotesL />,
+          title: "Inline Quote",
+          color: "bg-yellow-600",
+          onClick: () => editor.chain().focus().toggleInlineQuote().run(),
+          isActive: editor.isActive("inlineQuote"),
+        },
+
+        {
+          id: "highlight",
+          icon: <BiHighlight />,
+          title: "Highlight",
+          color: "bg-yellow-400",
+          onClick: () => editor.chain().focus().toggleHighlight().run(),
+          isActive: editor.isActive("highlight"),
         },
       ],
 
-      // PAGE 2: INTERACTIVE & VAULT (Alt + 2)
+      // PAGE 2: ASSETS & STRUCTURE (Building the Doc)
       [
         {
           id: "vault",
@@ -152,28 +156,26 @@ export const useForgeTools = (editor: Editor | null) => {
           icon: <BiTable />,
           title: "Table",
           color: "bg-orange-500",
-          onClick: () => console.log("Grid Insert"),
+          onClick: () => {},
         },
         {
           id: "link",
           icon: <BiLink />,
           title: "Link",
           color: "bg-sky-400",
-          onClick: () => console.log("Hyperlink"),
-        },
-        {
-          id: "quotes",
-          icon: <RiDoubleQuotesL />,
-          title: "Quote",
-          color: "bg-yellow-600",
-          onClick: () => console.log("Blockquote"),
+          onClick: () => {
+            const url = window.prompt("URL");
+            if (url) editor.chain().focus().setLink({ href: url }).run();
+          },
+          isActive: editor.isActive("link"),
         },
         {
           id: "code",
           icon: <BiCodeBlock />,
           title: "Code",
           color: "bg-zinc-700",
-          onClick: () => console.log("Code Block"),
+          onClick: () => editor.chain().focus().toggleCode().run(),
+          isActive: editor.isActive("codeBlock"),
         },
         {
           id: "nexus",
@@ -183,15 +185,22 @@ export const useForgeTools = (editor: Editor | null) => {
           onClick: () => console.log("Task Create"),
         },
         {
-          id: "footer",
-          icon: <RiFootprintLine />,
-          title: "Footnote",
-          color: "bg-lime-600",
-          onClick: () => console.log("Add Footnote"),
+          id: "layout",
+          icon: <BiLayout />,
+          title: "Page Setup",
+          color: "bg-blue-500",
+          onClick: () => console.log("Margins/Orientation"),
+        },
+        {
+          id: "columns",
+          icon: <BiColumns />,
+          title: "Columns",
+          color: "bg-indigo-500",
+          onClick: () => console.log("Column Split"),
         },
       ],
 
-      // PAGE 3: REVIEW & PERSISTENCE (Alt + 3)
+      // PAGE 3: REVIEW & FINALIZATION (Administrative)
       [
         {
           id: "save",
@@ -222,18 +231,18 @@ export const useForgeTools = (editor: Editor | null) => {
           onClick: () => console.log("Spell Check"),
         },
         {
-          id: "protect",
-          icon: <BiShieldQuarter />,
-          title: "Lock",
-          color: "bg-gray-700",
-          onClick: () => console.log("Permission Lock"),
-        },
-        {
           id: "export",
           icon: <BiExport />,
           title: "Export",
           color: "bg-red-500",
           onClick: () => console.log("PDF/Docx Export"),
+        },
+        {
+          id: "protect",
+          icon: <BiShieldQuarter />,
+          title: "Lock",
+          color: "bg-gray-700",
+          onClick: () => console.log("Permission Lock"),
         },
         {
           id: "metadata",
@@ -246,48 +255,55 @@ export const useForgeTools = (editor: Editor | null) => {
     ];
   }, [editor, states]);
 
-  const TEXTSIZESOPTIONS = useMemo(() => {
-    // 1. Return the array itself
-    return Array.from({ length: 10 }, (_, i) => {
-      const size = (i + 1) * 2;
-      const label = `${size}px`;
+  // Inside useForgeTools.ts
 
-      // 2. Return the object for each iteration
-      return {
-        label,
-        onClick: () => console.log(`${label} selected`),
-      };
-    });
-  }, []);
-
-  const HEADINGSOPTIONS = useMemo(() => {
-    return Array.from({ length: 6 }, (_, i) => {
-      const level = (i + 1) as 1 | 2 | 3 | 4 | 5 | 6;
-      const label = `Heading ${level}`;
-
-      // 2. Return the object for each iteration
-      return {
-        label,
-        onClick: () => editor?.chain().focus().toggleHeading({ level }).run(),
-      };
-    });
-  }, [editor]); // Added editor dependency so clicking H1 actually works
+  // 1. Font Family Logic
 
   const FONTSOPTIONS = useMemo(() => {
-    return [
-      { label: "Arial", onClick: () => setActiveFont("Arial") },
-      {
-        label: "Times New Roman",
-        onClick: () => setActiveFont("Times New Roman"),
-      },
-      {
-        label: "Courier New",
-        onClick: () => setActiveFont("Courier New"),
-      },
-      { label: "Georgia", onClick: () => setActiveFont("Georgia") },
-      { label: "Verdana", onClick: () => setActiveFont("Verdana") },
+    const fonts = [
+      "Inter",
+      "Arial",
+      "Courier New",
+      "Georgia",
+      "Verdana",
+      "Aptos",
+      "Helvetica",
+      "Times New Roman",
+      "Lato",
     ];
-  }, []);
+    return fonts.map((font) => ({
+      label: font,
+      onClick: () => {
+        setActiveFont(font); // Updates your UI state
+        editor?.chain().focus().setFontFamily(font).run(); // Updates the Editor
+      },
+    }));
+  }, [editor]);
+
+  const TEXTSIZESOPTIONS = useMemo(() => {
+    return Array.from({ length: 10 }, (_, i) => {
+      const size = (i + 1) * 2 + 10; // 12px, 14px, etc.
+      const label = `${size}px`;
+      return {
+        label,
+        onClick: () => editor?.chain().focus().setFontSize(label).run(),
+      };
+    });
+  }, [editor]);
+
+  type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+  // 3. Headings Logic
+  const HEADINGSOPTIONS = useMemo(() => {
+    return [1, 2, 3, 4, 5, 6].map((level) => ({
+      label: `Heading ${level}`,
+      onClick: () =>
+        editor
+          ?.chain()
+          .focus()
+          .toggleHeading({ level: level as HeadingLevel })
+          .run(),
+    }));
+  }, [editor]);
 
   return {
     TOPTOOLS,

@@ -36,7 +36,7 @@ const LowerToolBar: React.FC<LowerToolBarProps> = ({
         {LOWERTOOLS?.map((tool, idx) => (
           <>
             {/* Tooltip */}
-            <div className="absolute -top-9 left-[calc(50%-2.5rem)]">
+            <div key={idx} className="absolute -top-9 left-[calc(50%-2.5rem)]">
               <AnimatePresence>
                 {hoveredId && (
                   <motion.div
@@ -94,11 +94,12 @@ const LowerToolBar: React.FC<LowerToolBarProps> = ({
                   trigger={
                     <button
                       className={`group flex items-center justify-between gap-2 p-2 px-3 rounded-xl transition-all duration-200 hover:bg-slate-50  border border-transparent  ${darkMode ? "hover:border-white/10" : "hover:border-slate-200 group "}`}
+                      style={{ fontFamily: activeFont || "Inter" }}
                       onMouseEnter={() => setHoveredId("Font Family")}
                       onMouseLeave={() => setHoveredId(null)}
                     >
                       <span
-                        className={`text-[13px] font-medium group-hover:text-black ${darkMode ? "text-slate-100" : "text-slate-700"}  truncate w-20 text-left`}
+                        className={`text-[13px] font-medium group-hover:text-black ${darkMode ? "text-slate-100" : "text-slate-700"}  truncate w-20 text-left  `}
                       >
                         {activeFont || "Inter"}
                       </span>

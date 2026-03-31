@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-@theme {
-  --site-color-scheme: class;
-}
-
 /* Fix the hardcoded background */
 body {
   transition: background 0.3s ease; /* Smooth Apple-like transition */
@@ -37,4 +33,61 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   width: 0px;
   background-color: #3b82f6; /* Blue accent on hover */
+}
+
+.tiptap ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+}
+
+.tiptap ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+}
+
+/* In your globals.css */
+.tiptap table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #ced4da; /* Ensure border is visible */
+}
+
+.tiptap td,
+.tiptap th {
+  border: 1px solid #ced4da;
+  padding: 5px;
+  min-width: 1em;
+}
+
+/* Style for selected cells */
+.tiptap .selectedCell {
+  background-color: #e0f2fe;
+}
+
+/* In your globals.css */
+.prose blockquote {
+  font-style: italic;
+  border-left-width: 4px;
+  border-left-color: #e2e8f0; /* Default slate-200 border */
+  padding-left: 1.5rem;
+  quotes: none; /* Removes the problematic pseudo-element quotes */
+}
+
+/* Remove the invisible content-none reset if it's hiding them */
+.prose blockquote p:first-of-type::before,
+.prose blockquote p:last-of-type::after {
+  content: none !important;
+}
+
+.prose p {
+  margin-bottom: 0.1em;
+}
+
+.inline-quote {
+  background-color: rgba(11, 124, 245, 0.1); /* Subtle amber background */
+  border-left: 3px solid #0b5df5; /* Left accent border */
+  padding: 0 6px;
+  font-style: italic;
+  color: #065ad9;
+  border-radius: 2px;
 }
