@@ -8,7 +8,7 @@ interface Props {
 
 const Forge: React.FC<Props> = ({ darkMode, user }) => {
   const location = useLocation();
-  console.log(user.email);
+  const _email = user?.email || "unknown";
 
   // Logic to extract the sub-page name for the breadcrumb
   const pathParts = location.pathname.split("/").filter(Boolean);

@@ -1,5 +1,19 @@
 import { faker } from "@faker-js/faker";
 
+export interface ForgeDocument {
+  id: number;
+  type: "pdf" | "words" | "excel";
+  name: string;
+  extension: ".docx" | ".xlsx" | ".pdf";
+  des: string;
+  sharedCount: number;
+  downloadCount: number;
+  editedAt: string;
+  project: string;
+  status: "Final" | "In Review" | "Draft";
+  size: string;
+}
+
 export const RECENT_FILES = Array.from({ length: 20 }, (_, index) => {
   const type = faker.helpers.arrayElement(["pdf", "words", "excel"]);
   const extension =

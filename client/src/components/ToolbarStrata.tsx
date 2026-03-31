@@ -31,9 +31,9 @@ import { HiOutlinePhoto } from "react-icons/hi2";
 import { FiFilePlus } from "react-icons/fi";
 
 // --- Types ---
-type ToolId = string;
+export type ToolId = string;
 
-interface ToolConfig {
+export interface ToolConfig {
   id: ToolId;
   icon: ElementType;
   label: string;
@@ -113,7 +113,7 @@ const ToolbarStrata: React.FC<ToolbarProps> = ({ darkMode, onToolSelect }) => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [PAGES.length]); // Added dependency for safety
+  }, []); // Added dependency for safety
 
   // Navigation with wrap-around logic
   const navigate = (dir: number) => {
@@ -147,14 +147,14 @@ const ToolbarStrata: React.FC<ToolbarProps> = ({ darkMode, onToolSelect }) => {
       {/* Main Dock */}
       <div
         className={`
-          flex items-center justify-evenly p-1.5 rounded-2xl w-lg border backdrop-blur-md shadow-2xl transition-colors duration-500
+          flex items-center justify-evenly p-1.5 rounded-2xl w-max  border backdrop-blur-md shadow-2xl transition-colors duration-500
           ${darkMode ? "bg-zinc-900/90 border-white/10" : "bg-white/90 border-zinc-200"}
         `}
       >
         {/* Left Arrow */}
         <button
           onClick={() => navigate(-1)}
-          className={`p-2 rounded-lg transition-opacity opacity-60 hover:opacity-100 hover:bg-zinc-500/10`}
+          className={`p-2 rounded-lg transition-opacity opacity-60 ml-2 hover:opacity-100 hover:bg-zinc-500/10`}
         >
           <LuChevronLeft
             size={18}
@@ -226,7 +226,7 @@ const ToolbarStrata: React.FC<ToolbarProps> = ({ darkMode, onToolSelect }) => {
         {/* Right Arrow */}
         <button
           onClick={() => navigate(1)}
-          className={`p-2 rounded-lg transition-opacity opacity-60 hover:opacity-100 hover:bg-zinc-500/10`}
+          className={`p-2 rounded-lg transition-opacity mr-2 opacity-60 hover:opacity-100 hover:bg-zinc-500/10`}
         >
           <LuChevronRight
             size={18}

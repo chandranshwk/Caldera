@@ -13,16 +13,39 @@ import { BiDownload } from "react-icons/bi";
 import { SiGoogledocs, SiGooglesheets } from "react-icons/si";
 import { FaFilePdf } from "react-icons/fa";
 import { RECENT_FILES } from "../../assets/assets";
-import type { User } from "@supabase/supabase-js";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import { faker } from "@faker-js/faker";
 
 const FDoc = () => {
-  const { user, darkMode } = useOutletContext<{
-    user: User;
+  const { darkMode } = useOutletContext<{
     darkMode: boolean;
   }>();
-  console.log(user.email);
   const cardBg = darkMode ? "bg-[#1a1a1c]" : "bg-white";
+  const navigate = useNavigate();
+
+  const generateNew = () => {
+    // Logic to generate a new document
+    console.log("Generating new document...");
+    const newDoc = {
+      id: uuidv4(),
+      name: faker.word.words({ count: 3 }),
+      extension: ".docx",
+      type: "words",
+      des: faker.lorem.paragraphs(14),
+      sharedCount: 0,
+      downloadCount: 0,
+      editedAt: new Date().toISOString(),
+      status: "Local Only",
+      project: "projectName",
+      size: "0.0 KB",
+      content: {},
+    };
+    console.log("New document created:", newDoc);
+    navigate(`/forge/doc/open/${newDoc.id}`); // Navigate to the new document's page
+    localStorage.setItem(`doc-${newDoc.id}`, JSON.stringify(newDoc)); // Save the new document to localStorage
+  };
+
   return (
     <div
       className={`p-6 h-screen overflow-y-auto transition-colors duration-300 my-scrollbar ${darkMode ? "bg-[#0f0f1000]" : ""}`}
@@ -42,7 +65,10 @@ const FDoc = () => {
             ${darkMode ? "bg-[#1c1c1e] border-white/5 hover:border-blue-500/50" : "bg-white border-black/5 hover:border-blue-500/30"}
             hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] hover:-translate-y-2`}
           >
-            <div className="relative z-10 flex flex-col gap-4">
+            <div
+              className="relative z-10 flex flex-col gap-4"
+              onClick={() => generateNew()}
+            >
               <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-2xl transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12">
                 <HiOutlinePlus />
               </div>
