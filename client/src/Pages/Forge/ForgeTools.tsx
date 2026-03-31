@@ -42,9 +42,19 @@ export const useForgeTools = (editor: Editor | null) => {
       isStrike: ctx.editor?.isActive("strike"),
       isHeading1: ctx.editor?.isActive("heading", { level: 1 }),
       // Add any other states you need to track here
+
+      isBullet: ctx.editor?.isActive("inlineBullet"),
+      isNumber: ctx.editor?.isActive("inlineNumber"),
+      isQuote: ctx.editor?.isActive("inlineQuote"),
+      isHighlight: ctx.editor?.isActive("highlight"),
+      isLink: ctx.editor?.isActive("link"),
+      isCode: ctx.editor?.isActive("code"), // Note: Use 'code' for inline, 'codeBlock' for nodes
+      isAlignLeft: ctx.editor?.isActive({ textAlign: "left" }),
+      isAlignCenter: ctx.editor?.isActive({ textAlign: "center" }),
     }),
   });
   const LOWERTOOLS: ToolbarButtonProps[] = useMemo(() => {
+    const { isBold, isItalic, isUnderline, isStrike } = states || {};
     return [
       {
         id: "bold",
@@ -52,7 +62,7 @@ export const useForgeTools = (editor: Editor | null) => {
         title: "Bold",
         color: "bg-[#e74c3c]",
         onClick: () => editor?.chain().focus().toggleBold().run(),
-        isActive: editor?.isActive("bold") ?? false,
+        isActive: isBold ?? false,
       },
       {
         id: "italic",
@@ -60,7 +70,7 @@ export const useForgeTools = (editor: Editor | null) => {
         title: "Italic",
         color: "bg-[#3498db]",
         onClick: () => editor?.chain().focus().toggleItalic().run(),
-        isActive: editor?.isActive("italic") ?? false,
+        isActive: isItalic ?? false,
       },
       {
         id: "underline",
@@ -68,7 +78,7 @@ export const useForgeTools = (editor: Editor | null) => {
         title: "Underline",
         color: "bg-[#2ecc71]",
         onClick: () => editor?.chain().focus().toggleUnderline().run(),
-        isActive: editor?.isActive("underline") ?? false,
+        isActive: isUnderline ?? false,
       },
       {
         id: "strike_through",
@@ -76,13 +86,25 @@ export const useForgeTools = (editor: Editor | null) => {
         title: "Strike Through",
         color: "bg-[#E77E3C]",
         onClick: () => editor?.chain().focus().toggleStrike().run(),
-        isActive: editor?.isActive("strike") ?? false,
+        isActive: isStrike ?? false,
       },
     ];
   }, [editor, states]);
 
   const TOPTOOLS: ToolbarButtonProps[][] = useMemo(() => {
     if (!editor) return [];
+
+    // 1. Destructure all states to satisfy ESLint and ensure reactivity
+    const {
+      isBullet,
+      isNumber,
+      isAlignLeft,
+      isAlignCenter,
+      isQuote,
+      isHighlight,
+      isLink,
+      isCode,
+    } = states || {};
 
     return [
       // PAGE 1: CORE WRITING (High-Frequency Actions)
@@ -92,22 +114,24 @@ export const useForgeTools = (editor: Editor | null) => {
           icon: <BiListUl />,
           title: "Bullets",
           color: "bg-teal-500",
-          onClick: () => console.log("Unordered List"),
+          onClick: () => editor?.chain().focus().toggleInlineBullet().run(),
+          isActive: isBullet ?? false,
         },
         {
           id: "lists_ol",
           icon: <BiListOl />,
           title: "Numbering",
           color: "bg-emerald-500",
-          onClick: () => console.log("Ordered List"),
+          onClick: () => editor?.chain().focus().toggleInlineNumber().run(),
+          isActive: isNumber ?? false,
         },
-
         {
-          id: "align_left", // Split alignment for better UX or use a dropdown
+          id: "align_left",
           icon: <BiAlignLeft />,
           title: "Align Left",
           color: "bg-slate-500",
           onClick: () => editor.chain().focus().setTextAlign("left").run(),
+          isActive: isAlignLeft ?? false,
         },
         {
           id: "align_center",
@@ -115,13 +139,15 @@ export const useForgeTools = (editor: Editor | null) => {
           title: "Align Center",
           color: "bg-slate-600",
           onClick: () => editor.chain().focus().setTextAlign("center").run(),
+          isActive: isAlignCenter ?? false,
         },
         {
           id: "indent",
           icon: <BiPaste />,
           title: "Indents",
           color: "bg-cyan-500",
-          onClick: () => console.log("Tab Spacing"), // Requires Indent extension
+          onClick: () => console.log("Tab Spacing"),
+          isActive: false,
         },
         {
           id: "quotes",
@@ -129,16 +155,15 @@ export const useForgeTools = (editor: Editor | null) => {
           title: "Inline Quote",
           color: "bg-yellow-600",
           onClick: () => editor.chain().focus().toggleInlineQuote().run(),
-          isActive: editor.isActive("inlineQuote"),
+          isActive: isQuote ?? false,
         },
-
         {
           id: "highlight",
           icon: <BiHighlight />,
           title: "Highlight",
           color: "bg-yellow-400",
           onClick: () => editor.chain().focus().toggleHighlight().run(),
-          isActive: editor.isActive("highlight"),
+          isActive: isHighlight ?? false,
         },
       ],
 
@@ -167,7 +192,7 @@ export const useForgeTools = (editor: Editor | null) => {
             const url = window.prompt("URL");
             if (url) editor.chain().focus().setLink({ href: url }).run();
           },
-          isActive: editor.isActive("link"),
+          isActive: isLink ?? false,
         },
         {
           id: "code",
@@ -175,7 +200,7 @@ export const useForgeTools = (editor: Editor | null) => {
           title: "Code",
           color: "bg-zinc-700",
           onClick: () => editor.chain().focus().toggleCode().run(),
-          isActive: editor.isActive("codeBlock"),
+          isActive: isCode ?? false,
         },
         {
           id: "nexus",

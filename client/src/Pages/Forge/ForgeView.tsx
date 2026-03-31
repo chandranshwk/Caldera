@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import type { ForgeDocument } from "../../assets/assets";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
@@ -19,7 +19,10 @@ import TableRow from "@tiptap/extension-table-row";
 import HardBreak from "@tiptap/extension-hard-break";
 import Blockquote from "@tiptap/extension-blockquote";
 import { InlineQuote } from "../../assets/InlineQuote";
-import { InlineList } from "../../assets/InlineList";
+import { InlineBullet } from "../../assets/InlineUnorderedList";
+import { InlineNumber } from "../../assets/InlineOrderedList";
+import { AnimatePresence, motion } from "motion/react";
+import Dropdown from "../../components/Dropdown";
 
 interface ProjectViewProps {
   darkMode: boolean;
@@ -105,7 +108,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
         .join(" ")
     : "Untitled Document";
 
-  const [activeTool, setActiveTool] = useState<ToolbarButtonProps | null>(null);
+  const [, setActiveTool] = useState<ToolbarButtonProps | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [hoveredTopId, setHoveredTopId] = useState<string | null>(null);
 
@@ -116,12 +119,14 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
       StarterKit.configure({
         bulletList: {
           HTMLAttributes: {
-            class: "list-disc list-outside leading-relaxed ml-4",
+            // 'list-disc' for bullets, 'pl-4' for indentation
+            class: "list-disc list-outside pl-5 space-y-1",
           },
         },
         orderedList: {
           HTMLAttributes: {
-            class: "list-decimal list-outside leading-relaxed ml-4",
+            // 'list-decimal' for numbers
+            class: "list-decimal list-outside pl-5 space-y-1",
           },
         },
         heading: {
@@ -133,23 +138,21 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
         addKeyboardShortcuts() {
           return {
             Enter: () => {
-              // 1. If we are inside a List or a CodeBlock, do NOT use HardBreak
-              // This allows Tiptap to create the next <li> automatically
               if (
                 this.editor.isActive("bulletList") ||
                 this.editor.isActive("orderedList") ||
                 this.editor.isActive("blockquote") ||
                 this.editor.isActive("codeBlock")
               ) {
-                return false; // Let the default Enter behavior take over
+                return false;
               }
-
-              // 2. Otherwise, in normal text, insert a single line break
+              // Otherwise, insert a hard break (Shift+Enter style) by default
               return this.editor.commands.setHardBreak();
             },
           };
         },
       }),
+
       TextAlign.configure({
         types: ["heading", "paragraph"], // Allow alignment on these tags
         alignments: ["left", "center", "right", "justify"], // Optional: restrict options
@@ -166,7 +169,8 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
           class: "border-l-4 border-slate-300 pl-4 italic",
         },
       }),
-      InlineList,
+      InlineBullet,
+      InlineNumber,
       InlineQuote,
       TableRow,
       TableHeader,
@@ -188,6 +192,35 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
 
   const providerValue = useMemo(() => ({ editor }), [editor]);
 
+  const [contextMenu, setContextMenu] = useState({
+    visible: false,
+    x: 0,
+    y: 0,
+  });
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    // Check if right-click is inside the editor and specifically a table
+    if (target.closest(".tiptap") && target.closest("table")) {
+      e.preventDefault();
+      setContextMenu({
+        visible: true,
+        x: e.clientX,
+        y: e.clientY,
+      });
+    }
+  };
+
+  // Close menu on any click
+  useEffect(() => {
+    const closeMenu = () =>
+      setContextMenu((prev) => ({ ...prev, visible: false }));
+    window.addEventListener("click", closeMenu);
+    return () => window.removeEventListener("click", closeMenu);
+  }, []);
+
+  const [showConfirm, setShowConfirm] = useState(false);
+
   return (
     <EditorContext.Provider value={providerValue}>
       <div
@@ -205,7 +238,6 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
         >
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              {/* Root Link (Muted) */}
               <Link
                 to="/forge/dashboard"
                 className={`text-sm font-semibold transition-colors ${
@@ -216,13 +248,11 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
               >
                 The Forge
               </Link>
-
               <span
                 className={`text-md font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
               >
                 /
               </span>
-
               <Link
                 to="/forge/docs"
                 className={`text-sm font-semibold transition-colors ${
@@ -233,15 +263,11 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
               >
                 Docs
               </Link>
-
               <span
                 className={`text-lg font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
               >
                 /
               </span>
-
-              {/* Dynamic Breadcrumb Logic */}
-
               <h1
                 className={`text-sm font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}
               >
@@ -249,10 +275,8 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
               </h1>
             </div>
           </div>
-
-          {/* Version Indicator */}
         </div>
-        {/* Upper dock Toolbar */}
+
         <UpperToolBar
           editor={editor}
           darkMode={darkMode}
@@ -260,7 +284,6 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
           hoveredTopId={hoveredTopId}
           setTopPage={setTopPage}
           setHoveredTopId={setHoveredTopId}
-          activeTool={activeTool}
           setActiveTool={setActiveTool}
         />
 
@@ -270,29 +293,29 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
             darkMode ? "bg-transparent" : "bg-[#F8F9FA]"
           }`}
         >
-          {/* The "Paper" Surface (The Writing Area) */}
           <div
-            className={`
-      w-full max-w-204 bg-white min-h-264 h-fit px-16 py-8 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-700
-      ${
-        darkMode
-          ? " text-slate-900 border border-slate-800"
-          : " text-slate-900 border border-slate-200"
-      }
-    `}
+            className={`w-full max-w-204 bg-white min-h-264 h-fit px-16 py-8 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-700 ${
+              darkMode
+                ? "text-slate-900 border border-slate-800"
+                : "text-slate-900 border border-slate-200"
+            }`}
           >
-            {/* Editor Content Area */}
-            <article className="prose prose-slate max-w-none focus:outline-none  selection:bg-blue-100">
+            <article className="prose prose-slate max-w-none focus:outline-none selection:bg-blue-100">
               <h1 className="mb-8 text-4xl font-bold tracking-tight">
                 {displayName}
               </h1>
-              <EditorContent
-                editor={editor}
-                className="outline-none focus:outline-0 outline-transparent outline-0 outline-offset-0 border-0 p-4 min-h-90vh bg-white rounded "
-              />
+
+              {/* onContextMenu is attached to the wrapper div */}
+              <div onContextMenu={handleContextMenu} className="relative">
+                <EditorContent
+                  editor={editor}
+                  className="outline-none focus:outline-0 outline-transparent outline-0 outline-offset-0 border-0 p-4 min-h-90vh bg-white rounded"
+                />
+              </div>
             </article>
           </div>
         </div>
+
         <LowerToolBar
           editor={editor}
           darkMode={darkMode}
@@ -300,6 +323,110 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
           setHoveredId={setHoveredId}
           setActiveTool={setActiveTool}
         />
+
+        {/* Table Context Menu */}
+        {contextMenu.visible && (
+          <div
+            style={{
+              position: "fixed",
+              top: contextMenu.y,
+              left: contextMenu.x,
+              zIndex: 9999,
+            }}
+          >
+            <Dropdown
+              darkMode={darkMode}
+              width="w-56"
+              // We use a useEffect-like trigger to click the dropdown since we haven't updated Dropdown.tsx
+              trigger={
+                <div
+                  ref={(node) => node?.click()}
+                  className="w-0 h-0 overflow-hidden"
+                />
+              }
+              items={[
+                {
+                  label: "Add Row Below",
+                  onClick: () => editor?.chain().focus().addRowAfter().run(),
+                },
+                {
+                  label: "Delete Row",
+                  variant: "destructive",
+                  onClick: () => editor?.chain().focus().deleteRow().run(),
+                },
+                {
+                  label: "Add Column Right",
+                  separator: true,
+                  onClick: () => editor?.chain().focus().addColumnAfter().run(),
+                },
+                {
+                  label: "Delete Column",
+                  variant: "destructive",
+                  onClick: () => editor?.chain().focus().deleteColumn().run(),
+                },
+                {
+                  label: "Delete Entire Table",
+                  variant: "destructive",
+                  separator: true,
+                  onClick: () => setShowConfirm(true),
+                },
+              ]}
+            />
+          </div>
+        )}
+
+        {/* Custom Confirmation Modal */}
+        <AnimatePresence>
+          {showConfirm && (
+            <div className="fixed inset-0 z-10001 flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className={`w-full max-w-[320px] p-6 rounded-2xl shadow-2xl border ${
+                  darkMode
+                    ? "bg-[#1c1c1e] border-white/10 text-slate-200"
+                    : "bg-white border-slate-200 text-slate-700"
+                }`}
+              >
+                <div className="flex flex-col items-center text-center">
+                  <div className="size-12 rounded-full bg-red-500/10 flex items-center justify-center mb-4 text-red-500 text-xl font-bold">
+                    ✕
+                  </div>
+                  <h3 className="text-lg font-bold">Delete Table?</h3>
+                  <p
+                    className={`text-sm mt-2 leading-relaxed ${darkMode ? "text-slate-400" : "text-slate-500"}`}
+                  >
+                    This will permanently remove the table and all its contents.
+                    This action cannot be undone.
+                  </p>
+                  <div className="flex gap-3 w-full mt-6">
+                    <button
+                      onClick={() => setShowConfirm(false)}
+                      className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                        darkMode
+                          ? "bg-white/5 hover:bg-white/10 text-slate-300"
+                          : "bg-slate-100 hover:bg-slate-200 text-slate-600"
+                      }`}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        editor?.chain().focus().deleteTable().run();
+                        setShowConfirm(false);
+                        setContextMenu({ ...contextMenu, visible: false });
+                      }}
+                      className="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold bg-red-600 hover:bg-red-700 text-white transition-all shadow-lg"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </EditorContext.Provider>
   );

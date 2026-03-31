@@ -35,14 +35,23 @@ body {
   background-color: #3b82f6; /* Blue accent on hover */
 }
 
+/* In your globals.css */
 .tiptap ul {
   list-style-type: disc !important;
   padding-left: 1.5rem !important;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .tiptap ol {
   list-style-type: decimal !important;
   padding-left: 1.5rem !important;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tiptap li {
+  margin-bottom: 0.25rem;
 }
 
 /* In your globals.css */
@@ -83,11 +92,239 @@ body {
   margin-bottom: 0.1em;
 }
 
+.prose code {
+  background-color: #e6e6e6; /* Light slate/gray */
+  color: #151d30;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: "SF Mono", Consolas, monospace;
+  font-size: 0.85em;
+  filter: grayscale(1);
+  font-weight: 500;
+
+  /* This makes it a "Unique Tag" without breaking the line height */
+  display: inline-block;
+  line-height: 1;
+  position: relative;
+  top: -1px; /* Tiny adjustment to center the text in the box */
+  vertical-align: middle;
+
+  /* Adds a very subtle "unique" depth */
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 .inline-quote {
-  background-color: rgba(11, 124, 245, 0.1); /* Subtle amber background */
-  border-left: 3px solid #0b5df5; /* Left accent border */
-  padding: 0 6px;
+  /* 1. Create a "Solid Bar" background (3px bar, then transparent/light gray) */
+  background: linear-gradient(to right, #475569 3px, rgba(0, 0, 0, 0.04) 3px);
+
+  /* 2. Remove the actual border that is causing the "staircase" effect */
+  border-left: none;
+
+  /* 3. Padding logic: Left padding must be larger to clear the 3px bar */
+  padding: 2px 10px 2px 12px;
+  margin: 0;
+
   font-style: italic;
-  color: #065ad9;
+  color: #334155;
   border-radius: 2px;
+
+  /* 4. Keeps the background flow but doesn't force a 'box' per line */
+  display: block;
+  box-decoration-break: slice;
+  -webkit-box-decoration-break: slice;
+
+  filter: grayscale(1);
+  opacity: 0.9;
+}
+
+.inline-quote strong,
+.inline-quote b,
+.inline-quote em,
+.inline-quote i,
+.inline-quote code {
+  line-height: inherit;
+  display: inline; /* Ensure bold doesn't try to flex/block itself */
+  vertical-align: text-top;
+}
+
+/* Ensure the quote marks don't push the lines apart */
+.inline-quote::before,
+.inline-quote::after {
+  font-family: serif;
+  font-size: 1.1em;
+  color: #64748b;
+  vertical-align: baseline;
+}
+
+.inline-quote {
+  transition: all 0.2s ease;
+  filter: grayscale(1);
+  opacity: 0.8;
+}
+
+.inline-quote:hover,
+.inline-quote.is-active {
+  /* If you add an active class */
+  filter: grayscale(0);
+  opacity: 1;
+  background-color: rgba(11, 124, 245, 0.1);
+  border-left-color: #0b5df5;
+}
+
+.prose ul,
+.tiptap ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-left: 1rem;
+}
+
+.prose ol,
+.tiptap ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-left: 1rem;
+}
+
+/* Fix for Tailwind resetting list item display */
+.prose li,
+.tiptap li {
+  display: list-item !important;
+  margin-bottom: 0.25rem;
+}
+
+.inline-bullet {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5ch;
+}
+
+.inline-bullet::before {
+  content: "•";
+  font-weight: bold;
+  color: #000000; /* Adjust color to match your UI */
+}
+
+.inline-number {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5ch;
+  counter-increment: inline-counter; /* Optional: for sequential numbering */
+}
+
+.tiptap {
+  counter-reset: inline-counter;
+}
+
+/* 2. Increment the counter for every instance of the mark */
+.inline-number {
+  counter-increment: inline-counter;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* 3. Display the current count in the ::before element */
+.inline-number::before {
+  content: counter(inline-counter) ". "; /* This replaces the hardcoded "1." */
+  font-weight: bold;
+  font-size: small;
+  color: #000000;
+  margin-right: 4px; /* Adds a tiny gap after the number */
+}
+
+/* Optional: If you want the bullet to look consistent */
+.inline-bullet {
+  display: inline-flex;
+  align-items: center;
+}
+
+.inline-bullet::before {
+  content: "• ";
+  font-weight: bold;
+  color: #000000;
+  margin-right: 4px;
+}
+
+/* 1. Force the table to stay within the editor bounds */
+.tiptap table {
+  border-collapse: collapse;
+  margin: 0;
+  overflow: hidden;
+  table-layout: fixed; /* CRITICAL: This stops the table from expanding infinitely */
+  width: 100% !important;
+  border: 1px solid #ced4da;
+}
+
+/* 1. Enhanced Cell Transitions */
+.tiptap td,
+.tiptap th {
+  border: 1px solid #ced4da;
+  padding: 8px 12px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+  max-width: 400px;
+
+  /* Smooth animation for border and background changes */
+  transition:
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 2. Interactive Column Resizer Handle */
+.tiptap .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+
+  background-color: #3b82f6;
+  opacity: 0;
+
+  /* Mechanical feel: transition both opacity and color */
+  transition:
+    opacity 0.3s ease,
+    background-color 0.2s ease;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* 3. The Cursor & Animation Triggers */
+/* Force the col-resize cursor when hovering over the table's "hot zone" */
+.tiptap table {
+  cursor: ew-resize;
+}
+
+/* Tiptap adds this class to the table when resizing is happening */
+.tiptap.resize-cursor {
+  cursor: col-resize !important;
+}
+
+/* Show the handle with a "glow" when the table is hovered */
+.tiptap table:hover .column-resize-handle {
+  opacity: 0.4;
+}
+
+/* When the user is actually clicking/dragging the resizer */
+.tiptap .column-resize-handle:hover,
+.tiptap .selectedCell .column-resize-handle {
+  opacity: 1;
+  background-color: #2563eb; /* Darker blue for "active" state */
+}
+
+/* 4. Border Animation on Selection */
+.tiptap .selectedCell {
+  background-color: rgba(59, 130, 246, 0.05);
+  border-color: #3b82f6 !important;
+}
+
+/* Dark Mode adjustment */
+.dark .tiptap td,
+.dark .tiptap th {
+  border-color: #3f3f46;
+}
+
+.dark .tiptap .selectedCell {
+  background-color: rgba(59, 130, 246, 0.15);
+  border-color: #60a5fa !important;
 }

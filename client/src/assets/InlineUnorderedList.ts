@@ -2,28 +2,25 @@ import { Mark, mergeAttributes } from "@tiptap/core";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
-    inlineList: {
-      /**
-       * Toggle an inline list mark
-       */
-      toggleInlineList: () => ReturnType;
+    inlineBullet: {
+      toggleInlineBullet: () => ReturnType;
     };
   }
 }
 
-export const InlineList = Mark.create({
-  name: "inlineList",
+export const InlineBullet = Mark.create({
+  name: "inlineBullet",
 
   parseHTML() {
-    return [{ tag: 'span[data-type="inline-list"]' }];
+    return [{ tag: 'span[data-type="inline-bullet"]' }];
   },
 
   renderHTML({ HTMLAttributes }) {
     return [
       "span",
       mergeAttributes(HTMLAttributes, {
-        "data-type": "inline-list",
-        class: "inline-list-item",
+        "data-type": "inline-bullet",
+        class: "inline-bullet",
       }),
       0,
     ];
@@ -31,7 +28,7 @@ export const InlineList = Mark.create({
 
   addCommands() {
     return {
-      toggleInlineList:
+      toggleInlineBullet:
         () =>
         ({ commands }) => {
           return commands.toggleMark(this.name);

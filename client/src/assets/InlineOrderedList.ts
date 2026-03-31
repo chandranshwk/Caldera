@@ -2,26 +2,25 @@ import { Mark, mergeAttributes } from "@tiptap/core";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
-    inlineOrderedList: {
-      /** Toggle an inline numbered list mark */
-      toggleInlineOrderedList: () => ReturnType;
+    inlineNumber: {
+      toggleInlineNumber: () => ReturnType;
     };
   }
 }
 
-export const InlineOrderedList = Mark.create({
-  name: "inlineOrderedList",
+export const InlineNumber = Mark.create({
+  name: "inlineNumber",
 
   parseHTML() {
-    return [{ tag: 'span[data-type="inline-ol"]' }];
+    return [{ tag: 'span[data-type="inline-number"]' }];
   },
 
   renderHTML({ HTMLAttributes }) {
     return [
       "span",
       mergeAttributes(HTMLAttributes, {
-        "data-type": "inline-ol",
-        class: "inline-ol-item",
+        "data-type": "inline-number",
+        class: "inline-number",
       }),
       0,
     ];
@@ -29,7 +28,7 @@ export const InlineOrderedList = Mark.create({
 
   addCommands() {
     return {
-      toggleInlineOrderedList:
+      toggleInlineNumber:
         () =>
         ({ commands }) => {
           return commands.toggleMark(this.name);

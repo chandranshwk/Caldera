@@ -27,6 +27,7 @@ const LowerToolBar: React.FC<LowerToolBarProps> = ({
     FONTSOPTIONS,
     activeFont,
   } = useForgeTools(editor);
+
   return (
     <div>
       {/* Lower dock Toolbar */}

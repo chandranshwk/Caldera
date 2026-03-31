@@ -12,7 +12,6 @@ interface UpperToolBarProps {
   hoveredTopId: string | null;
   setTopPage: (page: number) => void;
   setHoveredTopId: (id: string | null) => void;
-  activeTool: ToolbarButtonProps | null;
   setActiveTool: (tool: ToolbarButtonProps | null) => void;
 }
 
@@ -31,7 +30,6 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
   hoveredTopId,
   setTopPage,
   setHoveredTopId,
-  activeTool,
   setActiveTool,
 }) => {
   const { TOPTOOLS } = useForgeTools(editor);
@@ -147,52 +145,57 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
                     className="relative flex items-center"
                   >
                     <button
+                      key={tool.id}
                       onMouseEnter={() => setHoveredTopId(tool.title)}
                       onMouseLeave={() => setHoveredTopId(null)}
                       onClick={(e) => {
+                        // 1. Handle Dialogs
                         if (tool.id === "table") {
                           setShowTableDialog(!showTableDialog);
-                          setShowColorPicker(false); // Close highlight if table is clicked
+                          setShowColorPicker(false);
+                          return;
                         }
+
                         if (tool.id === "highlight") {
-                          // Calculate position relative to the main toolbar
                           const rect = e.currentTarget.getBoundingClientRect();
-                          const parentRect = e.currentTarget
-                            .closest(".relative")
-                            ?.getBoundingClientRect();
-                          if (parentRect)
+                          const parent = e.currentTarget.closest(".relative");
+                          if (parent) {
+                            const parentRect = parent.getBoundingClientRect();
                             setPickerLeft(
                               rect.left - parentRect.left + rect.width / 2,
                             );
+                          }
                           setShowColorPicker(!showColorPicker);
+                          // Optional: tool.onClick?.(); // Trigger if you want to toggle default highlight
                         } else {
                           tool.onClick?.();
                           setShowColorPicker(false);
+                          setShowTableDialog(false);
                         }
+
+                        // Only set activeTool for temporary UI tracking, not styling
                         setActiveTool(tool);
                       }}
-                      className={`relative flex mx-2 flex-col group items-center px-2 py-1.5 rounded-xl transition-all duration-200 border border-transparent ${
-                        darkMode
-                          ? "hover:bg-white text-black hover:border-white/5"
-                          : "text-black"
-                      } ${activeTool?.id === tool.id ? (darkMode ? "bg-white scale-110" : "bg-slate-900 scale-110") : ""}`}
+                      className={`relative flex mx-2 flex-col group items-center px-2 py-1.5 rounded-xl transition-all duration-200 border border-transparent group ${tool.isActive ? (darkMode ? "bg-white scale-110 shadow-lg" : "bg-slate-900 scale-110 shadow-lg") : darkMode ? "hover:bg-white/10" : "hover:bg-slate-900"}`}
                     >
                       <span
-                        className={`text-lg transition-colors ${
-                          activeTool?.id === tool.id
+                        className={`text-lg transition-all duration-200  ${
+                          tool.isActive
                             ? darkMode
                               ? "text-black"
-                              : "text-white"
+                              : "text-white" // Contrast for active bg
                             : darkMode
-                              ? "text-slate-100 group-hover:text-black"
-                              : "text-slate-600 group-hover:text-black"
+                              ? "text-slate-50 group-hover:text-white"
+                              : "text-slate-500  group-hover:text-white"
                         }`}
                       >
                         {tool.icon}
                       </span>
+
+                      {/* Active Indicator Dot */}
                       <div
                         className={`size-1.5 rounded-full absolute -bottom-1 transition-all duration-300 ${
-                          activeTool?.id === tool.id
+                          tool.isActive
                             ? `scale-100 opacity-100 ${tool.color}`
                             : "scale-0 opacity-0"
                         }`}
