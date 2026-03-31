@@ -26,6 +26,8 @@ const LowerToolBar: React.FC<LowerToolBarProps> = ({
     HEADINGSOPTIONS,
     FONTSOPTIONS,
     activeFont,
+    activeColor,
+    COLORSOPTIONS,
   } = useForgeTools(editor);
 
   return (
@@ -133,23 +135,38 @@ const LowerToolBar: React.FC<LowerToolBarProps> = ({
                   darkMode={darkMode}
                 />
 
-                {/* Heading (H1) */}
                 <Dropdown
-                  width="w-40"
+                  width="w-48"
                   trigger={
                     <button
-                      className={`p-3 py-2 rounded-xl transition-all hover:border-0.5 group duration-200  ${darkMode ? "hover:bg-slate-50" : "hover:bg-slate-50"} border border-transparent ${darkMode ? "hover:border-white/10" : "hover:border-slate-200 group "}`}
-                      onMouseEnter={() => setHoveredId("Headings")}
+                      className={`group flex flex-col items-center justify-center p-2 px-3 rounded-xl transition-all duration-200 hover:bg-slate-50 border border-transparent ${darkMode ? "hover:border-white/10" : "hover:border-slate-200"}`}
+                      onMouseEnter={() => setHoveredId("Text Color")}
                       onMouseLeave={() => setHoveredId(null)}
                     >
                       <span
-                        className={`text-sm font-bold group-hover:text-black ${darkMode ? "text-slate-100 group-hover:text-slate-950" : "text-slate-700"} `}
+                        className={`text-sm font-bold leading-none ${darkMode ? "text-slate-100 group-hover:text-slate-950" : "text-slate-700"}`}
                       >
-                        H1
+                        A
                       </span>
+                      <div
+                        className="h-1 w-4 rounded-full mt-0.5 shadow-sm transition-colors duration-200"
+                        style={{
+                          backgroundColor:
+                            activeColor || (darkMode ? "#fff" : "#000"),
+                        }}
+                      />
                     </button>
                   }
-                  items={HEADINGSOPTIONS}
+                  items={COLORSOPTIONS.map((c) => ({
+                    label: c.label,
+                    onClick: c.onClick,
+                    icon: (
+                      <div
+                        className="size-4 rounded-full border border-black/10"
+                        style={{ backgroundColor: c.color }}
+                      />
+                    ),
+                  }))}
                   darkMode={darkMode}
                 />
               </div>

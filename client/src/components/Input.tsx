@@ -117,12 +117,12 @@ const Input: React.FC<InputProps> = ({
           <label
             htmlFor={label}
             className={clsx(
-              "absolute left-0 transition-all duration-300 pointer-events-none tracking-wide px-1",
+              "absolute left-0 bg-transparent uppercase font-bold text-xs transition-all duration-300 pointer-events-none tracking-wide px-1",
               s.labelBase,
               // If input is NOT empty OR focused, apply active styles
               isFilled
                 ? clsx(s.labelActive, "uppercase font-bold")
-                : "peer-focus:-top-2 peer-focus:text-[12px] ",
+                : "peer-focus:-top-1.5 peer-focus:text-[10px] ",
               icon
                 ? isFilled
                   ? "left-4"

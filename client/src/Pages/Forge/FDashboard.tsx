@@ -237,7 +237,7 @@ const FDashboard = () => {
           darkMode
             ? "border-white/5 bg-[#1c1c1e]/80"
             : "border-black/5 bg-[#f5f5f7]/50"
-        } shadow-md overflow-hidden backdrop-blur-xl`} // Cleaned link string
+        } shadow-md backdrop-blur-xl`} // Cleaned link string
       >
         <div className="overflow-x-auto px-4 py-2">
           <table className="w-full text-left border-separate border-spacing-y-2">

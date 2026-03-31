@@ -8,6 +8,7 @@ import {
   BiExport,
   BiHighlight,
   BiItalic,
+  BiLeftIndent,
   BiListOl,
   BiListUl,
   BiShieldQuarter,
@@ -22,14 +23,12 @@ import {
   BiLink,
   BiTask,
   BiAlignLeft,
-  BiPaste,
 } from "react-icons/bi";
 import { RiDoubleQuotesL, RiFileSettingsLine } from "react-icons/ri";
 
 import { useMemo, useState } from "react";
 import type { ToolbarButtonProps } from "./ForgeView";
-import { MdOutlineSettingsBackupRestore } from "react-icons/md";
-import { FiAlignCenter } from "react-icons/fi";
+import { FiAlignCenter, FiAlignRight } from "react-icons/fi";
 
 export const useForgeTools = (editor: Editor | null) => {
   const [activeFont, setActiveFont] = useState<string>("Inter");
@@ -51,6 +50,7 @@ export const useForgeTools = (editor: Editor | null) => {
       isCode: ctx.editor?.isActive("code"), // Note: Use 'code' for inline, 'codeBlock' for nodes
       isAlignLeft: ctx.editor?.isActive({ textAlign: "left" }),
       isAlignCenter: ctx.editor?.isActive({ textAlign: "center" }),
+      isAlignRight: ctx.editor?.isActive({ textAlign: "right" }),
     }),
   });
   const LOWERTOOLS: ToolbarButtonProps[] = useMemo(() => {
@@ -104,6 +104,7 @@ export const useForgeTools = (editor: Editor | null) => {
       isHighlight,
       isLink,
       isCode,
+      isAlignRight,
     } = states || {};
 
     return [
@@ -142,12 +143,12 @@ export const useForgeTools = (editor: Editor | null) => {
           isActive: isAlignCenter ?? false,
         },
         {
-          id: "indent",
-          icon: <BiPaste />,
-          title: "Indents",
-          color: "bg-cyan-500",
-          onClick: () => console.log("Tab Spacing"),
-          isActive: false,
+          id: "align_right",
+          icon: <FiAlignRight />,
+          title: "Align Right",
+          color: "bg-slate-600",
+          onClick: () => editor.chain().focus().setTextAlign("right").run(),
+          isActive: isAlignRight ?? false,
         },
         {
           id: "quotes",
@@ -188,10 +189,7 @@ export const useForgeTools = (editor: Editor | null) => {
           icon: <BiLink />,
           title: "Link",
           color: "bg-sky-400",
-          onClick: () => {
-            const url = window.prompt("URL");
-            if (url) editor.chain().focus().setLink({ href: url }).run();
-          },
+          onClick: () => {},
           isActive: isLink ?? false,
         },
         {
@@ -228,18 +226,19 @@ export const useForgeTools = (editor: Editor | null) => {
       // PAGE 3: REVIEW & FINALIZATION (Administrative)
       [
         {
+          id: "indent",
+          icon: <BiLeftIndent />,
+          title: "Indents",
+          color: "bg-cyan-500",
+          onClick: () => console.log("Tab Spacing"),
+          isActive: false,
+        },
+        {
           id: "save",
           icon: <BiCloudUpload />,
           title: "Cloud Sync",
           color: "bg-amber-500",
           onClick: () => console.log("Supabase Write"),
-        },
-        {
-          id: "history",
-          icon: <MdOutlineSettingsBackupRestore />,
-          title: "Snapshots",
-          color: "bg-cyan-600",
-          onClick: () => console.log("Version History"),
         },
         {
           id: "comments",
@@ -330,6 +329,51 @@ export const useForgeTools = (editor: Editor | null) => {
     }));
   }, [editor]);
 
+  const COLORSOPTIONS = [
+    {
+      label: "Default",
+      color: "#000000",
+      onClick: () => editor?.chain().focus().unsetColor().run(),
+    },
+    {
+      label: "Red",
+      color: "#ef4444",
+      onClick: () => editor?.chain().focus().setColor("#ef4444").run(),
+    },
+    {
+      label: "Blue",
+      color: "#3b82f6",
+      onClick: () => editor?.chain().focus().setColor("#3b82f6").run(),
+    },
+    {
+      label: "Green",
+      color: "#22c55e",
+      onClick: () => editor?.chain().focus().setColor("#22c55e").run(),
+    },
+    {
+      label: "Yellow",
+      color: "#eab308",
+      onClick: () => editor?.chain().focus().setColor("#eab308").run(),
+    },
+    {
+      label: "Purple",
+      color: "#a855f7",
+      onClick: () => editor?.chain().focus().setColor("#a855f7").run(),
+    },
+    {
+      label: "Pink",
+      color: "#ec4899",
+      onClick: () => editor?.chain().focus().setColor("#ec4899").run(),
+    },
+    {
+      label: "Orange",
+      color: "#f97316",
+      onClick: () => editor?.chain().focus().setColor("#f97316").run(),
+    },
+  ];
+
+  const activeColor = editor?.getAttributes("textStyle").color || "#000000";
+
   return {
     TOPTOOLS,
     LOWERTOOLS,
@@ -339,5 +383,7 @@ export const useForgeTools = (editor: Editor | null) => {
     FONTSOPTIONS,
     activeFont,
     setActiveFont,
+    COLORSOPTIONS,
+    activeColor,
   };
 };

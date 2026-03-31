@@ -4,6 +4,7 @@ import type { ToolbarButtonProps } from "./ForgeView";
 import { useForgeTools } from "./ForgeTools";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import type { Editor } from "@tiptap/react";
+import Input from "../../components/Input";
 
 interface UpperToolBarProps {
   editor: Editor | null;
@@ -38,6 +39,7 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
   const [color, setColor] = useState("bg-yellow-400");
   const [showTableDialog, setShowTableDialog] = useState(false);
   const [hoveredGrid, setHoveredGrid] = useState({ r: 0, c: 0 });
+  const [openLinkDialog, setOpenLinkDialog] = useState(false);
 
   // Fixed grid size for the selector (e.g., 10x10)
   const GRID_SIZE = 10;
@@ -81,6 +83,8 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
     window.addEventListener("keydown", handleTableShortcuts);
     return () => window.removeEventListener("keydown", handleTableShortcuts);
   }, [showTableDialog, hoveredGrid, editor]);
+
+  const [link, setLink] = useState("");
 
   return (
     <div className="relative">
@@ -143,6 +147,11 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
                   <div
                     key={tool.id + idx}
                     className="relative flex items-center"
+                    onClick={() => {
+                      if (tool.id === "link") {
+                        setOpenLinkDialog(true);
+                      }
+                    }}
                   >
                     <button
                       key={tool.id}
@@ -248,6 +257,134 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
             />
           ))}
         </div>
+      </div>
+      {/* Link Linker */}
+      <div
+        className="absolute top-12 left-full z-[100]"
+        style={{ left: `50rem`, transform: "translateX(-50%)" }}
+      >
+        <AnimatePresence>
+          {openLinkDialog && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: -10, filter: "blur(8px)" }}
+              animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 0.9, y: -10, filter: "blur(8px)" }}
+              transition={{ type: "spring", damping: 20, stiffness: 300 }}
+              className={`relative flex flex-col w-[340px] p-1.5 rounded-2xl shadow-[0_24px_48px_-12px_rgba(0,0,0,0.4)] border backdrop-blur-2xl overflow-hidden ${
+                darkMode
+                  ? "bg-zinc-900/80 border-white/10"
+                  : "bg-white/80 border-zinc-200"
+              }`}
+            >
+              {/* Subtle Decorative Background Glow */}
+              <div className="absolute -top-12 -right-12 w-24 h-24 bg-blue-500/10 blur-3xl rounded-full" />
+
+              <div className="p-4 flex flex-col gap-5">
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`w-1.5 h-1.5 rounded-full ${link ? "bg-blue-500 animate-pulse" : "bg-zinc-400"}`}
+                    />
+                    <h3
+                      className={`text-[10px] font-black uppercase tracking-[0.15em] ${darkMode ? "text-zinc-500" : "text-zinc-400"}`}
+                    >
+                      Attach Hyperlink
+                    </h3>
+                  </div>
+                  <button
+                    onClick={() => setOpenLinkDialog(false)}
+                    className={`p-1 rounded-md transition-colors ${darkMode ? "hover:bg-white/10 text-zinc-500" : "hover:bg-black/5 text-zinc-400"}`}
+                  >
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2.5}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Input Group */}
+                <div className="relative group">
+                  <Input
+                    type="text"
+                    label="Enter a Link"
+                    input={link}
+                    setInput={setLink}
+                    darkMode={darkMode}
+                    placeholder="Paste destination URL..."
+                    extra="w-full !bg-transparent !border-none !ring-0 !px-0"
+                  />
+                  {/* Animated Underline */}
+                  <div
+                    className={`absolute -bottom-1 left-0 h-[2px] w-full transition-all duration-500 ${
+                      link
+                        ? "bg-blue-500 w-full"
+                        : "bg-zinc-500/20 w-0 group-focus-within:w-full"
+                    }`}
+                  />
+                </div>
+
+                {/* Action Button */}
+                <motion.button
+                  whileHover={{
+                    y: -1,
+                    shadow: "0 12px 20px -10px rgba(0,0,0,0.3)",
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    if (link) {
+                      editor
+                        ?.chain()
+                        .focus()
+                        .setLink({ href: link })
+                        .setBold()
+                        .setUnderline()
+                        .run();
+                      setLink("");
+                      setOpenLinkDialog(false);
+                    }
+                  }}
+                  // Logic fix: Explicitly use darkMode variable for colors
+                  className={`group relative flex items-center justify-center w-full h-11 overflow-hidden rounded-xl transition-all duration-300 shadow-md ${
+                    darkMode
+                      ? "bg-white text-zinc-900 hover:bg-zinc-100"
+                      : "bg-zinc-900 text-white hover:bg-zinc-800"
+                  }`}
+                >
+                  {/* Shimmer Effect */}
+                  <div className="absolute inset-0 w-full h-full bg-linear-to-r from-transparent via-white/20 dark:via-black/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+
+                  <span className="relative text-sm font-bold tracking-tight">
+                    Link Selection
+                  </span>
+
+                  <svg
+                    className="relative ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101"
+                    />
+                  </svg>
+                </motion.button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
       {/* THE PICKER: Moved outside the overflow-hidden container */}
       <div className="absolute right-168 top-12">

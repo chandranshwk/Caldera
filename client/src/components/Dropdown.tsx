@@ -21,11 +21,21 @@ interface DropdownProps {
   items: MenuItem[];
   darkMode: boolean;
   width?: string;
+  // NEW: Optional props for external control (Right-click usage)
+  externalOpen?: boolean;
+  onClose?: () => void;
 }
 
 const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
-  ({ trigger, items, darkMode, width = "w-48" }, ref) => {
-    const [isOpen, setIsOpen] = useState(false);
+  (
+    { trigger, items, darkMode, width = "w-48", externalOpen, onClose },
+    ref,
+  ) => {
+    const [internalOpen, setInternalOpen] = useState(false);
+
+    // Effectively chooses between self-managed state or parent-managed state
+    const isOpen = externalOpen !== undefined ? externalOpen : internalOpen;
+
     const [isUpward, setIsUpward] = useState(false);
     const [horizontalAlign, setHorizontalAlign] = useState<
       "left" | "right" | "center"
@@ -36,29 +46,26 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
     const checkPosition = useCallback(() => {
       if (dropdownRef.current) {
         const rect = dropdownRef.current.getBoundingClientRect();
-        const vw = window.innerWidth;
         const vh = window.innerHeight;
+        const vw = window.innerWidth;
 
-        // 1. Vertical Logic (Items height is roughly 44px each)
         const estimatedHeight = items.length * 44 + 20;
         const spaceBelow = vh - rect.bottom;
         setIsUpward(spaceBelow < estimatedHeight);
 
-        // 2. Horizontal Logic
-        // We'll estimate width based on Tailwind class or use a default (48 = 192px)
-        const estimatedWidth = 192;
+        const estimatedWidth = parseInt(width.replace("w-", "")) * 4 || 192;
         const spaceRight = vw - rect.left;
         const spaceLeft = rect.right;
 
         if (spaceRight < estimatedWidth) {
-          setHorizontalAlign("right"); // Flip to align with right edge of trigger
+          setHorizontalAlign("right");
         } else if (spaceLeft < estimatedWidth) {
-          setHorizontalAlign("left"); // Flip to align with left edge of trigger
+          setHorizontalAlign("left");
         } else {
-          setHorizontalAlign("center"); // Default or preferred offset
+          setHorizontalAlign("center");
         }
       }
-    }, [items.length]);
+    }, [items.length, width]);
 
     useEffect(() => {
       if (isOpen) {
@@ -78,11 +85,15 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
           dropdownRef.current &&
           !dropdownRef.current.contains(event.target as Node)
         ) {
-          setIsOpen(false);
+          if (onClose) onClose(); // Notify parent to close
+          setInternalOpen(false);
         }
       };
       const handleEsc = (e: KeyboardEvent) => {
-        if (e.key === "Escape") setIsOpen(false);
+        if (e.key === "Escape") {
+          if (onClose) onClose();
+          setInternalOpen(false);
+        }
       };
       document.addEventListener("mousedown", handleClickOutside);
       window.addEventListener("keydown", handleEsc);
@@ -90,13 +101,12 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
         document.removeEventListener("mousedown", handleClickOutside);
         window.removeEventListener("keydown", handleEsc);
       };
-    }, []);
+    }, [onClose]);
 
-    // Helper to determine the X-axis classes
     const getHorizontalClass = () => {
       if (horizontalAlign === "right") return "right-0 origin-top-right";
       if (horizontalAlign === "left") return "left-0 origin-top-left";
-      return "-left-20 origin-top"; // Center-ish preferred offset
+      return "-left-20 origin-top";
     };
 
     return (
@@ -105,7 +115,10 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
           ref={ref}
           onClick={(e) => {
             e.stopPropagation();
-            setIsOpen(!isOpen);
+            // Toggle internal state only if not controlled externally
+            if (externalOpen === undefined) {
+              setInternalOpen(!internalOpen);
+            }
           }}
           className="cursor-pointer bg-transparent relative z-0"
         >
@@ -144,7 +157,8 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
                       onClick={(e) => {
                         e.stopPropagation();
                         item.onClick();
-                        setIsOpen(false);
+                        if (onClose) onClose(); // Close external menu
+                        setInternalOpen(false); // Close internal menu
                       }}
                       className={`group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-[13px] font-medium
                     ${

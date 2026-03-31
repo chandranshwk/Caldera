@@ -7,7 +7,6 @@ import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import UpperToolBar from "./UpperToolBar";
 import LowerToolBar from "./LowerToolBar";
-import { TextStyle } from "@tiptap/extension-text-style";
 import FontFamily from "@tiptap/extension-font-family";
 import { Extension } from "@tiptap/core";
 import TextAlign from "@tiptap/extension-text-align";
@@ -23,6 +22,9 @@ import { InlineBullet } from "../../assets/InlineUnorderedList";
 import { InlineNumber } from "../../assets/InlineOrderedList";
 import { AnimatePresence, motion } from "motion/react";
 import Dropdown from "../../components/Dropdown";
+import Help from "./Help";
+import { TextStyle } from "@tiptap/extension-text-style";
+import { Color } from "@tiptap/extension-color";
 
 interface ProjectViewProps {
   darkMode: boolean;
@@ -123,6 +125,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
             class: "list-disc list-outside pl-5 space-y-1",
           },
         },
+
         orderedList: {
           HTMLAttributes: {
             // 'list-decimal' for numbers
@@ -134,6 +137,23 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
         },
         codeBlock: false,
       }),
+      Extension.create({
+        name: "clearFormatting",
+        addKeyboardShortcuts() {
+          return {
+            "Mod-\\": () => {
+              console.log("Clear formatting triggered via Mod-/");
+              return this.editor
+                .chain()
+                .focus()
+                .unsetAllMarks()
+                .clearNodes()
+                .run();
+            },
+          };
+        },
+      }),
+
       HardBreak.extend({
         addKeyboardShortcuts() {
           return {
@@ -178,6 +198,8 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
       TextStyle,
       FontFamily,
       FontSize,
+      TextStyle,
+      Color,
     ],
     content: doc.des || "<p>Hello World!</p>",
     editorProps: {
@@ -220,6 +242,20 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
   }, []);
 
   const [showConfirm, setShowConfirm] = useState(false);
+
+  const [docName, setDocName] = useState(displayName || "Untitled Document");
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value;
+    setDocName(newName);
+
+    // Optional: Update localStorage immediately or onBlur
+    const updatedDoc = { ...doc, name: newName };
+    localStorage.setItem(
+      `doc-${location.pathname.split("/").pop()}`,
+      JSON.stringify(updatedDoc),
+    );
+  };
 
   return (
     <EditorContext.Provider value={providerValue}>
@@ -301,9 +337,21 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
             }`}
           >
             <article className="prose prose-slate max-w-none focus:outline-none selection:bg-blue-100">
-              <h1 className="mb-8 text-4xl font-bold tracking-tight">
-                {displayName}
-              </h1>
+              <input
+                type="text"
+                value={docName}
+                onChange={handleTitleChange}
+                placeholder="Untitled Document"
+                className={`
+     w-full text-3xl font-bold tracking-tight outline-none border-b-2 border-transparent 
+    transition-colors duration-200  leading-snug h-max pb-1 pl-4
+    ${
+      darkMode
+        ? "text-white focus:border-white/10 placeholder:text-slate-700"
+        : "text-slate-900 focus:border-slate-200 placeholder:text-slate-300"
+    }
+  `}
+              />
 
               {/* onContextMenu is attached to the wrapper div */}
               <div onContextMenu={handleContextMenu} className="relative">
@@ -428,6 +476,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
           )}
         </AnimatePresence>
       </div>
+      <Help type="docs" darkMode={darkMode} />
     </EditorContext.Provider>
   );
 };
