@@ -337,7 +337,6 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
                 <motion.button
                   whileHover={{
                     y: -1,
-                    shadow: "0 12px 20px -10px rgba(0,0,0,0.3)",
                   }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {

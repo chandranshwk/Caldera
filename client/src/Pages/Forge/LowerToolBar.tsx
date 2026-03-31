@@ -23,7 +23,6 @@ const LowerToolBar: React.FC<LowerToolBarProps> = ({
   const {
     LOWERTOOLS,
     TEXTSIZESOPTIONS,
-    HEADINGSOPTIONS,
     FONTSOPTIONS,
     activeFont,
     activeColor,
