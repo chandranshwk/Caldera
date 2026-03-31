@@ -260,7 +260,7 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
       </div>
       {/* Link Linker */}
       <div
-        className="absolute top-12 left-full z-[100]"
+        className="absolute top-12 left-full z-100"
         style={{ left: `50rem`, transform: "translateX(-50%)" }}
       >
         <AnimatePresence>
@@ -270,7 +270,7 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
               animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
               exit={{ opacity: 0, scale: 0.9, y: -10, filter: "blur(8px)" }}
               transition={{ type: "spring", damping: 20, stiffness: 300 }}
-              className={`relative flex flex-col w-[340px] p-1.5 rounded-2xl shadow-[0_24px_48px_-12px_rgba(0,0,0,0.4)] border backdrop-blur-2xl overflow-hidden ${
+              className={`relative flex flex-col w-85 p-1.5 rounded-2xl shadow-[0_24px_48px_-12px_rgba(0,0,0,0.4)] border backdrop-blur-2xl overflow-hidden ${
                 darkMode
                   ? "bg-zinc-900/80 border-white/10"
                   : "bg-white/80 border-zinc-200"
@@ -325,7 +325,7 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
                   />
                   {/* Animated Underline */}
                   <div
-                    className={`absolute -bottom-1 left-0 h-[2px] w-full transition-all duration-500 ${
+                    className={`absolute -bottom-1 left-0 h-0.5 w-full transition-all duration-500 ${
                       link
                         ? "bg-blue-500 w-full"
                         : "bg-zinc-500/20 w-0 group-focus-within:w-full"
