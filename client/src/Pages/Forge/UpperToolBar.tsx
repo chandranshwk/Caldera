@@ -386,7 +386,7 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
         </AnimatePresence>
       </div>
       {/* THE PICKER: Moved outside the overflow-hidden container */}
-      <div className="absolute right-168 top-12">
+      <div className="absolute right-105 top-12">
         <AnimatePresence>
           {showColorPicker && (
             <motion.div
@@ -432,7 +432,8 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
           )}
         </AnimatePresence>
       </div>
-      <div className="absolute right-168 top-12">
+      {/* Table Dialog */}
+      <div className="absolute right-105 top-12">
         <AnimatePresence>
           {showTableDialog && (
             <motion.div

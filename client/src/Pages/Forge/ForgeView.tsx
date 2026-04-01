@@ -119,41 +119,14 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        bulletList: {
-          HTMLAttributes: {
-            // 'list-disc' for bullets, 'pl-4' for indentation
-            class: "list-disc list-outside pl-5 space-y-1",
-          },
-        },
-
-        orderedList: {
-          HTMLAttributes: {
-            // 'list-decimal' for numbers
-            class: "list-decimal list-outside pl-5 space-y-1",
-          },
-        },
-        heading: {
-          levels: [1, 2, 3, 4, 5, 6],
-        },
+        // 1. Disable these inside StarterKit so we can use your custom/extended versions
+        hardBreak: false,
+        blockquote: false,
+        heading: false, // Removing as per your earlier decision
         codeBlock: false,
       }),
-      Extension.create({
-        name: "clearFormatting",
-        addKeyboardShortcuts() {
-          return {
-            "Mod-\\": () => {
-              console.log("Clear formatting triggered via Mod-/");
-              return this.editor
-                .chain()
-                .focus()
-                .unsetAllMarks()
-                .clearNodes()
-                .run();
-            },
-          };
-        },
-      }),
 
+      // 2. Your Custom "Typewriter" HardBreak
       HardBreak.extend({
         addKeyboardShortcuts() {
           return {
@@ -166,39 +139,63 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
               ) {
                 return false;
               }
-              // Otherwise, insert a hard break (Shift+Enter style) by default
               return this.editor.commands.setHardBreak();
             },
           };
         },
       }),
 
-      TextAlign.configure({
-        types: ["heading", "paragraph"], // Allow alignment on these tags
-        alignments: ["left", "center", "right", "justify"], // Optional: restrict options
-        defaultAlignment: "left",
-      }),
-      HighlightExtension.configure({
-        multicolor: true, // Allow multiple highlights on the same text
-      }),
-      Table.configure({
-        resizable: true,
-      }),
+      // 3. Your Custom Blockquote
       Blockquote.configure({
         HTMLAttributes: {
           class: "border-l-4 border-slate-300 pl-4 italic",
         },
       }),
+
+      // 4. The "Panic Button" Clear Formatting
+      Extension.create({
+        name: "clearFormatting",
+        addKeyboardShortcuts() {
+          return {
+            "Mod-\\\\": () => {
+              // Double escape for the backslash
+              return this.editor
+                .chain()
+                .focus()
+                .unsetAllMarks()
+                .clearNodes()
+                .run();
+            },
+          };
+        },
+      }),
+
+      TextAlign.configure({
+        types: ["paragraph"], // Removed heading as it's being deleted
+        alignments: ["left", "center", "right", "justify"],
+        defaultAlignment: "left",
+      }),
+
+      HighlightExtension.configure({
+        multicolor: true,
+      }),
+
+      Table.configure({
+        resizable: true,
+      }),
+
+      // Custom Marks & Nodes
       InlineBullet,
       InlineNumber,
       InlineQuote,
       TableRow,
       TableHeader,
       TableCell,
+
+      // Core Styling (Only one instance of each)
       TextStyle,
       FontFamily,
       FontSize,
-      TextStyle,
       Color,
     ],
     content: doc.des || "<p>Hello World!</p>",

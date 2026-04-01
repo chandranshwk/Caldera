@@ -15,9 +15,20 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import Dropdown from "../../components/Dropdown";
 import { IoIosArrowForward } from "react-icons/io";
 import type { User } from "@supabase/supabase-js";
+import { v4 as uuidv4 } from "uuid";
+
+interface MetricProps {
+  id: string;
+  icon: React.ReactNode;
+  name: string;
+  color: string;
+  des?: string;
+  link?: string;
+  createLink: () => string;
+}
 
 // 1. Centralized Data Config
-const METRICS = [
+const METRICS: MetricProps[] = [
   {
     id: "excel",
     icon: <SiGooglesheets />,
@@ -25,6 +36,7 @@ const METRICS = [
     color: "bg-emerald-500",
     des: "Create professional excel sheets.",
     link: "/forge/sheets",
+    createLink: () => "#",
   },
   {
     id: "words",
@@ -33,6 +45,7 @@ const METRICS = [
     color: "bg-blue-600",
     des: "Create a comprehensive document for the team!",
     link: "/forge/docs",
+    createLink: () => "/forge/docs/new",
   },
   {
     id: "pdf",
@@ -41,14 +54,22 @@ const METRICS = [
     color: "bg-red-600",
     des: "Create, merge, convert from or to PDFs.",
     link: "/forge/pdfs",
+    createLink: () => "#",
   },
   {
     id: "downloads",
     icon: <FiDownload />,
     name: "Downloads",
     color: "bg-amber-400",
+    createLink: () => "#",
   },
-  { id: "shared", icon: <FiShare />, name: "Shared", color: "bg-purple-600" },
+  {
+    id: "shared",
+    icon: <FiShare />,
+    name: "Shared",
+    color: "bg-purple-600",
+    createLink: () => "#",
+  },
 ];
 
 const FDashboard = () => {
@@ -62,6 +83,28 @@ const FDashboard = () => {
   const cardBg = darkMode ? "bg-[#1a1a1c]" : "bg-white";
   const subText = darkMode ? "text-gray-400" : "text-gray-500";
 
+  const generateNewDOC = () => {
+    // Logic to generate a new document
+    console.log("Generating new document...");
+    const newDoc = {
+      id: uuidv4(),
+      name: faker.word.words({ count: 3 }),
+      extension: ".docx",
+      type: "words",
+      des: faker.lorem.paragraphs(14),
+      sharedCount: 0,
+      downloadCount: 0,
+      editedAt: new Date().toISOString(),
+      status: "Local Only",
+      project: "projectName",
+      size: "0.0 KB",
+      content: {},
+    };
+    console.log("New document created:", newDoc);
+    navigate(`/forge/doc/open/${newDoc.id}`); // Navigate to the new document's page
+    localStorage.setItem(`doc-${newDoc.id}`, JSON.stringify(newDoc)); // Save the new document to localStorage
+  };
+
   return (
     <div
       className={`p-6 h-screen overflow-y-auto transition-colors duration-300 my-scrollbar ${darkMode ? "bg-[#0f0f1000]" : "bg-gray-50"}`}
@@ -72,7 +115,6 @@ const FDashboard = () => {
           <div
             key={data.id}
             className={`flex items-center p-4 rounded-xl shadow-sm border ${darkMode ? "border-gray-800" : "border-gray-100"} ${cardBg} hover:shadow-md transition-all cursor-pointer group`}
-            onClick={() => navigate(data.link ?? "")}
           >
             <span
               className={`text-2xl rounded-lg ${data.color} text-white p-3 group-hover:scale-110 transition-transform`}
@@ -103,9 +145,14 @@ const FDashboard = () => {
           </h2>
         </div>
         <div className="grid lg:grid-cols-3 gap-6">
-          {METRICS.slice(0, 3).map((data) => (
+          {METRICS.slice(0, 3).map((data: MetricProps) => (
             <div
               key={`create-${data.id}`}
+              onClick={() => {
+                if (data.id === "words") {
+                  generateNewDOC();
+                }
+              }}
               className={`flex items-start p-6 rounded-lg border-2 border-transparent ${cardBg} shadow-sm hover:border-l-blue-500/50 hover:border-l-4 hover:bg-blue-500/5 transition-all cursor-pointer group relative overflow-hidden`}
             >
               <span

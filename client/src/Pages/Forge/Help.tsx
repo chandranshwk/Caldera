@@ -83,7 +83,7 @@ const Help: React.FC<HelpProps> = ({ type, darkMode }) => {
         onClick={() => setIsOpen(true)}
         className={`p-2 absolute top-18 right-16 rounded-xl transition-all h-max w-max duration-200 z-10 ${
           darkMode
-            ? "hover:bg-white/10 bg-slate-800 text-slate-400"
+            ? "hover:bg-white/10 border text-slate-400"
             : "hover:bg-slate-100 bg-white text-slate-500 shadow-md"
         }`}
         title="Help & Shortcuts"

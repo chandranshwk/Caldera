@@ -36,7 +36,7 @@ const LowerToolBar: React.FC<LowerToolBarProps> = ({
         className={`absolute bottom-0 left-1/2 gap-2 -translate-x-1/2 flex items-center px-6 mb-5 p-1.5 ${darkMode ? "bg-[#303032]" : "bg-white"} shadow-xl rounded-2xl border border-slate-300`}
       >
         {LOWERTOOLS?.map((tool, idx) => (
-          <>
+          <React.Fragment key={tool.id}>
             {/* Tooltip */}
             <div key={idx} className="absolute -top-9 left-[calc(50%-2.5rem)]">
               <AnimatePresence>
@@ -170,7 +170,7 @@ const LowerToolBar: React.FC<LowerToolBarProps> = ({
                 />
               </div>
             )}
-          </>
+          </React.Fragment>
         ))}
       </div>
     </div>
