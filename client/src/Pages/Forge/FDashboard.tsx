@@ -114,6 +114,7 @@ const FDashboard = () => {
         {METRICS.map((data) => (
           <div
             key={data.id}
+            onClick={() => navigate(data.link ?? "")}
             className={`flex items-center p-4 rounded-xl shadow-sm border ${darkMode ? "border-gray-800" : "border-gray-100"} ${cardBg} hover:shadow-md transition-all cursor-pointer group`}
           >
             <span
