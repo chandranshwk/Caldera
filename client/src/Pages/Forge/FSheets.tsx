@@ -13,8 +13,10 @@ import { BiDownload } from "react-icons/bi";
 import { SiGoogledocs, SiGooglesheets } from "react-icons/si";
 import { FaFilePdf } from "react-icons/fa";
 import { RECENT_FILES } from "../../assets/assets";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import type { User } from "@supabase/supabase-js";
+import { faker } from "@faker-js/faker/locale/zu_ZA";
+import { v4 as uuidv4 } from "uuid";
 
 const FSheets = () => {
   const { user, darkMode } = useOutletContext<{
@@ -23,6 +25,29 @@ const FSheets = () => {
   }>();
   console.log(user.email);
   const cardBg = darkMode ? "bg-[#1a1a1c]" : "bg-white";
+  const navigate = useNavigate();
+
+  const generateNew = () => {
+    // Logic to generate a new document
+    console.log("Generating new document...");
+    const newSheet = {
+      id: uuidv4(),
+      name: faker.word.words({ count: 3 }),
+      extension: ".xlsx",
+      type: "sheets",
+      des: faker.lorem.paragraphs(14),
+      sharedCount: 0,
+      downloadCount: 0,
+      editedAt: new Date().toISOString(),
+      status: "Local Only",
+      project: "projectName",
+      size: "0.0 KB",
+      content: {},
+    };
+    console.log("New sheet created:", newSheet);
+    navigate(`/forge/sheet/open/${newSheet.id}`); // Navigate to the new sheet's page
+    localStorage.setItem(`sheet-${newSheet.id}`, JSON.stringify(newSheet)); // Save the new sheet to localStorage
+  };
   return (
     <div
       className={`p-6 h-screen overflow-y-auto transition-colors duration-300 my-scrollbar ${darkMode ? "bg-[#0f0f1000]" : ""}`}
@@ -38,9 +63,8 @@ const FSheets = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Action Tile 1: Blank Sheet */}
           <div
-            className={`group relative p-6 rounded-[2.5rem] border transition-all duration-500 cursor-pointer overflow-hidden
-      ${darkMode ? "bg-[#1c1c1e] border-white/5 hover:border-emerald-500/50" : "bg-white border-black/5 hover:border-emerald-500/30"}
-      hover:shadow-[0_20px_40px_rgba(16,185,129,0.1)] hover:-translate-y-2`}
+            className={`group relative p-6 rounded-[2.5rem] border transition-all duration-500 cursor-pointer overflow-hidden ${darkMode ? "bg-[#1c1c1e] border-white/5 hover:border-emerald-500/50" : "bg-white border-black/5 hover:border-emerald-500/30"} hover:shadow-[0_20px_40px_rgba(16,185,129,0.1)] hover:-translate-y-2`}
+            onClick={() => generateNew()}
           >
             <div className="relative z-10 flex flex-col gap-4">
               {/* Icon changed to Emerald/Green for Sheets */}
@@ -62,9 +86,7 @@ const FSheets = () => {
 
           {/* Action Tile 2: Data Templates */}
           <div
-            className={`group relative p-6 rounded-[2.5rem] border transition-all duration-500 cursor-pointer overflow-hidden
-      ${darkMode ? "bg-[#1c1c1e] border-white/5 hover:border-blue-500/50" : "bg-white border-black/5 hover:border-blue-500/30"}
-      hover:shadow-[0_20px_40px_rgba(59,130,246,0.1)] hover:-translate-y-2`}
+            className={`group relative p-6 rounded-[2.5rem] border transition-all duration-500 cursor-pointer overflow-hidden ${darkMode ? "bg-[#1c1c1e] border-white/5 hover:border-blue-500/50" : "bg-white border-black/5 hover:border-blue-500/30"} hover:shadow-[0_20px_40px_rgba(59,130,246,0.1)] hover:-translate-y-2`}
           >
             <div className="relative z-10 flex flex-col gap-4">
               <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-2xl transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-12">
@@ -84,9 +106,7 @@ const FSheets = () => {
 
           {/* Action Tile 3: Import CSV/Excel */}
           <div
-            className={`group relative p-6 rounded-[2.5rem] border transition-all duration-500 cursor-pointer overflow-hidden
-      ${darkMode ? "bg-[#1c1c1e] border-white/5 hover:border-amber-500/50" : "bg-white border-black/5 hover:border-amber-500/30"}
-      hover:shadow-[0_20px_40px_rgba(245,158,11,0.1)] hover:-translate-y-2`}
+            className={`group relative p-6 rounded-[2.5rem] border transition-all duration-500 cursor-pointer overflow-hidden ${darkMode ? "bg-[#1c1c1e] border-white/5 hover:border-amber-500/50" : "bg-white border-black/5 hover:border-amber-500/30"} hover:shadow-[0_20px_40px_rgba(245,158,11,0.1)] hover:-translate-y-2`}
           >
             <div className="relative z-10 flex flex-col gap-4">
               <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-2xl transition-transform duration-500 group-hover:scale-110">
@@ -107,11 +127,7 @@ const FSheets = () => {
       </header>
 
       <div
-        className={`${cardBg} rounded-[2.5rem] mt-6 border ${
-          darkMode
-            ? "border-white/5 bg-[#1c1c1e]/80"
-            : "border-black/5 bg-[#f5f5f7]/50"
-        } shadow-md overflow-hidden backdrop-blur-xl`} // Cleaned link string
+        className={`${cardBg} rounded-[2.5rem] mt-6 border ${darkMode ? "border-white/5 bg-[#1c1c1e]/80" : "border-black/5 bg-[#f5f5f7]/50"} shadow-md overflow-hidden backdrop-blur-xl`} // Cleaned link string
       >
         <div className="overflow-x-auto px-4 py-2">
           <table className="w-full text-left border-separate border-spacing-y-2">
@@ -130,10 +146,7 @@ const FSheets = () => {
                 (file, idx) => (
                   <tr
                     key={idx}
-                    className={`group transition-all duration-300 ease-out relative hover:z-10
-                ${darkMode ? "hover:bg-white/3" : "hover:bg-white"} 
-                hover:shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:-translate-y-0.5
-                ${idx % 2 === 0 ? "bg-transparent" : darkMode ? "bg-white/1" : "bg-black/3"}`}
+                    className={`group transition-all duration-300 ease-out relative hover:z-10 ${darkMode ? "hover:bg-white/3" : "hover:bg-white"} hover:shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:-translate-y-0.5 ${idx % 2 === 0 ? "bg-transparent" : darkMode ? "bg-white/1" : "bg-black/3"}`}
                   >
                     {/* File Column */}
                     <td className="px-6 py-4 first:rounded-l-2xl">

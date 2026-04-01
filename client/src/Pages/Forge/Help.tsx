@@ -7,13 +7,15 @@ import {
   BiInfoCircle,
   BiPointer,
 } from "react-icons/bi";
+import { clsx } from "clsx";
 
 interface HelpProps {
   type: "docs" | "sheets";
   darkMode: boolean;
+  extra?: string;
 }
 
-const Help: React.FC<HelpProps> = ({ type, darkMode }) => {
+const Help: React.FC<HelpProps> = ({ type, darkMode, extra }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -29,6 +31,7 @@ const Help: React.FC<HelpProps> = ({ type, darkMode }) => {
 
   // Content for Docs
   const docsShortcuts = [
+    { label: "Open/Close Upper Dock", key: "Alt + H" },
     { label: "Command Bar", key: "Ctrl + K" },
     { label: "Bold", key: "Ctrl + B" },
     { label: "Italic", key: "Ctrl + I" },
@@ -43,9 +46,9 @@ const Help: React.FC<HelpProps> = ({ type, darkMode }) => {
     { label: "Quick Search", key: "Ctrl + F" },
     { label: "Undo / Redo", key: "Ctrl + Z / Y" },
     { label: "Clear Format", key: "Ctrl + \\" }, // Added the "Panic Button"
-    { label: "Toolbar P1", key: "Alt + 1" },
-    { label: "Toolbar P2", key: "Alt + 2" },
-    { label: "Toolbar P3", key: "Alt + 3" },
+    { label: "Upper Dock P1", key: "Alt + 1" },
+    { label: "Upper Dock P2", key: "Alt + 2" },
+    { label: "Upper Dock P3", key: "Alt + 3" },
   ];
 
   const docsAdvice = [
@@ -81,11 +84,14 @@ const Help: React.FC<HelpProps> = ({ type, darkMode }) => {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className={`p-2 absolute top-18 right-16 rounded-xl transition-all h-max w-max duration-200 z-10 ${
-          darkMode
-            ? "hover:bg-white/10 border text-slate-400"
-            : "hover:bg-slate-100 bg-white text-slate-500 shadow-md"
-        }`}
+        className={clsx(
+          `p-2 absolute right-16 rounded-xl transition-all h-max w-max duration-200 z-10 ${
+            darkMode
+              ? "hover:bg-white/10 border text-slate-400"
+              : "hover:bg-slate-100 bg-white text-slate-500 shadow-md"
+          }`,
+          extra,
+        )}
         title="Help & Shortcuts"
       >
         <BiHelpCircle size={22} />

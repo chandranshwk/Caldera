@@ -1,3 +1,4 @@
+//  ForgeView.tsx
 /* eslint-disable react-refresh/only-export-components */
 
 import React, { useEffect, useMemo, useState } from "react";
@@ -302,7 +303,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
                 /
               </span>
               <h1
-                className={`text-sm font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}
+                className={`text-sm font-bold tracking-tight ${darkMode ? "text-slate-900" : "text-slate-900"}`}
               >
                 {displayName || formattedPage}
               </h1>
@@ -473,7 +474,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
           )}
         </AnimatePresence>
       </div>
-      <Help type="docs" darkMode={darkMode} />
+      <Help type="docs" darkMode={darkMode} extra="top-4" />
     </EditorContext.Provider>
   );
 };

@@ -39,6 +39,7 @@ import CommandBar from "./components/CommandBar";
 import "./App.css";
 import type { User } from "@supabase/supabase-js";
 import ForgeView from "./Pages/Forge/ForgeView";
+import ForgeViewSheets from "./Pages/Forge/ForgeViewSheets";
 
 function App() {
   const navigate = useNavigate();
@@ -153,6 +154,10 @@ function App() {
           <Route
             path="/forge/doc/open/:projectId"
             element={<ForgeView darkMode={darkMode} />}
+          />
+          <Route
+            path="/forge/sheet/open/:projectId"
+            element={<ForgeViewSheets darkMode={darkMode} />}
           />
 
           {/* Module: The Forge */}
