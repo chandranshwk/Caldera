@@ -29,6 +29,7 @@ import {
 import { MdOutlineStickyNote2 } from "react-icons/md";
 import { HiOutlinePhoto } from "react-icons/hi2";
 import { FiFilePlus } from "react-icons/fi";
+import { useWorkspaceStore } from "../Pages/Strata/useStrataTools";
 
 // --- Types ---
 export type ToolId = string;
@@ -38,6 +39,7 @@ export interface ToolConfig {
   icon: ElementType;
   label: string;
   color?: string;
+  func: () => void;
 }
 
 interface ToolbarProps {
@@ -49,14 +51,44 @@ interface ToolbarProps {
 const PAGES: ToolConfig[][] = [
   // PAGE 1: Core Interaction & Freeform Drawing
   [
-    { id: "select", icon: LuMousePointer2, label: "Select" },
-    { id: "hand", icon: LuHand, label: "Hand/Pan" },
-    { id: "draw", icon: LuHighlighter, color: "#f1c40f", label: "Draw" },
-    { id: "pen", icon: LuSpline, color: "#8e44ad", label: "Pen Tool" },
-    { id: "erase", icon: LuEraser, label: "Eraser" },
-    { id: "laser", icon: LuPointer, color: "#e67e22", label: "Laser Pointer" },
-    { id: "shapes", icon: LuShapes, color: "#9b59b6", label: "Shapes" },
-    { id: "text", icon: LuType, color: "#e74c3c", label: "Text" },
+    { id: "select", icon: LuMousePointer2, label: "Select", func: () => {} },
+    { id: "hand", icon: LuHand, label: "Hand/Pan", func: () => {} },
+    {
+      id: "draw",
+      icon: LuHighlighter,
+      color: "#f1c40f",
+      label: "Draw",
+      func: () => {},
+    },
+    {
+      id: "pen",
+      icon: LuSpline,
+      color: "#8e44ad",
+      label: "Pen Tool",
+      func: () => {},
+    },
+    { id: "erase", icon: LuEraser, label: "Eraser", func: () => {} },
+    {
+      id: "laser",
+      icon: LuPointer,
+      color: "#e67e22",
+      label: "Laser Pointer",
+      func: () => {},
+    },
+    {
+      id: "shapes",
+      icon: LuShapes,
+      color: "#9b59b6",
+      label: "Shapes",
+      func: () => {},
+    },
+    {
+      id: "text",
+      icon: LuType,
+      color: "#e74c3c",
+      label: "Text",
+      func: () => {},
+    },
   ],
   // PAGE 2: Structured Content & Logic
   [
@@ -65,29 +97,73 @@ const PAGES: ToolConfig[][] = [
       icon: MdOutlineStickyNote2,
       color: "#2ecc71",
       label: "Note",
+      func: () => {},
     },
-    { id: "image", icon: HiOutlinePhoto, color: "#3498db", label: "Image" },
-    { id: "file", icon: FiFilePlus, label: "File Attachment" },
-    { id: "flow", icon: LuArrowRight, color: "#1abc9c", label: "Flow Line" },
-    { id: "nodes", icon: LuNetwork, color: "#34495e", label: "Logic Node" },
-    { id: "commit", icon: BiGitCommit, color: "#f39c12", label: "Nodes" },
-    { id: "zap", icon: LuZap, color: "#f1c40f", label: "Automation" },
+    {
+      id: "image",
+      icon: HiOutlinePhoto,
+      color: "#3498db",
+      label: "Image",
+      func: () => {},
+    },
+    { id: "file", icon: FiFilePlus, label: "File Attachment", func: () => {} },
+    {
+      id: "flow",
+      icon: LuArrowRight,
+      color: "#1abc9c",
+      label: "Flow Line",
+      func: () => {},
+    },
+    {
+      id: "nodes",
+      icon: LuNetwork,
+      color: "#34495e",
+      label: "Logic Node",
+      func: () => {},
+    },
+    {
+      id: "commit",
+      icon: BiGitCommit,
+      color: "#f39c12",
+      label: "Nodes",
+      func: () => {},
+    },
+    {
+      id: "zap",
+      icon: LuZap,
+      color: "#f1c40f",
+      label: "Automation",
+      func: () => {},
+    },
   ],
   // PAGE 3: Editing, Collaboration & Settings
   [
-    { id: "task", icon: BiCheckSquare, color: "#e91e63", label: "Task Card" },
-    { id: "chat", icon: BiMessageSquare, color: "#607d8b", label: "Team Chat" },
-    { id: "group", icon: LuGroup, label: "Group Items" },
-    { id: "layers", icon: LuLayers, label: "Layers" },
-    { id: "scale", icon: LuScaling, label: "Scale" },
-    { id: "scissors", icon: LuScissors, label: "Cut" },
-    { id: "grid", icon: BiGrid, label: "Snap Settings" },
-    { id: "timer", icon: BiCodeBlock, label: "Timeline" },
+    {
+      id: "task",
+      icon: BiCheckSquare,
+      color: "#e91e63",
+      label: "Task Card",
+      func: () => {},
+    },
+    {
+      id: "chat",
+      icon: BiMessageSquare,
+      color: "#607d8b",
+      label: "Team Chat",
+      func: () => {},
+    },
+    { id: "group", icon: LuGroup, label: "Group Items", func: () => {} },
+    { id: "layers", icon: LuLayers, label: "Layers", func: () => {} },
+    { id: "scale", icon: LuScaling, label: "Scale", func: () => {} },
+    { id: "scissors", icon: LuScissors, label: "Cut", func: () => {} },
+    { id: "grid", icon: BiGrid, label: "Snap Settings", func: () => {} },
+    { id: "timer", icon: BiCodeBlock, label: "Timeline", func: () => {} },
   ],
 ];
 
 const ToolbarStrata: React.FC<ToolbarProps> = ({ darkMode, onToolSelect }) => {
-  const [activeTool, setActiveTool] = useState<ToolId>("select");
+  const activeTool = useWorkspaceStore((state) => state.selectedTool);
+  const setActiveTool = useWorkspaceStore((state) => state.setTool);
   const [page, setPage] = useState(0);
   const [hoveredId, setHoveredId] = useState<ToolId | null>(null);
 
@@ -181,6 +257,7 @@ const ToolbarStrata: React.FC<ToolbarProps> = ({ darkMode, onToolSelect }) => {
                     onClick={() => {
                       setActiveTool(tool.id);
                       onToolSelect?.(tool.id);
+                      if (tool.func) tool.func();
                     }}
                     onMouseEnter={() => setHoveredId(tool.id)}
                     onMouseLeave={() => setHoveredId(null)}
