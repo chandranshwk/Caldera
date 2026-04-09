@@ -1,11 +1,11 @@
 import { create } from "zustand";
+import { temporal } from "zundo";
 
 export interface Point {
   x: number;
   y: number;
 }
 
-// 1. Define all possible elements in your intricate workspace
 export type WorkspaceElement =
   | {
       id: string;
@@ -18,6 +18,22 @@ export type WorkspaceElement =
     }
   | {
       id: string;
+      type: "circle";
+      x: number;
+      y: number;
+      radius: number;
+      fill: string;
+    }
+  | {
+      id: string;
+      type: "triangle";
+      x: number;
+      y: number;
+      radius: number;
+      fill: string;
+    }
+  | {
+      id: string;
       type: "line";
       points: number[];
       stroke: string;
@@ -26,64 +42,74 @@ export type WorkspaceElement =
     }
   | { id: string; type: "node"; x: number; y: number; label: string };
 
-// 2. Define the Store's Interface
 interface WorkspaceState {
   selectedTool: string;
   camera: { x: number; y: number; zoom: number };
   elements: WorkspaceElement[];
+  selectedElementId: string | null; // Added this
   setTool: (id: string) => void;
   setCamera: (updates: Partial<{ x: number; y: number; zoom: number }>) => void;
   zoomToPoint: (pointer: Point, deltaY: number) => void;
+  setSelectedElementId: (id: string | null) => void; // Added this
   addElement: (el: WorkspaceElement) => void;
   updateElement: (id: string, updates: Partial<WorkspaceElement>) => void;
   deleteElement: (id: string) => void;
 }
 
-export const useWorkspaceStore = create<WorkspaceState>((set) => ({
-  // --- STATE ---
-  selectedTool: "select",
-  camera: { x: 0, y: 0, zoom: 1 },
-  elements: [],
+export const useWorkspaceStore = create<WorkspaceState>()(
+  temporal(
+    (set) => ({
+      selectedTool: "select",
+      camera: { x: 0, y: 0, zoom: 1 },
+      elements: [],
+      selectedElementId: null,
 
-  // --- ACTIONS ---
-  setTool: (id) => set({ selectedTool: id }),
+      setTool: (id) => set({ selectedTool: id, selectedElementId: null }),
 
-  setCamera: (updates) => set((s) => ({ camera: { ...s.camera, ...updates } })),
+      setCamera: (updates) =>
+        set((s) => ({ camera: { ...s.camera, ...updates } })),
 
-  zoomToPoint: (pointer, deltaY) =>
-    set((s) => {
-      const scaleBy = 1.1;
-      const oldScale = s.camera.zoom;
-      const newScale = deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
+      setSelectedElementId: (id) => set({ selectedElementId: id }),
 
-      const mousePointTo = {
-        x: (pointer.x - s.camera.x) / oldScale,
-        y: (pointer.y - s.camera.y) / oldScale,
-      };
+      zoomToPoint: (pointer, deltaY) =>
+        set((s) => {
+          const scaleBy = 1.1;
+          const oldScale = s.camera.zoom;
+          let newScale = deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
+          newScale = Math.max(0.05, Math.min(newScale, 20));
 
-      return {
-        camera: {
-          zoom: newScale,
-          x: pointer.x - mousePointTo.x * newScale,
-          y: pointer.y - mousePointTo.y * newScale,
-        },
-      };
+          const mousePointTo = {
+            x: (pointer.x - s.camera.x) / oldScale,
+            y: (pointer.y - s.camera.y) / oldScale,
+          };
+
+          return {
+            camera: {
+              zoom: newScale,
+              x: pointer.x - mousePointTo.x * newScale,
+              y: pointer.y - mousePointTo.y * newScale,
+            },
+          };
+        }),
+
+      addElement: (el) => set((s) => ({ elements: [...s.elements, el] })),
+
+      updateElement: (id, updates) =>
+        set((s) => ({
+          elements: s.elements.map((el) =>
+            el.id === id ? ({ ...el, ...updates } as WorkspaceElement) : el,
+          ),
+        })),
+
+      deleteElement: (id) =>
+        set((s) => ({
+          elements: s.elements.filter((el) => el.id !== id),
+          selectedElementId:
+            s.selectedElementId === id ? null : s.selectedElementId,
+        })),
     }),
-
-  addElement: (el) =>
-    set((s) => ({
-      elements: [...s.elements, el],
-    })),
-
-  updateElement: (id, updates) =>
-    set((s) => ({
-      elements: s.elements.map((el) =>
-        el.id === id ? ({ ...el, ...updates } as WorkspaceElement) : el,
-      ),
-    })),
-
-  deleteElement: (id) =>
-    set((s) => ({
-      elements: s.elements.filter((el) => el.id !== id),
-    })),
-}));
+    {
+      partialize: (state) => ({ elements: state.elements }),
+    },
+  ),
+);

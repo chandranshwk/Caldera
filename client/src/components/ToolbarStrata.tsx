@@ -28,8 +28,9 @@ import {
 } from "react-icons/bi";
 import { MdOutlineStickyNote2 } from "react-icons/md";
 import { HiOutlinePhoto } from "react-icons/hi2";
-import { FiFilePlus } from "react-icons/fi";
+import { FiCircle, FiFilePlus, FiSquare, FiTriangle } from "react-icons/fi";
 import { useWorkspaceStore } from "../Pages/Strata/useStrataTools";
+import Dropdown, { type MenuItem } from "./Dropdown";
 
 // --- Types ---
 export type ToolId = string;
@@ -40,128 +41,155 @@ export interface ToolConfig {
   label: string;
   color?: string;
   func: () => void;
+  dialog?: MenuItem[];
 }
 
 interface ToolbarProps {
   darkMode: boolean;
   onToolSelect?: (id: ToolId) => void;
+  setShape: (shape: string) => void;
 }
 
-// --- 3 Logical Sections (Paginated) ---
-const PAGES: ToolConfig[][] = [
-  // PAGE 1: Core Interaction & Freeform Drawing
-  [
-    { id: "select", icon: LuMousePointer2, label: "Select", func: () => {} },
-    { id: "hand", icon: LuHand, label: "Hand/Pan", func: () => {} },
-    {
-      id: "draw",
-      icon: LuHighlighter,
-      color: "#f1c40f",
-      label: "Draw",
-      func: () => {},
-    },
-    {
-      id: "pen",
-      icon: LuSpline,
-      color: "#8e44ad",
-      label: "Pen Tool",
-      func: () => {},
-    },
-    { id: "erase", icon: LuEraser, label: "Eraser", func: () => {} },
-    {
-      id: "laser",
-      icon: LuPointer,
-      color: "#e67e22",
-      label: "Laser Pointer",
-      func: () => {},
-    },
-    {
-      id: "shapes",
-      icon: LuShapes,
-      color: "#9b59b6",
-      label: "Shapes",
-      func: () => {},
-    },
-    {
-      id: "text",
-      icon: LuType,
-      color: "#e74c3c",
-      label: "Text",
-      func: () => {},
-    },
-  ],
-  // PAGE 2: Structured Content & Logic
-  [
-    {
-      id: "sticky",
-      icon: MdOutlineStickyNote2,
-      color: "#2ecc71",
-      label: "Note",
-      func: () => {},
-    },
-    {
-      id: "image",
-      icon: HiOutlinePhoto,
-      color: "#3498db",
-      label: "Image",
-      func: () => {},
-    },
-    { id: "file", icon: FiFilePlus, label: "File Attachment", func: () => {} },
-    {
-      id: "flow",
-      icon: LuArrowRight,
-      color: "#1abc9c",
-      label: "Flow Line",
-      func: () => {},
-    },
-    {
-      id: "nodes",
-      icon: LuNetwork,
-      color: "#34495e",
-      label: "Logic Node",
-      func: () => {},
-    },
-    {
-      id: "commit",
-      icon: BiGitCommit,
-      color: "#f39c12",
-      label: "Nodes",
-      func: () => {},
-    },
-    {
-      id: "zap",
-      icon: LuZap,
-      color: "#f1c40f",
-      label: "Automation",
-      func: () => {},
-    },
-  ],
-  // PAGE 3: Editing, Collaboration & Settings
-  [
-    {
-      id: "task",
-      icon: BiCheckSquare,
-      color: "#e91e63",
-      label: "Task Card",
-      func: () => {},
-    },
-    {
-      id: "chat",
-      icon: BiMessageSquare,
-      color: "#607d8b",
-      label: "Team Chat",
-      func: () => {},
-    },
-    { id: "group", icon: LuGroup, label: "Group Items", func: () => {} },
-    { id: "layers", icon: LuLayers, label: "Layers", func: () => {} },
-    { id: "scale", icon: LuScaling, label: "Scale", func: () => {} },
-    { id: "scissors", icon: LuScissors, label: "Cut", func: () => {} },
-    { id: "grid", icon: BiGrid, label: "Snap Settings", func: () => {} },
-    { id: "timer", icon: BiCodeBlock, label: "Timeline", func: () => {} },
-  ],
-];
-
-const ToolbarStrata: React.FC<ToolbarProps> = ({ darkMode, onToolSelect }) => {
+const ToolbarStrata: React.FC<ToolbarProps> = ({
+  darkMode,
+  onToolSelect,
+  setShape,
+}) => {
+  // --- 3 Logical Sections (Paginated) ---
+  const PAGES: ToolConfig[][] = [
+    // PAGE 1: Core Interaction & Freeform Drawing
+    [
+      { id: "select", icon: LuMousePointer2, label: "Select", func: () => {} },
+      { id: "hand", icon: LuHand, label: "Hand/Pan", func: () => {} },
+      {
+        id: "draw",
+        icon: LuHighlighter,
+        color: "#f1c40f",
+        label: "Draw",
+        func: () => {},
+      },
+      {
+        id: "pen",
+        icon: LuSpline,
+        color: "#8e44ad",
+        label: "Pen Tool",
+        func: () => {},
+      },
+      { id: "erase", icon: LuEraser, label: "Eraser", func: () => {} },
+      {
+        id: "laser",
+        icon: LuPointer,
+        color: "#e67e22",
+        label: "Laser Pointer",
+        func: () => {},
+      },
+      {
+        id: "shapes",
+        icon: LuShapes,
+        color: "#9b59b6",
+        label: "Shapes",
+        func: () => {},
+        dialog: [
+          {
+            label: "Quadrilateral",
+            icon: <FiSquare />,
+            onClick: () => setShape("rect"),
+          },
+          {
+            label: "Circle",
+            icon: <FiCircle />,
+            onClick: () => setShape("circle"),
+          },
+          {
+            label: "Triangle",
+            icon: <FiTriangle />,
+            onClick: () => setShape("triangle"),
+          },
+        ],
+      },
+      {
+        id: "text",
+        icon: LuType,
+        color: "#e74c3c",
+        label: "Text",
+        func: () => {},
+      },
+    ],
+    // PAGE 2: Structured Content & Logic
+    [
+      {
+        id: "sticky",
+        icon: MdOutlineStickyNote2,
+        color: "#2ecc71",
+        label: "Note",
+        func: () => {},
+      },
+      {
+        id: "image",
+        icon: HiOutlinePhoto,
+        color: "#3498db",
+        label: "Image",
+        func: () => {},
+      },
+      {
+        id: "file",
+        icon: FiFilePlus,
+        label: "File Attachment",
+        func: () => {},
+      },
+      {
+        id: "flow",
+        icon: LuArrowRight,
+        color: "#1abc9c",
+        label: "Flow Line",
+        func: () => {},
+      },
+      {
+        id: "nodes",
+        icon: LuNetwork,
+        color: "#34495e",
+        label: "Logic Node",
+        func: () => {},
+      },
+      {
+        id: "commit",
+        icon: BiGitCommit,
+        color: "#f39c12",
+        label: "Nodes",
+        func: () => {},
+      },
+      {
+        id: "zap",
+        icon: LuZap,
+        color: "#f1c40f",
+        label: "Automation",
+        func: () => {},
+      },
+    ],
+    // PAGE 3: Editing, Collaboration & Settings
+    [
+      {
+        id: "task",
+        icon: BiCheckSquare,
+        color: "#e91e63",
+        label: "Task Card",
+        func: () => {},
+      },
+      {
+        id: "chat",
+        icon: BiMessageSquare,
+        color: "#607d8b",
+        label: "Team Chat",
+        func: () => {},
+      },
+      { id: "group", icon: LuGroup, label: "Group Items", func: () => {} },
+      { id: "layers", icon: LuLayers, label: "Layers", func: () => {} },
+      { id: "scale", icon: LuScaling, label: "Scale", func: () => {} },
+      { id: "scissors", icon: LuScissors, label: "Cut", func: () => {} },
+      { id: "grid", icon: BiGrid, label: "Snap Settings", func: () => {} },
+      { id: "timer", icon: BiCodeBlock, label: "Timeline", func: () => {} },
+    ],
+  ];
   const activeTool = useWorkspaceStore((state) => state.selectedTool);
   const setActiveTool = useWorkspaceStore((state) => state.setTool);
   const [page, setPage] = useState(0);
@@ -189,7 +217,7 @@ const ToolbarStrata: React.FC<ToolbarProps> = ({ darkMode, onToolSelect }) => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []); // Added dependency for safety
+  }, [PAGES.length]); // Added dependency for safety
 
   // Navigation with wrap-around logic
   const navigate = (dir: number) => {
@@ -199,6 +227,8 @@ const ToolbarStrata: React.FC<ToolbarProps> = ({ darkMode, onToolSelect }) => {
       return (prev + dir + total) % total;
     });
   };
+
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2">
@@ -223,9 +253,9 @@ const ToolbarStrata: React.FC<ToolbarProps> = ({ darkMode, onToolSelect }) => {
       {/* Main Dock */}
       <div
         className={`
-          flex items-center justify-evenly p-1.5 rounded-2xl w-max  border backdrop-blur-md shadow-2xl transition-colors duration-500
-          ${darkMode ? "bg-zinc-900/90 border-white/10" : "bg-white/90 border-zinc-200"}
-        `}
+      flex items-center justify-evenly p-1.5 rounded-2xl w-max border backdrop-blur-md shadow-2xl transition-colors duration-500
+      ${darkMode ? "bg-zinc-900/90 border-white/10" : "bg-white/90 border-zinc-200"}
+    `}
       >
         {/* Left Arrow */}
         <button
@@ -238,8 +268,8 @@ const ToolbarStrata: React.FC<ToolbarProps> = ({ darkMode, onToolSelect }) => {
           />
         </button>
 
-        {/* Paginated Tool Area - Fixed Width ensures the dock doesn't resize */}
-        <div className="flex items-center justify-center w-sm  overflow-hidden">
+        {/* Paginated Tool Area - Removed overflow-hidden to allow dropdown visibility */}
+        <div className="flex items-center justify-center w-sm">
           <AnimatePresence mode="wait">
             <motion.div
               key={page}
@@ -251,13 +281,16 @@ const ToolbarStrata: React.FC<ToolbarProps> = ({ darkMode, onToolSelect }) => {
             >
               {PAGES[page].map((tool) => {
                 const isActive = activeTool === tool.id;
-                return (
+
+                // Define the shared Button UI
+                const buttonElement = (
                   <button
-                    key={tool.id}
                     onClick={() => {
                       setActiveTool(tool.id);
                       onToolSelect?.(tool.id);
-                      if (tool.func) tool.func();
+                      tool.func?.();
+                      // Open dropdown only if this specific tool has one
+                      if (tool.dialog) setDialogOpen(dialogOpen ? false : true);
                     }}
                     onMouseEnter={() => setHoveredId(tool.id)}
                     onMouseLeave={() => setHoveredId(null)}
@@ -295,6 +328,21 @@ const ToolbarStrata: React.FC<ToolbarProps> = ({ darkMode, onToolSelect }) => {
                     )}
                   </button>
                 );
+
+                // Wrap with Dropdown logic if tool has dialog items
+                return tool.dialog ? (
+                  <Dropdown
+                    key={tool.id}
+                    darkMode={darkMode}
+                    // Check if this specific tool's ID is the one set to open
+                    externalOpen={dialogOpen}
+                    onClose={() => setDialogOpen(false)}
+                    items={tool.dialog}
+                    trigger={buttonElement}
+                  />
+                ) : (
+                  <div key={tool.id}>{buttonElement}</div>
+                );
               })}
             </motion.div>
           </AnimatePresence>
@@ -312,7 +360,7 @@ const ToolbarStrata: React.FC<ToolbarProps> = ({ darkMode, onToolSelect }) => {
         </button>
       </div>
 
-      {/* Page Breadcrumbs (Visual clue for Alt+1, 2, 3) */}
+      {/* Page Breadcrumbs */}
       <div className="flex gap-1.5">
         {PAGES.map((_, i) => (
           <div
