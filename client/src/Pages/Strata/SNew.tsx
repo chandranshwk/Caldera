@@ -141,22 +141,24 @@ const SNew = () => {
     if (!stage) return;
 
     const container = stage.container();
+    // Choose stroke color based on darkMode
+    const strokeColor = darkMode ? "white" : "black";
 
-    // Modern SVG Data URLs (scaled to 24px)
-    const grabSVG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0'/%3E%3Cpath d='M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0'/%3E%3Cpath d='M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0'/%3E%3Cpath d='M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15'/%3E%3C/svg%3E") 12 12, auto`;
+    // Modern SVG Data URLs with dynamic stroke color
+    const grabSVG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='${strokeColor}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0'/%3E%3Cpath d='M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0'/%3E%3Cpath d='M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0'/%3E%3Cpath d='M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15'/%3E%3C/svg%3E") 12 12, auto`;
 
-    const grabbingSVG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 9.5V4a2 2 0 0 1 2-2v0a2 2 0 0 1 2 2v10'/%3E%3Cpath d='M14 13V6a2 2 0 0 1 2-2v0a2 2 0 0 1 2 2v7'/%3E%3Cpath d='M18 13V8a2 2 0 0 1 2-2v0a2 2 0 0 1 2 2v10'/%3E%3Cpath d='M22 18a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15'/%3E%3Cpath d='M6 14V8a2 2 0 0 1 2-2v0a2 2 0 0 1 2 2v6'/%3E%3C/svg%3E") 12 12, auto`;
+    const grabbingSVG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='${strokeColor}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 9.5V4a2 2 0 0 1 2-2v0a2 2 0 0 1 2 2v10'/%3E%3Cpath d='M14 13V6a2 2 0 0 1 2-2v0a2 2 0 0 1 2 2v7'/%3E%3Cpath d='M18 13V8a2 2 0 0 1 2-2v0a2 2 0 0 1 2 2v10'/%3E%3Cpath d='M22 18a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15'/%3E%3Cpath d='M6 14V8a2 2 0 0 1 2-2v0a2 2 0 0 1 2 2v6'/%3E%3C/svg%3E") 12 12, auto`;
 
     const cursors: Record<string, string> = {
       select: "default",
-      hand: grabSVG, // High-quality hand
+      hand: grabSVG,
       shapes: "crosshair",
       draw: "crosshair",
     };
 
     container.style.cursor = cursors[selectedTool] || "default";
 
-    // Dynamic feedback for the Hand tool
+    // Type-safe handlers
     const handleMouseDown = () => {
       if (selectedTool === "hand") container.style.cursor = grabbingSVG;
     };
@@ -171,7 +173,7 @@ const SNew = () => {
       stage.off("mousedown", handleMouseDown);
       stage.off("mouseup", handleMouseUp);
     };
-  }, [selectedTool]);
+  }, [selectedTool, darkMode]); // Re-run when darkMode changes
 
   return (
     <div
