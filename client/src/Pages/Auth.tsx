@@ -19,7 +19,8 @@ const Auth = () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: "http://localhost:3000/auth",
+        // Dynamically use the API URL from your .env files
+        redirectTo: `${import.meta.env.VITE_API_URL}/auth`,
       },
     });
     if (error) toast.error(error.message);
@@ -29,7 +30,7 @@ const Auth = () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "http://localhost:3000/auth",
+        redirectTo: `${import.meta.env.VITE_API_URL}/auth`,
       },
     });
     if (error) toast.error(error.message);
