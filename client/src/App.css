@@ -334,3 +334,15 @@ body {
     transform: translateX(100%);
   }
 }
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s infinite linear;
+}

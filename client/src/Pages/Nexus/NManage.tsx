@@ -1,21 +1,19 @@
-import type { User } from "@supabase/supabase-js";
 import { IoIosArrowUp } from "react-icons/io";
 import { LuBook, LuBrush, LuHouse, LuPlane, LuWorkflow } from "react-icons/lu";
 import { RxDoubleArrowDown, RxDoubleArrowUp } from "react-icons/rx";
 import { useOutletContext } from "react-router-dom";
 import { faker } from "@faker-js/faker";
 import TableView from "./TableView";
-import CardView from "./CardView";
-import { useMemo, useState } from "react";
+import CardView, { type CardData } from "./CardView";
+import { useEffect, useMemo, useState } from "react";
 import { CiGrid32, CiViewColumn } from "react-icons/ci";
+import TaskView from "./TaskView";
+import { AnimatePresence } from "motion/react";
 
 const NManage = () => {
-  const { user, darkMode } = useOutletContext<{
-    user: User;
+  const { darkMode } = useOutletContext<{
     darkMode: boolean;
   }>();
-
-  console.log(user.email);
 
   const RECOMMENDFILTER = [
     {
@@ -61,76 +59,139 @@ const NManage = () => {
   ];
 
   const FINALDATA = useMemo(() => {
-    const createMockItem = () => ({
-      name: faker.company.catchPhrase(),
-      des: faker.lorem.paragraph({ min: 2, max: 10 }),
-      tag: [faker.commerce.department(), faker.commerce.product()],
-      metaData: {
-        subtaskLength: faker.number.int({ min: 5, max: 40 }),
-        subtask: Array.from(
-          { length: faker.number.int({ min: 1, max: 15 }) },
-          () => faker.lorem.words(3),
-        ),
-        currentStatus: faker.helpers.arrayElement([
-          "Not Started",
-          "In Progress",
-          "Done",
-        ]),
-        Importance: faker.helpers.arrayElement(["High", "Medium", "Low"]),
-        Time: `${faker.number.int({ min: 1, max: 30 })} days`,
-        Assignee: Array.from(
-          { length: faker.number.int({ min: 1, max: 10 }) },
-          () => faker.person.firstName(),
-        ),
-        AssigneeNumber: faker.number.int({ min: 1, max: 10 }),
-      },
-      progress: faker.number.int({ min: 0, max: 100 }),
-    });
+    const createMockItem = () => {
+      const subtaskCount = faker.number.int({ min: 5, max: 20 });
 
-    return Array.from(
-      { length: faker.number.int({ min: 1, max: 15 }) },
-      createMockItem,
-    );
+      // Create actual user objects for assignees
+      const assignees = Array.from(
+        { length: faker.number.int({ min: 1, max: 5 }) },
+        () => {
+          const firstName = faker.person.firstName();
+          const lastName = faker.person.lastName();
+          const fullName = `${firstName} ${lastName}`;
+          const id = faker.string.uuid();
+
+          return {
+            id,
+            name: fullName,
+            // Option A: Real faces using pravatar (Very stable)
+            avatar: faker.image.avatar(),
+
+            // Option B: Letter-based avatars if you prefer (Never fails)
+            // avatar: `https://ui-avatars.com{firstName}+${lastName}&background=random`,
+
+            initials: `${firstName.charAt(0)}${lastName.charAt(0)}`,
+          };
+        },
+      );
+
+      return {
+        name: faker.company.catchPhrase(),
+        des: faker.lorem.paragraph({ min: 2, max: 10 }),
+        tag: [faker.commerce.department(), faker.commerce.product()],
+        metaData: {
+          subtaskLength: subtaskCount,
+          subtask: Array.from({ length: subtaskCount }, () =>
+            faker.lorem.words(3),
+          ),
+          currentStatus: faker.helpers.arrayElement([
+            "Not Started",
+            "In Progress",
+            "Done",
+          ]),
+          Importance: faker.helpers.arrayElement(["High", "Medium", "Low"]),
+          Time: `${faker.number.int({ min: 1, max: 30 })} days`,
+          Assignee: assignees, // Now an array of objects
+          AssigneeNumber: assignees.length,
+        },
+        progress: faker.number.int({ min: 0, max: 100 }),
+      };
+    };
+
+    return Array.from({ length: 12 }, createMockItem);
   }, []);
 
   const [view, setView] = useState<number>(1);
+  const [selectedTask, setSelectedTask] = useState<CardData | null>(null);
+
+  const [closeView, setCloseView] = useState<boolean>(false);
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (selectedTask !== null) setCloseView(false);
+  }, [selectedTask, setSelectedTask]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return (
     <div
       className={`flex flex-col min-h-screen transition-colors duration-300`}
     >
-      <div className={`p-2 ${darkMode ? "bg-zinc-900/20" : "bg-zinc-100/20"}`}>
+      <div className={`p-2`}>
         <div
-          className={`flex flex-col gap-6 p-6 pt-4 ${darkMode ? "bg-zinc-950/30" : "bg-white/80"}  shadow-md rounded-lg`}
+          className={`p-8 rounded-lg  ${
+            darkMode
+              ? "bg-zinc-950/30  shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
+              : "bg-white  shadow-sm"
+          }`}
         >
-          <span className={`text-lg font-medium`}>Recommended Categories</span>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-1.5 h-6 bg-blue-500 rounded-full" />
+            <h3
+              className={`text-xs font-bold uppercase tracking-widest ${darkMode ? "text-zinc-500" : "text-zinc-400"}`}
+            >
+              Recommended Categories
+            </h3>
+          </div>
 
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {RECOMMENDFILTER.map((filter, idx) => (
-              <div
+              <button
                 key={idx}
                 className={`
-                flex items-center gap-2 px-5 py-3 pr-25 rounded-lg border transition-all duration-300 cursor-pointer hover:border-blue-500 active:scale-95 shadow-sm border-zinc-400/50
-              `}
+            group flex items-center justify-between p-4 rounded-xl border transition-all duration-300
+            ${
+              darkMode
+                ? "bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700"
+                : "bg-zinc-50/50 border-zinc-100 hover:bg-white hover:border-blue-200 hover:shadow-lg hover:shadow-blue-500/5"
+            }
+          `}
               >
-                {/* Icon Container */}
-                <div
-                  className={`p-2 rounded-xl flex items-center justify-center ${filter.color}`}
-                >
-                  {filter.icon}
+                <div className="flex items-center gap-4">
+                  <div
+                    className={`
+              w-12 h-12 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 
+              ${filter.color}
+            `}
+                  >
+                    {/* Ensure your icons have a size like size={20} */}
+                    {filter.icon}
+                  </div>
+
+                  <div className="flex flex-col items-start">
+                    <span
+                      className={`font-bold text-sm ${darkMode ? "text-white" : "text-zinc-800"}`}
+                    >
+                      {filter.title}
+                    </span>
+                    <span className="text-[10px] uppercase font-normal  opacity-50">
+                      Explore Items
+                    </span>
+                  </div>
                 </div>
 
-                {/* Text Label */}
-                <span
-                  className={`font-semibold text-sm ${darkMode ? "text-slate-100" : "text-slate-700"}`}
+                <div
+                  className={`
+            opacity-0 group-hover:opacity-100 transition-opacity duration-300 
+            ${darkMode ? "text-zinc-600" : "text-zinc-300"}
+          `}
                 >
-                  {filter.title}
-                </span>
-              </div>
+                  {/* Small Arrow Icon here if available, e.g. <FiChevronRight /> */}
+                </div>
+              </button>
             ))}
           </div>
         </div>
       </div>
+
       <div
         className={`p-2 mx-2 mt-4 ${darkMode ? "bg-zinc-950/30" : "bg-zinc-200/30"}`}
       >
@@ -176,16 +237,35 @@ const NManage = () => {
             <span>Card-View</span>
           </button>
         </div>
-
         <div className="p-2">
           {view === 1 ? (
-            <TableView darkMode={darkMode} DATA={FINALDATA} />
+            <TableView
+              selectedTask={selectedTask}
+              setSelectedTask={setSelectedTask}
+              darkMode={darkMode}
+              DATA={FINALDATA}
+            />
           ) : view === 2 ? (
-            <CardView darkMode={darkMode} DATA={FINALDATA} />
+            <CardView
+              setSelectedTask={setSelectedTask}
+              selectedTask={selectedTask}
+              darkMode={darkMode}
+              DATA={FINALDATA}
+            />
           ) : (
             <div>An error has occured</div>
           )}
         </div>
+        <AnimatePresence>
+          {!closeView && selectedTask && (
+            <TaskView
+              task={selectedTask}
+              darkMode={darkMode}
+              setSelectedTask={setSelectedTask}
+              isOpen={!closeView} // Pass the boolean directly
+            />
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

@@ -22,6 +22,12 @@ import { CSS } from "@dnd-kit/utilities";
 import CardUI from "./CardUI";
 import { FiPlus } from "react-icons/fi";
 
+export interface Assignee {
+  id: string;
+  name: string;
+  avatar: string;
+}
+
 export interface CardData {
   name: string;
   des: string;
@@ -32,8 +38,7 @@ export interface CardData {
     currentStatus: "Not Started" | "In Progress" | "Done";
     Importance: "High" | "Medium" | "Low";
     Time: string;
-    Assignee: string[];
-    AssigneeNumber: number;
+    Assignee: Assignee[];
   };
   progress: number;
 }
@@ -41,7 +46,26 @@ export interface CardData {
 interface CardViewProps {
   darkMode: boolean;
   DATA: CardData[];
+  selectedTask: CardData | null;
+  setSelectedTask: (card: CardData) => void;
 }
+
+interface DroppableColumnProps {
+  id: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
+import { useDroppable } from "@dnd-kit/core";
+
+const DroppableColumn = ({ id, children, className }: DroppableColumnProps) => {
+  const { setNodeRef } = useDroppable({ id });
+  return (
+    <div ref={setNodeRef} className={className}>
+      {children}
+    </div>
+  );
+};
 
 // --- Sortable Card Wrapper ---
 const SortableCard = ({
@@ -83,10 +107,14 @@ const SortableCard = ({
 };
 
 // --- Main View ---
-const CardView: React.FC<CardViewProps> = ({ darkMode, DATA }) => {
+const CardView: React.FC<CardViewProps> = ({
+  darkMode,
+  DATA,
+  selectedTask,
+  setSelectedTask,
+}) => {
   const [items, setItems] = useState<CardData[]>(DATA);
   const [activeItem, setActiveItem] = useState<CardData | null>(null);
-  const [selectedTask, setSelectedTask] = useState<CardData | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -116,23 +144,42 @@ const CardView: React.FC<CardViewProps> = ({ darkMode, DATA }) => {
 
     if (!over) return;
 
-    if (active.id !== over.id) {
-      setItems((prev) => {
-        const oldIndex = prev.findIndex((i) => i.name === active.id);
-        const newIndex = prev.findIndex((i) => i.name === over.id);
+    const activeId = active.id as string;
+    const overId = over.id as string;
 
-        const newItems = [...prev];
-        const movedItem = newItems[oldIndex];
-        const targetItem = newItems[newIndex];
+    setItems((prev) => {
+      const oldIndex = prev.findIndex((i) => i.name === activeId);
+      if (oldIndex === -1) return prev;
 
-        // Update status logic
-        if (movedItem && targetItem) {
-          movedItem.metaData.currentStatus = targetItem.metaData.currentStatus;
-        }
+      const movedItem = { ...prev[oldIndex] };
 
-        return arrayMove(newItems, oldIndex, newIndex);
-      });
-    }
+      // 1. Check if dropped over a COLUMN (empty column drop zone)
+      const isOverAColumn = columns.some((col) => col.key === overId);
+
+      if (isOverAColumn) {
+        movedItem.metaData.currentStatus =
+          overId as CardData["metaData"]["currentStatus"];
+        const filteredItems = prev.filter((i) => i.name !== activeId);
+        return [...filteredItems, movedItem];
+      }
+
+      // 2. Check if dropped over another CARD
+      const newIndex = prev.findIndex((i) => i.name === overId);
+      if (oldIndex !== newIndex && newIndex !== -1) {
+        const targetItem = prev[newIndex];
+
+        // Update status to match the column we dropped into
+        movedItem.metaData.currentStatus = targetItem.metaData.currentStatus;
+
+        // Create new array, update the moved item's status, then move it
+        const tempItems = [...prev];
+        tempItems[oldIndex] = movedItem;
+
+        return arrayMove(tempItems, oldIndex, newIndex);
+      }
+
+      return prev;
+    }); // Fixed: removed the extra semicolon and parentheses error here
   };
 
   return (
@@ -177,22 +224,39 @@ const CardView: React.FC<CardViewProps> = ({ darkMode, DATA }) => {
                   .map((i) => i.name)}
                 strategy={verticalListSortingStrategy}
               >
-                <div className="flex flex-col gap-4 min-h-5">
-                  {items
-                    .filter(
-                      (item) => item.metaData.currentStatus === column.key,
-                    )
-                    .map((item) => (
-                      <SortableCard
-                        selectedTask={selectedTask}
-                        key={item.name}
-                        id={item.name}
-                        data={item}
-                        darkMode={darkMode}
-                        setSelectedTask={setSelectedTask}
-                      />
-                    ))}
-                </div>
+                {/* Wrap the list container in DroppableColumn */}
+                <DroppableColumn
+                  id={column.key}
+                  className="flex flex-col gap-4 min-h-37.5"
+                >
+                  {items.filter(
+                    (item) => item.metaData.currentStatus === column.key,
+                  ).length > 0 ? (
+                    items
+                      .filter(
+                        (item) => item.metaData.currentStatus === column.key,
+                      )
+                      .map((item) => (
+                        <SortableCard
+                          selectedTask={selectedTask}
+                          key={item.name}
+                          id={item.name}
+                          data={item}
+                          darkMode={darkMode}
+                          setSelectedTask={setSelectedTask}
+                        />
+                      ))
+                  ) : (
+                    <div
+                      className={`h-24 border-2 border-dashed rounded-xl flex items-center justify-center 
+        ${darkMode ? "border-zinc-800 text-zinc-600" : "border-zinc-200 text-zinc-400"}`}
+                    >
+                      <span className="text-xs font-medium uppercase tracking-tighter">
+                        No tasks
+                      </span>
+                    </div>
+                  )}
+                </DroppableColumn>
               </SortableContext>
             </div>
           ))}

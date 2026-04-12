@@ -238,7 +238,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
 
   const theme = {
     overlay:
-      "fixed inset-0 z-50 flex items-start justify-center pt-[12vh] px-4",
+      "fixed inset-0 z-999 flex items-start justify-center pt-[12vh] px-4",
     backdrop: "fixed inset-0",
     panel: `relative w-full border-1 border-zinc-500/80 max-w-xl overflow-hidden border border-zinc-400/20 rounded-xl shadow-2xl transition-all duration-300 ${
       darkMode
