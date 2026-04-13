@@ -376,10 +376,7 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
                           transition: { duration: 0.15 },
                         }}
                         whileHover={{ x: isOpen ? 5 : 0 }}
-                        className={`flex items-center w-full gap-4 cursor-pointer group transition-all duration-300 
-          ${isOpen ? "justify-start px-2 py-1.5 rounded-xl" : "justify-center p-2 py-1 rounded-2xl"}
-          ${darkMode ? "hover:bg-[#27272bd4]" : "hover:bg-slate-50"}
-        `}
+                        className={`flex items-center w-full gap-4 cursor-pointer group transition-all duration-300 ${isOpen ? "justify-start px-2 py-1.5 rounded-xl" : "justify-center p-2 py-1 rounded-2xl"} ${darkMode ? "hover:bg-[#27272bd4]" : "hover:bg-slate-50"} `}
                         onClick={() => navigate(item.link)}
                       >
                         <div className="shrink-0 flex items-center justify-center w-6">
