@@ -19,7 +19,7 @@ const CardUI = ({
   const img = data.metaData.Assignee.flatMap((assignee) => assignee.avatar);
   return (
     <div
-      className={`group flex flex-col rounded-lg border transition-all duration-300 
+      className={`group select-none flex flex-col rounded-lg border transition-all duration-300 
       ${isOverlay ? "shadow-2xl cursor-grabbing" : ""}
       ${
         darkMode
@@ -35,8 +35,8 @@ const CardUI = ({
             data.metaData.Importance === "High"
               ? "bg-rose-100 text-rose-700"
               : data.metaData.Importance === "Medium"
-                ? "bg-indigo-100 text-indigo-700"
-                : "bg-cyan-100 text-cyan-700"
+                ? "bg-yellow-100 text-yellow-700"
+                : "bg-green-100 text-green-700"
           }`}
         >
           {data.metaData.Importance}

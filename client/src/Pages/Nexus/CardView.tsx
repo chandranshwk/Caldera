@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DndContext,
   closestCorners,
@@ -119,6 +119,10 @@ const CardView: React.FC<CardViewProps> = ({
 }) => {
   const [items, setItems] = useState<CardData[]>(DATA);
   const [activeItem, setActiveItem] = useState<CardData | null>(null);
+
+  useEffect(() => {
+    setItems(DATA);
+  }, [DATA]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),

@@ -17,7 +17,13 @@ const NManage = () => {
     darkMode: boolean;
   }>();
 
-  const RECOMMENDFILTER = [
+  type FILTERTYPE = {
+    title: string;
+    icon: React.ReactNode;
+    color: string;
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const RECOMMENDFILTER: FILTERTYPE[] = [
     {
       title: "Home Help",
       icon: <LuHouse size={18} />,
@@ -64,32 +70,18 @@ const NManage = () => {
   const FINALDATA = useMemo(() => {
     const createMockItem = () => {
       const subtaskCount = faker.number.int({ min: 5, max: 20 });
-
-      // 1. Generate subtasks with a completion status
       const subtasks = Array.from({ length: subtaskCount }, () => ({
         name: faker.lorem.words(3),
-        isCompleted: faker.datatype.boolean(), // Randomly true or false
+        isCompleted: faker.datatype.boolean(),
       }));
 
-      // 2. Calculate actual progress based on completed subtasks
       const completedCount = subtasks.filter((s) => s.isCompleted).length;
       const calculatedProgress = Math.round(
         (completedCount / subtaskCount) * 100,
       );
 
-      const assignees = Array.from(
-        { length: faker.number.int({ min: 1, max: 5 }) },
-        () => {
-          const firstName = faker.person.firstName();
-          const lastName = faker.person.lastName();
-          return {
-            id: faker.string.uuid(),
-            name: `${firstName} ${lastName}`,
-            avatar: faker.image.avatar(),
-            initials: `${firstName.charAt(0)}${lastName.charAt(0)}`,
-          };
-        },
-      );
+      // 1. USE SLICE, NOT SPLICE (to keep the original array intact)
+      const CATEGORY_OPTIONS = RECOMMENDFILTER.slice(0, 5).map((c) => c.title);
 
       let currentStatus: StatusType = "In Progress";
       if (calculatedProgress === 100) currentStatus = "Done";
@@ -99,32 +91,31 @@ const NManage = () => {
         id: uuidv4(),
         name: faker.company.catchPhrase(),
         des: faker.lorem.paragraph({ min: 2, max: 10 }),
-        tag: [faker.commerce.department(), faker.commerce.product()],
+        // 2. Select exactly one valid category title that matches your buttons
+        tag: [faker.helpers.arrayElement(CATEGORY_OPTIONS)],
         metaData: {
           subtaskLength: subtaskCount,
-          subtask: subtasks, // Now contains objects with status
+          subtask: subtasks,
           currentStatus: currentStatus,
           Importance: faker.helpers.arrayElement(["High", "Medium", "Low"]),
           Time: `${faker.number.int({ min: 1, max: 30 })} days`,
-          Assignee: assignees,
-          AssigneeNumber: assignees.length,
+          Assignee: [], // ... (your assignee logic)
+          AssigneeNumber: 0,
         },
-        progress: calculatedProgress, // Tied to subtask completion
+        progress: calculatedProgress,
       };
     };
 
     return Array.from({ length: 12 }, createMockItem);
-  }, []);
+  }, [RECOMMENDFILTER]);
 
   const [view, setView] = useState<number>(1);
   const [selectedTask, setSelectedTask] = useState<CardData | null>(null);
 
   const [closeView, setCloseView] = useState<boolean>(false);
-  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (selectedTask !== null) setCloseView(false);
   }, [selectedTask, setSelectedTask]);
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   const options = [
     {
@@ -172,9 +163,31 @@ const NManage = () => {
     if (selectedTask) {
       toggleSubtask(selectedTask?.id, selectedSubTask);
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedSubTask(-1);
   }, [selectedSubTask, selectedTask, data]);
+
+  const [filters, setFilters] = useState<FILTERTYPE[]>([]);
+
+  const DATA = useMemo(() => {
+    // 1. If no filters are selected, return the live 'data' state
+    if (filters.length === 0) return data;
+
+    // 2. Filter the live 'data' state
+    return data.filter((item) => {
+      // Check if any card tag matches the title of an active filter button
+      const matchesTag = item.tag.some((t) =>
+        filters.some((f) => f.title === t),
+      );
+
+      // Check if the card's Importance matches a "Priority - X" filter button
+      const matchesPriority = filters.some((f) => {
+        const priorityValue = f.title.replace("Priority - ", "");
+        return item.metaData.Importance === priorityValue;
+      });
+
+      return matchesTag || matchesPriority;
+    });
+  }, [data, filters]); // data dependency ensures it updates when subtasks/drags happen
 
   return (
     <div
@@ -198,51 +211,55 @@ const NManage = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {RECOMMENDFILTER.map((filter, idx) => (
-              <button
-                key={idx}
-                className={`
-            group flex items-center justify-between p-4 rounded-xl border transition-all duration-300
-            ${
-              darkMode
-                ? "bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700"
-                : "bg-zinc-50/50 border-zinc-100 hover:bg-white hover:border-blue-200 hover:shadow-lg hover:shadow-blue-500/5"
-            }
-          `}
-              >
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`
-              w-12 h-12 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 
-              ${filter.color}
-            `}
-                  >
-                    {/* Ensure your icons have a size like size={20} */}
-                    {filter.icon}
-                  </div>
+            {RECOMMENDFILTER.map((filter, idx) => {
+              // 1. Determine if this specific button is currently active
+              const isActive = filters.some((f) => f.title === filter.title);
 
-                  <div className="flex flex-col items-start">
-                    <span
-                      className={`font-bold text-sm ${darkMode ? "text-white" : "text-zinc-800"}`}
-                    >
-                      {filter.title}
-                    </span>
-                    <span className="text-[10px] uppercase font-normal  opacity-50">
-                      Explore Items
-                    </span>
-                  </div>
-                </div>
-
-                <div
+              return (
+                <button
+                  key={idx}
                   className={`
-            opacity-0 group-hover:opacity-100 transition-opacity duration-300 
-            ${darkMode ? "text-zinc-600" : "text-zinc-300"}
-          `}
+        group flex items-center justify-between p-4 rounded-xl border transition-all duration-300
+        ${
+          darkMode
+            ? isActive
+              ? "bg-zinc-800 border-blue-500 shadow-lg" // Active Dark
+              : "bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800" // Inactive Dark
+            : isActive
+              ? "bg-white border-blue-500 shadow-md shadow-blue-500/10" // Active Light
+              : "bg-zinc-50/50 border-zinc-100 hover:bg-white hover:border-blue-200" // Inactive Light
+        }
+      `}
+                  onClick={() =>
+                    setFilters(
+                      (prev) =>
+                        // 2. Use .some and .filter with a specific property check
+                        prev.some((f) => f.title === filter.title)
+                          ? prev.filter((f) => f.title !== filter.title) // Remove
+                          : [...prev, filter], // Add
+                    )
+                  }
                 >
-                  {/* Small Arrow Icon here if available, e.g. <FiChevronRight /> */}
-                </div>
-              </button>
-            ))}
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${filter.color}`}
+                    >
+                      {filter.icon}
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <span
+                        className={`font-bold text-sm ${darkMode ? "text-white" : "text-zinc-800"} ${isActive ? "text-blue-500" : ""}`}
+                      >
+                        {filter.title}
+                      </span>
+                      <span className="text-[10px] uppercase font-normal opacity-50">
+                        Explore Items
+                      </span>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -257,14 +274,14 @@ const NManage = () => {
               selectedTask={selectedTask}
               setSelectedTask={setSelectedTask}
               darkMode={darkMode}
-              DATA={FINALDATA}
+              DATA={DATA}
             />
           ) : view === 1 ? (
             <CardView
               setSelectedTask={setSelectedTask}
               selectedTask={selectedTask}
               darkMode={darkMode}
-              DATA={FINALDATA}
+              DATA={DATA}
             />
           ) : (
             <div>An error has occured</div>

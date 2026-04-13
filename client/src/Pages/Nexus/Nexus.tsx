@@ -7,7 +7,6 @@ interface Props {
 }
 
 const Nexus: React.FC<Props> = ({ darkMode, user }) => {
-  console.log(user.email);
   const location = useLocation();
 
   // Logic to extract the sub-page name for the breadcrumb
