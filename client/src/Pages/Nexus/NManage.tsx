@@ -109,7 +109,7 @@ const NManage = () => {
     return Array.from({ length: 12 }, createMockItem);
   }, [RECOMMENDFILTER]);
 
-  const [view, setView] = useState<number>(1);
+  const [view, setView] = useState<number>(0);
   const [selectedTask, setSelectedTask] = useState<CardData | null>(null);
 
   const [closeView, setCloseView] = useState<boolean>(false);
