@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "../components/Input";
 import { motion, AnimatePresence } from "motion/react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
@@ -15,11 +15,22 @@ const Auth = () => {
 
   const navigate = useNavigate();
 
+  // 1. Initial check: If user lands on /auth but is already logged in, send them to profile
+  useEffect(() => {
+    const checkUser = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) navigate("/profile");
+    };
+    checkUser();
+  }, [navigate]);
+
   const signInWithGitHub = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        // Dynamically use the API URL from your .env files
+        // Points to your /auth route which App.tsx is watching
         redirectTo: `${import.meta.env.VITE_API_URL}/auth`,
       },
     });
@@ -41,20 +52,22 @@ const Auth = () => {
       ? supabase.auth.signUp({
           email,
           password,
-          options: { data: { full_name: name } },
+          options: {
+            data: { full_name: name },
+            // Ensures the link in the confirmation email also redirects to /auth
+            emailRedirectTo: `${import.meta.env.VITE_API_URL}/auth`,
+          },
         })
       : supabase.auth.signInWithPassword({ email, password }));
 
     if (error) {
       toast.error(error.message);
     } else {
-      // 1. If we have a session (login success or signup with no email confirm)
       if (data?.session) {
-        localStorage.setItem("token", data.session.access_token);
         toast.success(`Logged In Successfully`);
         navigate("/profile");
       } else {
-        // 2. If no session, they probably need to check email
+        // This triggers if email confirmation is enabled in Supabase
         toast.info("Check your email to confirm your account!");
       }
     }
