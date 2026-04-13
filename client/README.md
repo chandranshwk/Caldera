@@ -1,73 +1,29 @@
-# React + TypeScript + Vite
+Caldera
+Caldera is a professional-grade productivity ecosystem designed for seamless coordination and high-performance creative work. It is built on a "Local-First, Lazy-Sync" architecture that ensures zero-latency and data resilience.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The Four Pillars
+Caldera is structured into four specialized modules, each serving a core pillar of professional workflows:
 
-Currently, two official plugins are available:
+Forge: A unified document suite featuring a rich-text word editor and integrated sheet editor for data management.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Nexus: A robust task management engine designed for both personal focus and cross-team coordination.
 
-## React Compiler
+Hearth: A real-time communication hub for persistent chat and collaborative presence.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Canvas: An infinite 2D whiteboard plane for visual brainstorming, architectural planning, and freeform drawing.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Tech Stack
+UI Framework: React 19 + Vite
+Styling: Tailwind CSS 4.0 + DaisyUI
+State Management: Zustand (State) & Zundo (Undo/Redo)
+Canvas Engine: React Konva
+Rich Text: TipTap
+Drag & Drop: @dnd-kit
+Animations: Framer Motion
+Getting Started
+Install dependencies:
+npm install
+Run development server:
+npm run dev
+Build project:
+npm run build
