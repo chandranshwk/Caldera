@@ -168,21 +168,36 @@ const TaskView: React.FC<TaskViewProps> = ({
                         </div>
                       </div>
                       {/* Subtasks */}
-                      <div className="flex flex-col ">
+                      <div className="flex flex-col mt-2">
                         {task.metaData.subtask.map((st, idx) => (
                           <div
                             key={idx}
-                            className="w-full flex items-center gap-5 bg-whtie hover:bg-zinc-300/20 p-2 cursor-pointer"
+                            className="group w-full flex items-center gap-4 py-3 px-2 rounded-xl transition-all duration-200 hover:bg-zinc-500/5 cursor-pointer"
                             onClick={() => toggleSubtask(idx)}
                           >
-                            <span>
+                            {/* Custom Styled Checkbox Container */}
+                            <div className="flex items-center justify-center">
                               {st.isCompleted ? (
-                                <IoIosCheckbox />
+                                <div className="text-zinc-900 bg-zinc-100 rounded-md p-0.5 ring-1 ring-zinc-200 transition-all duration-300">
+                                  <IoIosCheckbox size={20} />
+                                </div>
                               ) : (
-                                <MdOutlineCheckBoxOutlineBlank />
+                                <div className="text-zinc-300 group-hover:text-zinc-400 transition-colors duration-200">
+                                  <MdOutlineCheckBoxOutlineBlank size={20} />
+                                </div>
                               )}
+                            </div>
+
+                            {/* Task Text with Completion Styles */}
+                            <span
+                              className={`text-sm transition-all duration-300 ${
+                                st.isCompleted
+                                  ? "text-zinc-400 line-through decoration-zinc-300/80 italic"
+                                  : "text-zinc-700 font-medium"
+                              }`}
+                            >
+                              {st.name}
                             </span>
-                            <span>{st.name}</span>
                           </div>
                         ))}
                       </div>
