@@ -277,7 +277,7 @@ const NManage = () => {
               task={selectedTask}
               darkMode={darkMode}
               setSelectedTask={setSelectedTask}
-              isOpen={!closeView} // Pass the boolean directly
+              isOpen={!closeView}
             />
           )}
         </AnimatePresence>

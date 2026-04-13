@@ -183,7 +183,7 @@ const CardView: React.FC<CardViewProps> = ({
       }
 
       return prev;
-    }); // Fixed: removed the extra semicolon and parentheses error here
+    });
   };
 
   return (
