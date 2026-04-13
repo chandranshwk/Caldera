@@ -29,12 +29,16 @@ export interface Assignee {
 }
 
 export interface CardData {
+  id: string;
   name: string;
   des: string;
   tag: string[];
   metaData: {
     subtaskLength: number;
-    subtask: string[];
+    subtask: {
+      name: string;
+      isCompleted: boolean;
+    }[];
     currentStatus: "Not Started" | "In Progress" | "Done";
     Importance: "High" | "Medium" | "Low";
     Time: string;

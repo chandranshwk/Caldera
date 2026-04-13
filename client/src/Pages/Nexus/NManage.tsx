@@ -10,6 +10,7 @@ import { CiGrid32, CiViewColumn } from "react-icons/ci";
 import TaskView from "./TaskView";
 import { AnimatePresence } from "motion/react";
 import Carasoul from "../../components/Carasoul";
+import { v4 as uuidv4 } from "uuid";
 
 const NManage = () => {
   const { darkMode } = useOutletContext<{
@@ -58,54 +59,57 @@ const NManage = () => {
       color: `${darkMode ? "text-red-200" : "text-red-700"}`,
     },
   ];
+  type StatusType = "Not Started" | "In Progress" | "Done";
 
   const FINALDATA = useMemo(() => {
     const createMockItem = () => {
       const subtaskCount = faker.number.int({ min: 5, max: 20 });
 
-      // Create actual user objects for assignees
+      // 1. Generate subtasks with a completion status
+      const subtasks = Array.from({ length: subtaskCount }, () => ({
+        name: faker.lorem.words(3),
+        isCompleted: faker.datatype.boolean(), // Randomly true or false
+      }));
+
+      // 2. Calculate actual progress based on completed subtasks
+      const completedCount = subtasks.filter((s) => s.isCompleted).length;
+      const calculatedProgress = Math.round(
+        (completedCount / subtaskCount) * 100,
+      );
+
       const assignees = Array.from(
         { length: faker.number.int({ min: 1, max: 5 }) },
         () => {
           const firstName = faker.person.firstName();
           const lastName = faker.person.lastName();
-          const fullName = `${firstName} ${lastName}`;
-          const id = faker.string.uuid();
-
           return {
-            id,
-            name: fullName,
-            // Option A: Real faces using pravatar (Very stable)
+            id: faker.string.uuid(),
+            name: `${firstName} ${lastName}`,
             avatar: faker.image.avatar(),
-
-            // Option B: Letter-based avatars if you prefer (Never fails)
-            // avatar: `https://ui-avatars.com{firstName}+${lastName}&background=random`,
-
             initials: `${firstName.charAt(0)}${lastName.charAt(0)}`,
           };
         },
       );
 
+      let currentStatus: StatusType = "In Progress";
+      if (calculatedProgress === 100) currentStatus = "Done";
+      if (calculatedProgress === 0) currentStatus = "Not Started";
+
       return {
+        id: uuidv4(),
         name: faker.company.catchPhrase(),
         des: faker.lorem.paragraph({ min: 2, max: 10 }),
         tag: [faker.commerce.department(), faker.commerce.product()],
         metaData: {
           subtaskLength: subtaskCount,
-          subtask: Array.from({ length: subtaskCount }, () =>
-            faker.lorem.words(3),
-          ),
-          currentStatus: faker.helpers.arrayElement([
-            "Not Started",
-            "In Progress",
-            "Done",
-          ]),
+          subtask: subtasks, // Now contains objects with status
+          currentStatus: currentStatus,
           Importance: faker.helpers.arrayElement(["High", "Medium", "Low"]),
           Time: `${faker.number.int({ min: 1, max: 30 })} days`,
-          Assignee: assignees, // Now an array of objects
+          Assignee: assignees,
           AssigneeNumber: assignees.length,
         },
-        progress: faker.number.int({ min: 0, max: 100 }),
+        progress: calculatedProgress, // Tied to subtask completion
       };
     };
 
@@ -134,6 +138,43 @@ const NManage = () => {
       exec: () => setView(1),
     },
   ];
+
+  const [selectedSubTask, setSelectedSubTask] = useState<number>(0);
+  const [data, setData] = useState(FINALDATA);
+
+  useEffect(() => {
+    if (!selectedTask || selectedSubTask === -1) return;
+    const toggleSubtask = (cardIdx: string, subtaskIdx: number) => {
+      const newData = [...data];
+      const cards = newData.filter((c) => c.id === cardIdx);
+      const card = cards[0];
+      const subtask = card.metaData.subtask[subtaskIdx];
+
+      // 1. Flip the state
+      subtask.isCompleted = !subtask.isCompleted;
+
+      // 2. Recalculate progress for this card
+      const completed = card.metaData.subtask.filter(
+        (s) => s.isCompleted,
+      ).length;
+      card.progress = Math.round(
+        (completed / card.metaData.subtask.length) * 100,
+      );
+
+      // 3. Update Status
+      if (card.progress === 100) card.metaData.currentStatus = "Done";
+      else if (card.progress === 0) card.metaData.currentStatus = "Not Started";
+      else card.metaData.currentStatus = "In Progress";
+
+      setData(newData);
+    };
+
+    if (selectedTask) {
+      toggleSubtask(selectedTask?.id, selectedSubTask);
+    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSelectedSubTask(-1);
+  }, [selectedSubTask, selectedTask, data]);
 
   return (
     <div
@@ -232,6 +273,7 @@ const NManage = () => {
         <AnimatePresence>
           {!closeView && selectedTask && (
             <TaskView
+              toggleSubtask={setSelectedSubTask}
               task={selectedTask}
               darkMode={darkMode}
               setSelectedTask={setSelectedTask}

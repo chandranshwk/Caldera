@@ -13,12 +13,15 @@ import {
 } from "react-icons/lu";
 import { useEffect, useState } from "react";
 import Carasoul from "../../components/Carasoul";
+import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
+import { IoIosCheckbox } from "react-icons/io";
 
 interface TaskViewProps {
   darkMode: boolean;
   task: CardData | null;
   isOpen: boolean;
   setSelectedTask: (value: CardData | null) => void;
+  toggleSubtask: (value: number) => void;
 }
 
 const TaskView: React.FC<TaskViewProps> = ({
@@ -26,6 +29,7 @@ const TaskView: React.FC<TaskViewProps> = ({
   task,
   isOpen,
   setSelectedTask,
+  toggleSubtask,
 }) => {
   const [showFullDes, setShowFullDes] = useState<boolean>(false);
   const [showMetaData, setShowMetaData] = useState<boolean>(false);
@@ -145,6 +149,52 @@ const TaskView: React.FC<TaskViewProps> = ({
                   options={options}
                   view={selectedOption}
                 />
+                <div>
+                  {selectedOption === 0 ? (
+                    <div className="px-5 mt-4">
+                      {/* Progress */}
+                      <div className="space-y-1.5 mb-4">
+                        <div className="flex justify-between text-[9px] font-bold text-zinc-400">
+                          <span>PROGRESS</span>
+                          <span>{task.progress}%</span>
+                        </div>
+                        <div
+                          className={`h-1 w-full rounded-full ${darkMode ? "bg-zinc-800" : "bg-zinc-100"}`}
+                        >
+                          <div
+                            className={`h-full rounded-full transition-all duration-500 ${darkMode ? "bg-indigo-500" : "bg-zinc-900"}`}
+                            style={{ width: `${task.progress}%` }}
+                          />
+                        </div>
+                      </div>
+                      {/* Subtasks */}
+                      <div className="flex flex-col ">
+                        {task.metaData.subtask.map((st, idx) => (
+                          <div
+                            key={idx}
+                            className="w-full flex items-center gap-5 bg-whtie hover:bg-zinc-300/20 p-2 cursor-pointer"
+                            onClick={() => toggleSubtask(idx)}
+                          >
+                            <span>
+                              {st.isCompleted ? (
+                                <IoIosCheckbox />
+                              ) : (
+                                <MdOutlineCheckBoxOutlineBlank />
+                              )}
+                            </span>
+                            <span>{st.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : selectedOption === 1 ? (
+                    <div>An error has occured</div>
+                  ) : selectedOption === 2 ? (
+                    <div>An error has occured</div>
+                  ) : (
+                    <div>An error has occured</div>
+                  )}
+                </div>
               </div>
             </div>
           </motion.div>
