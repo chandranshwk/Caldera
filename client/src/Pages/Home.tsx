@@ -1,5 +1,5 @@
 import type { User } from "@supabase/supabase-js";
-import { FiSun, FiMoon } from "react-icons/fi"; // Using Feather icons for the Apple look
+import { FiSun, FiMoon } from "react-icons/fi";
 
 interface HomeProps {
   darkMode: boolean;
@@ -7,8 +7,7 @@ interface HomeProps {
   user: User;
 }
 
-const Home: React.FC<HomeProps> = ({ darkMode, setDarkMode, user }) => {
-  console.log(user.email);
+const Home: React.FC<HomeProps> = ({ darkMode, setDarkMode }) => {
   return (
     <div
       className={`h-full w-[calc(100%-0.4rem)] p-6 transition-all duration-300 border ${
@@ -18,9 +17,25 @@ const Home: React.FC<HomeProps> = ({ darkMode, setDarkMode, user }) => {
       } shadow-sm`}
     >
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Global Dashboard</h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-2xl font-bold">Global Dashboard</h1>
 
-        {/* The Toggle Button */}
+          {/* Subtle Ctrl+K Hint */}
+          <div
+            className={`hidden md:flex items-center gap-1.5 px-2 py-1 rounded border text-[10px] font-medium opacity-50 ${
+              darkMode
+                ? "border-zinc-700 bg-zinc-800"
+                : "border-slate-200 bg-slate-50"
+            }`}
+          >
+            <span>Press</span>
+            <kbd className="font-sans">Ctrl</kbd>
+            <span>+</span>
+            <kbd className="font-sans">K</kbd>
+            <span>for commands</span>
+          </div>
+        </div>
+
         <button
           onClick={() => setDarkMode(!darkMode)}
           className={`p-2 rounded-full transition-colors ${
