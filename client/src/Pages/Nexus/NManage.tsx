@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CiGrid32, CiViewColumn } from "react-icons/ci";
 import TaskView from "./TaskView";
 import { AnimatePresence } from "motion/react";
+import Carasoul from "../../components/Carasoul";
 
 const NManage = () => {
   const { darkMode } = useOutletContext<{
@@ -121,6 +122,19 @@ const NManage = () => {
   }, [selectedTask, setSelectedTask]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
+  const options = [
+    {
+      name: "Table View",
+      icon: <CiViewColumn className="text-xl" />,
+      exec: () => setView(0),
+    },
+    {
+      name: "Card View",
+      icon: <CiGrid32 className="text-xl" />,
+      exec: () => setView(1),
+    },
+  ];
+
   return (
     <div
       className={`flex flex-col min-h-screen transition-colors duration-300`}
@@ -195,57 +209,16 @@ const NManage = () => {
       <div
         className={`p-2 mx-2 mt-4 ${darkMode ? "bg-zinc-950/30" : "bg-zinc-200/30"}`}
       >
-        <div
-          className={`relative left-2 flex items-center p-1.5 py-2 rounded-lg my-4 w-fit shadow-inner border transition-colors duration-300 ${darkMode ? "bg-zinc-950/40 border-zinc-700" : "bg-zinc-50 border-zinc-600/30"}`}
-        >
-          {/* Sliding Background Indicator */}
-          <div
-            className={`absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] rounded-xl shadow-sm transition-all duration-300 ease-in-out z-0 ${view === 2 ? "translate-x-full" : "translate-x-0"} ${darkMode ? "bg-indigo-700/40" : "bg-indigo-200/40"}`}
-          />
-
-          {/* Table View Button */}
-          <button
-            onClick={() => setView(1)}
-            className={`relative z-10 flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-200 ${
-              view === 1
-                ? darkMode
-                  ? "text-white"
-                  : "text-zinc-900"
-                : darkMode
-                  ? "text-zinc-400 hover:text-zinc-100"
-                  : "text-zinc-700 hover:text-zinc-900"
-            }`}
-          >
-            <CiViewColumn className="text-xl" />
-            <span>Table-View</span>
-          </button>
-
-          {/* Card View Button */}
-          <button
-            onClick={() => setView(2)}
-            className={`relative z-10 flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-200 ${
-              view === 2
-                ? darkMode
-                  ? "text-white"
-                  : "text-zinc-900"
-                : darkMode
-                  ? "text-zinc-500 hover:text-zinc-300"
-                  : "text-zinc-500 hover:text-zinc-700"
-            }`}
-          >
-            <CiGrid32 className="text-xl" />
-            <span>Card-View</span>
-          </button>
-        </div>
-        <div className="p-2">
-          {view === 1 ? (
+        <Carasoul darkMode={darkMode} options={options} view={view} />
+        <div className="">
+          {view === 0 ? (
             <TableView
               selectedTask={selectedTask}
               setSelectedTask={setSelectedTask}
               darkMode={darkMode}
               DATA={FINALDATA}
             />
-          ) : view === 2 ? (
+          ) : view === 1 ? (
             <CardView
               setSelectedTask={setSelectedTask}
               selectedTask={selectedTask}

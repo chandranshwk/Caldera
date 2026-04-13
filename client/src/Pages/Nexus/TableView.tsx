@@ -19,7 +19,7 @@ const TableView: React.FC<TableViewProps> = ({
 }) => {
   return (
     <div
-      className={`shadow-md rounded-lg overflow-hidden ${darkMode ? "bg-zinc-900/20" : "bg-white"}`}
+      className={`shadow-md mt-4 rounded-lg overflow-hidden ${darkMode ? "bg-zinc-900/20" : "bg-white"}`}
     >
       {/* Changed from table to div to support flex layout properly */}
       <div className="flex flex-col gap-2 w-full p-1">
