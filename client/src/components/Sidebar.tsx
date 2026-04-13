@@ -8,11 +8,11 @@ import {
   useNavigate,
   type NavigateFunction,
 } from "react-router-dom";
-import ProjectEye from "./ProjectEye";
 import type { MenuItem } from "./Dropdown";
 import { IoIosArrowForward } from "react-icons/io";
 import Dropdown from "./Dropdown";
 import type { User } from "@supabase/supabase-js";
+import ProjectIcon from "./ProjectIcon";
 
 interface SidebarProps {
   darkMode: boolean;
@@ -110,7 +110,6 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
       );
 
       if (matchedProject) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCurrentSide({
           name: matchedProject.label,
           icon: (
@@ -155,7 +154,7 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
     // 2. Map to MenuItem interface
     const mappedItems: MenuItem[] = filtered.map((item) => ({
       label: item.label,
-      icon: <ProjectEye color={item.color} />,
+      icon: <ProjectIcon color={item.color} />,
       onClick: () => navigate(item.link),
       variant: "default",
     }));
@@ -378,13 +377,13 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
                         }}
                         whileHover={{ x: isOpen ? 5 : 0 }}
                         className={`flex items-center w-full gap-4 cursor-pointer group transition-all duration-300 
-          ${isOpen ? "justify-start px-2 py-1.5 rounded-xl" : "justify-center p-2 rounded-2xl"}
+          ${isOpen ? "justify-start px-2 py-1.5 rounded-xl" : "justify-center p-2 py-1 rounded-2xl"}
           ${darkMode ? "hover:bg-[#27272bd4]" : "hover:bg-slate-50"}
         `}
                         onClick={() => navigate(item.link)}
                       >
                         <div className="shrink-0 flex items-center justify-center w-6">
-                          <ProjectEye color={item.color} />
+                          <ProjectIcon color={item.color} />
                         </div>
 
                         <AnimatePresence mode="wait">
