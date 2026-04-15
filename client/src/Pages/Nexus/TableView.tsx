@@ -96,11 +96,11 @@ const TableView: React.FC<TableViewProps> = ({
                 {/* Status Badge */}
                 <div
                   className={`flex items-center px-3 py-1 text-[11px] font-bold rounded-md ${
-                    data.metaData.currentStatus === "Not Started"
+                    data.metaData.currentStatus === "To-Do"
                       ? darkMode
                         ? "bg-orange-900/30 text-orange-200"
                         : "bg-[#FEEADF] text-[#7A3E26]"
-                      : data.metaData.currentStatus === "In Progress"
+                      : data.metaData.currentStatus === "In-Progress"
                         ? darkMode
                           ? "bg-blue-900/30 text-blue-200"
                           : "bg-[#E0F2FE] text-[#0369A1]"

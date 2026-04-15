@@ -49,15 +49,15 @@ const MetaData = ({
   };
   const getStatusContent = (status: string) => {
     const configs = {
-      "Not Started": {
+      "To-Do": {
         style: "bg-zinc-500/10 text-zinc-500",
         icon: <LuCircleDashed className="text-lg animate-pulse-slow" />,
         label: "To Do",
       },
-      "In Progress": {
+      "In-Progress": {
         style: "bg-blue-500/10 text-blue-500",
         icon: <LuCircleDot className="text-lg" />,
-        label: "In Progress",
+        label: "In-Progress",
       },
       Done: {
         style: "bg-emerald-500/10 text-emerald-500",
@@ -66,8 +66,7 @@ const MetaData = ({
       },
     };
 
-    const current =
-      configs[status as keyof typeof configs] || configs["Not Started"];
+    const current = configs[status as keyof typeof configs] || configs["To-Do"];
 
     return (
       <div

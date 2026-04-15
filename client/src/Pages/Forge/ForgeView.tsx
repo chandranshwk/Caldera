@@ -303,7 +303,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
                 /
               </span>
               <h1
-                className={`text-sm font-bold tracking-tight ${darkMode ? "text-slate-900" : "text-slate-900"}`}
+                className={`text-sm font-bold tracking-tight ${darkMode ? "text-slate-100" : "text-slate-900"}`}
               >
                 {displayName || formattedPage}
               </h1>
@@ -345,7 +345,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
     transition-colors duration-200  leading-snug h-max pb-1 pl-4
     ${
       darkMode
-        ? "text-white focus:border-white/10 placeholder:text-slate-700"
+        ? "text-slate-900 focus:border-white/10 placeholder:text-slate-700"
         : "text-slate-900 focus:border-slate-200 placeholder:text-slate-300"
     }
   `}

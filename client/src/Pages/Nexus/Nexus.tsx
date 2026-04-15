@@ -27,7 +27,6 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
   const formattedPage =
     currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const RECOMMENDFILTER: FILTERTYPE[] = useMemo(
     () => [
       {
@@ -73,7 +72,7 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
     ],
     [darkMode],
   );
-  type StatusType = "Not Started" | "In Progress" | "Done";
+  type StatusType = "To-Do" | "In-Progress" | "Done";
   const FINALDATA = useMemo(() => {
     const createMockItem = () => {
       const taskName = faker.company.catchPhrase();
@@ -106,9 +105,9 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
       // 1. USE SLICE, NOT SPLICE (to keep the original array intact)
       const CATEGORY_OPTIONS = RECOMMENDFILTER.slice(0, 5).map((c) => c.title);
 
-      let currentStatus: StatusType = "In Progress";
+      let currentStatus: StatusType = "In-Progress";
       if (calculatedProgress === 100) currentStatus = "Done";
-      if (calculatedProgress === 0) currentStatus = "Not Started";
+      if (calculatedProgress === 0) currentStatus = "To-Do";
 
       return {
         id: uuidv4(),

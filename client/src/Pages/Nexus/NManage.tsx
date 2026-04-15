@@ -66,8 +66,8 @@ const NManage = () => {
 
       // 3. Update Status
       if (card.progress === 100) card.metaData.currentStatus = "Done";
-      else if (card.progress === 0) card.metaData.currentStatus = "Not Started";
-      else card.metaData.currentStatus = "In Progress";
+      else if (card.progress === 0) card.metaData.currentStatus = "To-Do";
+      else card.metaData.currentStatus = "In-Progress";
 
       setData(newData);
     };
@@ -92,10 +92,10 @@ const NManage = () => {
           ...sub,
           isCompleted: cond,
         }));
-        const statusValue = (cond ? "Done" : "Not Started") as
+        const statusValue = (cond ? "Done" : "To-Do") as
           | "Done"
-          | "Not Started"
-          | "In Progress";
+          | "To-Do"
+          | "In-Progress";
 
         const updatedTask = {
           ...task,

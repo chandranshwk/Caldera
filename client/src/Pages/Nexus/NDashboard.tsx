@@ -1,12 +1,12 @@
 import type { User } from "@supabase/supabase-js";
-import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import Carasoul from "../../components/Carasoul";
 import type { FILTERTYPE } from "./Nexus";
 import type { CardData } from "./CardView";
 import { IoIosArrowUp, IoIosCheckbox } from "react-icons/io";
 import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 import { RxDoubleArrowDown, RxDoubleArrowUp } from "react-icons/rx";
+import { useMemo, useState } from "react";
 
 const NDashboard = () => {
   const { user, darkMode, data, setData } = useOutletContext<{
@@ -19,46 +19,77 @@ const NDashboard = () => {
   console.log(darkMode);
   console.log(user.email);
 
-  const [view, setView] = useState<number>(0);
-  const options = [
-    { name: "All", exec: () => setView(0) },
-    { name: "To-Do", exec: () => setView(1) },
-    { name: "Not Started", exec: () => setView(2) },
-    { name: "Completed", exec: () => setView(3) },
-    { name: "Priority - High", exec: () => setView(4) },
-    { name: "Priority - Medium", exec: () => setView(5) },
-    { name: "Priority - Low", exec: () => setView(6) },
-  ];
-
-  const toggleAllSubtasks = (taskIndex: number) => {
+  // Change taskIndex: number to taskId: string
+  const toggleAllSubtasks = (taskId: string) => {
     setData((prevData) => {
-      return prevData.map((task, idx) => {
-        if (idx !== taskIndex) return task;
-        //Check All Subtasks, if everyhting is true then allDone is true and vice-versa
+      return prevData.map((task) => {
+        // ! FIX: Match by unique ID, not by array position
+        if (task.id !== taskId) return task;
+
         const allDone = task.metaData.subtask.every((st) => st.isCompleted);
-        //if allDone is false, then it means that all subtasks are not completed, if it is so then cond is true and vice-versa
         const cond = !allDone;
 
-        // 1. Mark all subtasks as completed
         const updatedSubtasks = task.metaData.subtask.map((sub) => ({
           ...sub,
           isCompleted: cond,
         }));
 
-        // If cond is true then progress is set to 100 and vice-versa (already done tasks are not preserved)
         return {
           ...task,
           progress: cond ? 100 : 0,
           metaData: {
             ...task.metaData,
             subtask: updatedSubtasks,
-            currentStatus: "Done",
+            // Correct the status logic while you're at it
+            currentStatus: cond ? "Done" : "To-Do",
           },
         };
       });
     });
-    console.log(data);
   };
+
+  const [view, setView] = useState<number>(0);
+  const options = [
+    { name: "All", exec: () => setView(0) },
+    { name: "In-Progress", exec: () => setView(1) },
+    { name: "To-Do", exec: () => setView(2) },
+    { name: "Done", exec: () => setView(3) },
+    { name: "Priority - High", exec: () => setView(4) },
+    { name: "Priority - Medium", exec: () => setView(5) },
+    { name: "Priority - Low", exec: () => setView(6) },
+  ];
+
+  const DATA = useMemo(() => {
+    let filtered = data;
+    switch (view) {
+      case 0:
+        filtered = data;
+        break;
+      case 1:
+        filtered = data.filter(
+          (data) => data.progress > 0 && data.progress < 100,
+        );
+        break;
+      case 2:
+        filtered = data.filter((data) => data.progress === 0);
+        break;
+      case 3:
+        filtered = data.filter((data) => data.progress === 100);
+        break;
+      case 4:
+        filtered = data.filter((data) => data.metaData.Importance === "High");
+        break;
+      case 5:
+        filtered = data.filter((data) => data.metaData.Importance === "Medium");
+        break;
+      case 6:
+        filtered = data.filter((data) => data.metaData.Importance === "Low");
+        break;
+    }
+    return filtered;
+  }, [data, view]);
+
+  const navigate = useNavigate();
 
   return (
     <div
@@ -75,19 +106,21 @@ const NDashboard = () => {
         </div>
 
         <div className="mb-5 mt-7 space-y-3">
-          {data.map((task, idx) => (
+          {DATA.map((task, idx) => (
             <div
               key={idx}
-              className={`group flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${
+              className={`group flex items-stretch overflow-hidden rounded-xl border transition-all duration-200 ${
                 darkMode
-                  ? "bg-zinc-900/40 border-zinc-800/50 hover:border-zinc-700 hover:bg-zinc-800/40"
-                  : "bg-white border-zinc-200/60 hover:border-zinc-300 hover:bg-zinc-50"
+                  ? "bg-zinc-900/40 border-zinc-800/50 hover:border-zinc-700"
+                  : "bg-white border-zinc-200/60 hover:border-zinc-300"
               }`}
             >
-              {/* Task Info & Progress */}
+              {/* LEFT SECTION: Toggle Logic */}
               <div
-                className="flex flex-col flex-1 cursor-pointer"
-                onClick={() => toggleAllSubtasks(idx)}
+                className={`flex-1 flex flex-col p-4 cursor-pointer transition-colors ${
+                  darkMode ? "hover:bg-zinc-800/30" : "hover:bg-zinc-50/50"
+                }`}
+                onClick={() => toggleAllSubtasks(task.id)}
               >
                 <div className="flex items-center mb-2.5">
                   <div className="transition-transform duration-200 active:scale-90">
@@ -120,23 +153,23 @@ const NDashboard = () => {
                   </span>
                 </div>
 
-                {/* Progress Bar Container */}
+                {/* Progress Bar */}
                 <div className="ml-8.5 space-y-1.5 w-1/3 min-w-30">
                   <div className="flex justify-between text-[10px] font-semibold tracking-widest text-zinc-500">
                     <span>
                       {task.progress === 100
                         ? "COMPLETE"
                         : task.progress === 0
-                          ? "NOT STARTED"
-                          : "IN PROGRESS"}
+                          ? "TO-DO"
+                          : "IN-PROGRESS"}
                     </span>
                     <span>{task.progress}%</span>
                   </div>
                   <div
-                    className={`h-1.5 w-full rounded-full overflow-hidden ${darkMode ? "bg-zinc-800" : "bg-zinc-200/50"}`}
+                    className={`h-1 w-full rounded-full overflow-hidden ${darkMode ? "bg-zinc-800" : "bg-zinc-200/50"}`}
                   >
                     <div
-                      className={`h-full rounded-full transition-all duration-700 ease-in-out ${
+                      className={`h-full rounded-full transition-all duration-700 ${
                         task.progress === 100
                           ? darkMode
                             ? "bg-emerald-500/80"
@@ -151,40 +184,48 @@ const NDashboard = () => {
                 </div>
               </div>
 
-              {/* Right Section: Priority Badge */}
-              <div className="flex items-center gap-4">
+              {/* RIGHT SECTION: Navigation Hitbox (The "Manage" Zone) */}
+              <div
+                onClick={() => navigate("/nexus/manage")}
+                className={`flex items-center gap-4 px-6 cursor-pointer border-l transition-all duration-200 group/nav ${
+                  darkMode
+                    ? "border-zinc-800/50 hover:bg-indigo-500/10"
+                    : "border-zinc-100 hover:bg-zinc-100"
+                }`}
+              >
                 <div
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-lg border shadow-sm ${
+                  className={`flex items-center justify-center gap-1.5 w-21.5 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-lg border shadow-sm transition-all duration-300 ${
                     task.metaData.Importance === "High"
                       ? darkMode
-                        ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                        ? "bg-rose-500/10 text-rose-400 border-rose-500/20 group-hover/nav:shadow-[0_0_12px_rgba(244,63,94,0.3)]"
                         : "bg-rose-50 text-rose-700 border-rose-100"
                       : task.metaData.Importance === "Medium"
                         ? darkMode
-                          ? "bg-purple-500/10 text-purple-400 border-purple-500/20"
+                          ? "bg-purple-500/10 text-purple-400 border-purple-500/20 group-hover/nav:shadow-[0_0_12px_rgba(168,85,247,0.3)]"
                           : "bg-purple-50 text-purple-700 border-purple-100"
                         : darkMode
-                          ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/20"
+                          ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/20 group-hover/nav:shadow-[0_0_12px_rgba(6,182,212,0.3)]"
                           : "bg-cyan-50 text-cyan-700 border-cyan-100"
                   }`}
                 >
                   {task.metaData.Importance === "High" && (
-                    <RxDoubleArrowUp size={12} />
+                    <RxDoubleArrowUp size={12} className="shrink-0" />
                   )}
                   {task.metaData.Importance === "Medium" && (
-                    <IoIosArrowUp size={12} />
+                    <IoIosArrowUp size={12} className="shrink-0" />
                   )}
                   {task.metaData.Importance === "Low" && (
-                    <RxDoubleArrowDown size={12} />
+                    <RxDoubleArrowDown size={12} className="shrink-0" />
                   )}
+
                   <span>{task.metaData.Importance}</span>
                 </div>
 
                 <IoIosArrowUp
-                  className={`rotate-90 transition-all duration-300 ${
+                  className={`rotate-90 transition-transform duration-300 group-hover/nav:translate-x-1 ${
                     darkMode
-                      ? "text-zinc-700 group-hover:text-zinc-400"
-                      : "text-zinc-300 group-hover:text-zinc-500"
+                      ? "text-zinc-600 group-hover/nav:text-zinc-400"
+                      : "text-zinc-300 group-hover/nav:text-zinc-600"
                   }`}
                   size={18}
                 />

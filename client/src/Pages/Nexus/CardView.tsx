@@ -39,7 +39,7 @@ export interface CardData {
       name: string;
       isCompleted: boolean;
     }[];
-    currentStatus: "Not Started" | "In Progress" | "Done";
+    currentStatus: "To-Do" | "In-Progress" | "Done";
     Importance: "High" | "Medium" | "Low";
     Time: string;
     Assignee: Assignee[];
@@ -136,8 +136,8 @@ const CardView: React.FC<CardViewProps> = ({
     key: CardData["metaData"]["currentStatus"];
     color: string;
   }[] = [
-    { title: "Not Started", key: "Not Started", color: "bg-orange-500" },
-    { title: "In Progress", key: "In Progress", color: "bg-blue-500" },
+    { title: "To-Do", key: "To-Do", color: "bg-orange-500" },
+    { title: "In-Progress", key: "In-Progress", color: "bg-blue-500" },
     { title: "Done", key: "Done", color: "bg-emerald-500" },
   ];
 

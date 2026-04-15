@@ -346,3 +346,26 @@ body {
 .animate-shimmer {
   animation: shimmer 3s infinite linear;
 }
+
+@theme {
+  /* Default Light Mode Tokens */
+  --color-app-bg: #fafafa;
+  --color-app-card: rgba(255, 255, 255, 0.7);
+  --color-app-border: rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 20px 50px rgba(0, 0, 0, 0.05);
+  --color-app-icon-bg: #ffffff;
+}
+
+/* 
+   This ensures variables swap when the browser 
+   detects 'prefers-color-scheme: dark'
+*/
+:root {
+  @variant dark {
+    --color-app-bg: #09090b;
+    --color-app-card: rgba(24, 24, 27, 0.4);
+    --color-app-border: rgba(255, 250, 255, 0.31);
+    --shadow-card: 0 25px 60px rgba(0, 0, 0, 0.4);
+    --color-app-icon-bg: #121214;
+  }
+}

@@ -1,3 +1,4 @@
+import { useMediaQuery } from "./hooks/useMediaQuery";
 import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -40,6 +41,7 @@ import "./App.css";
 import type { User } from "@supabase/supabase-js";
 import ForgeView from "./Pages/Forge/ForgeView";
 import ForgeViewSheets from "./Pages/Forge/ForgeViewSheets";
+import { LuMonitor } from "react-icons/lu";
 
 function App() {
   const navigate = useNavigate();
@@ -113,6 +115,12 @@ function App() {
     window.addEventListener("keydown", handleCommands);
     return () => window.removeEventListener("keydown", handleCommands);
   }, []);
+
+  const isMobile = useMediaQuery("(max-width: 1024px)"); // Set threshold for tablet/mobile
+
+  if (isMobile) {
+    return <MobileRestriction />;
+  }
 
   return (
     <>
@@ -208,5 +216,55 @@ function App() {
     </>
   );
 }
+
+const MobileRestriction = () => (
+  <div className="fixed inset-0 flex flex-col items-center justify-center p-6 text-center antialiased bg-app-bg text-zinc-900 dark:text-zinc-100 transition-colors duration-500">
+    {/* Background Decorative Element */}
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-20 bg-blue-300 dark:bg-blue-600/30" />
+    </div>
+
+    {/* Main Card */}
+    <div className="relative max-w-sm w-full p-8 py-12 rounded-[2.5rem] border backdrop-blur-xl shadow-(--shadow-card) border-app-border bg-app-card) transition-all">
+      <div className="space-y-8">
+        {/* Icon Container */}
+        <div className="relative mx-auto w-20 h-20">
+          <div className="relative w-full h-full rounded-4xl flex items-center justify-center border border-zinc-200 dark:border-zinc-800 bg-app-icon-bg shadow-sm">
+            <LuMonitor size={32} className="text-zinc-900 dark:text-zinc-100" />
+          </div>
+        </div>
+
+        {/* Text Content */}
+        <div className="space-y-3">
+          <h1 className="text-2xl font-semibold tracking-tight italic">
+            Desktop Only
+          </h1>
+          <p className="text-[15px] leading-relaxed px-4 text-zinc-500 dark:text-zinc-400">
+            Caldera is a high-performance workstation optimized for large
+            screens. Please switch to a{" "}
+            <span className="font-medium text-zinc-800 dark:text-zinc-200">
+              desktop browser
+            </span>{" "}
+            to access your workspace.
+          </p>
+        </div>
+
+        {/* Status Footer */}
+        <div className="flex flex-col items-center gap-4 pt-4">
+          <div className="h-px w-10 bg-zinc-200 dark:bg-zinc-800" />
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="animate-ping absolute inset-0 rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+            </span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-600">
+              Caldera OS v1.0.4
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export default App;
