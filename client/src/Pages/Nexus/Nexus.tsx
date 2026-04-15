@@ -122,7 +122,7 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
           currentStatus: currentStatus,
           Importance: faker.helpers.arrayElement(["High", "Medium", "Low"]),
           Time: `${faker.number.int({ min: 1, max: 30 })} days`,
-          Assignee: assignees, // ... (your assignee logic)
+          Assignee: assignees,
           AssigneeNumber: assignees.length,
         },
         progress: calculatedProgress,
