@@ -76,7 +76,45 @@ const NManage = () => {
       toggleSubtask(selectedTask?.id, selectedSubTask);
     }
     setSelectedSubTask(-1);
-  }, [selectedSubTask, selectedTask, data]);
+  }, [selectedSubTask, selectedTask, data, setData]);
+
+  const toggleAllSubtasks = () => {
+    if (!selectedTask) return;
+
+    setData((prevData) => {
+      const newData = prevData.map((task) => {
+        if (task.id !== selectedTask.id) return task;
+
+        const allDone = task.metaData.subtask.every((st) => st.isCompleted);
+        const cond = !allDone;
+
+        const updatedSubtasks = task.metaData.subtask.map((sub) => ({
+          ...sub,
+          isCompleted: cond,
+        }));
+        const statusValue = (cond ? "Done" : "Not Started") as
+          | "Done"
+          | "Not Started"
+          | "In Progress";
+
+        const updatedTask = {
+          ...task,
+          progress: cond ? 100 : 0,
+          metaData: {
+            ...task.metaData,
+            subtask: updatedSubtasks,
+            currentStatus: statusValue, //YAY
+          },
+        };
+        // BUG: UI CHANGES: UI of task View is not working properly
+        // DONE: REFRESHED THE UI: Update the selectedTask state with the new values
+        setSelectedTask(updatedTask);
+
+        return updatedTask;
+      });
+      return newData;
+    });
+  };
 
   const [filters, setFilters] = useState<FILTERTYPE[]>([]);
 
@@ -207,6 +245,7 @@ const NManage = () => {
               darkMode={darkMode}
               setSelectedTask={setSelectedTask}
               isOpen={!closeView}
+              toggleComplete={toggleAllSubtasks}
             />
           )}
         </AnimatePresence>

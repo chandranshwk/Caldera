@@ -16,6 +16,7 @@ const MetaData = ({
   darkMode: boolean;
   task: CardData;
 }) => {
+  console.log(task.metaData.Assignee);
   const getPriorityContent = (p: string) => {
     const configs = {
       High: {

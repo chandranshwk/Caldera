@@ -89,6 +89,20 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
         (completedCount / subtaskCount) * 100,
       );
 
+      const assignees = Array.from(
+        { length: faker.number.int({ min: 1, max: 5 }) },
+        () => {
+          const firstName = faker.person.firstName();
+          const lastName = faker.person.lastName();
+          return {
+            id: faker.string.uuid(),
+            name: `${firstName} ${lastName}`,
+            avatar: faker.image.avatar(),
+            initials: `${firstName.charAt(0)}${lastName.charAt(0)}`,
+          };
+        },
+      );
+
       // 1. USE SLICE, NOT SPLICE (to keep the original array intact)
       const CATEGORY_OPTIONS = RECOMMENDFILTER.slice(0, 5).map((c) => c.title);
 
@@ -108,8 +122,8 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
           currentStatus: currentStatus,
           Importance: faker.helpers.arrayElement(["High", "Medium", "Low"]),
           Time: `${faker.number.int({ min: 1, max: 30 })} days`,
-          Assignee: [], // ... (your assignee logic)
-          AssigneeNumber: 0,
+          Assignee: assignees, // ... (your assignee logic)
+          AssigneeNumber: assignees.length,
         },
         progress: calculatedProgress,
       };

@@ -14,6 +14,7 @@ interface TaskViewProps {
   isOpen: boolean;
   setSelectedTask: (value: CardData | null) => void;
   toggleSubtask: (value: number) => void;
+  toggleComplete: () => void;
 }
 
 const TaskView: React.FC<TaskViewProps> = ({
@@ -22,6 +23,7 @@ const TaskView: React.FC<TaskViewProps> = ({
   isOpen,
   setSelectedTask,
   toggleSubtask,
+  toggleComplete,
 }) => {
   const [showFullDes, setShowFullDes] = useState<boolean>(false);
   const [showMetaData, setShowMetaData] = useState<boolean>(false);
@@ -146,6 +148,24 @@ const TaskView: React.FC<TaskViewProps> = ({
                     <div className="px-4 mt-4 w-full">
                       {/* Progress */}
                       <div className="space-y-1.5 mb-4">
+                        <div className="flex justify-between items-center mb-4">
+                          <span className="text-[11px] uppercase tracking-widest font-black text-zinc-500">
+                            Subtasks
+                          </span>
+                          <button
+                            onClick={() => toggleComplete()}
+                            className={`text-[10px] font-bold px-2 py-1 rounded border transition-all ${
+                              darkMode
+                                ? "border-zinc-700 hover:bg-zinc-800 text-zinc-400"
+                                : "border-zinc-200 hover:bg-zinc-100 text-zinc-600"
+                            }`}
+                          >
+                            {task.progress === 100
+                              ? "Reset All"
+                              : "Complete All"}
+                          </button>
+                        </div>
+
                         <div className="flex justify-between text-[9px] font-bold text-zinc-400">
                           <span>PROGRESS</span>
                           <span>{task.progress}%</span>
