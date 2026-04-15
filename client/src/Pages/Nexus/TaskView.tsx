@@ -141,9 +141,9 @@ const TaskView: React.FC<TaskViewProps> = ({
                   options={options}
                   view={selectedOption}
                 />
-                <div>
+                <div className="w-full">
                   {selectedOption === 0 ? (
-                    <div className="px-5 mt-4">
+                    <div className="px-4 mt-4 w-full">
                       {/* Progress */}
                       <div className="space-y-1.5 mb-4">
                         <div className="flex justify-between text-[9px] font-bold text-zinc-400">
@@ -170,7 +170,9 @@ const TaskView: React.FC<TaskViewProps> = ({
                             {/* Custom Styled Checkbox Container */}
                             <div className="flex items-center justify-center">
                               {st.isCompleted ? (
-                                <div className="text-zinc-900 bg-zinc-100 rounded-md p-0.5 ring-1 ring-zinc-200 transition-all duration-300">
+                                <div
+                                  className={`${darkMode ? "text-zinc-100" : "text-zinc-900"} rounded-md transition-all duration-300`}
+                                >
                                   <IoIosCheckbox size={20} />
                                 </div>
                               ) : (
@@ -184,8 +186,12 @@ const TaskView: React.FC<TaskViewProps> = ({
                             <span
                               className={`text-sm transition-all duration-300 ${
                                 st.isCompleted
-                                  ? "text-zinc-400 line-through decoration-zinc-300/80 italic"
-                                  : "text-zinc-700 font-medium"
+                                  ? darkMode
+                                    ? "text-zinc-400 line-through decoration-zinc-300/80 italic"
+                                    : "text-zinc-800 line-through decoration-zinc-300/80 italic"
+                                  : darkMode
+                                    ? "text-zinc-200 font-medium"
+                                    : "text-zinc-700 font-medium"
                               }`}
                             >
                               {st.name}
@@ -195,11 +201,11 @@ const TaskView: React.FC<TaskViewProps> = ({
                       </div>
                     </div>
                   ) : selectedOption === 1 ? (
-                    <div>An error has occured</div>
+                    <div className="px-5 mt-4 w-full">Coming Soon...</div>
                   ) : selectedOption === 2 ? (
-                    <div>An error has occured</div>
+                    <div className="px-5 mt-4 w-full">Coming soon...</div>
                   ) : (
-                    <div>An error has occured</div>
+                    <div className="px-5 mt-4 w-full">An error has occured</div>
                   )}
                 </div>
               </div>

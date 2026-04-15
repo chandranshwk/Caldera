@@ -188,7 +188,7 @@ const FDashboard = () => {
           {RECENT_FILES.slice(0, 6).map((file) => (
             <div
               key={file.id}
-              className={`group relative z-0 flex items-center gap-4 p-4 rounded-2xl transition-all shadow-sm duration-300 ${darkMode ? "bg-[#18181b] border-white/5 hover:bg-gray-800/60 shadow-xl" : "bg-white border-gray-100 hover:bg-gray-50 shadow-sm"}border hover:-translate-y-0.5 cursor-pointer`}
+              className={`group relative z-0 flex items-center gap-4 p-4 rounded-2xl transition-all shadow-sm duration-300 ${darkMode ? "bg-[#18181b] border-white/5 hover:bg-gray-800/60 " : "bg-white border-gray-100 hover:bg-gray-50 shadow-sm"}border hover:-translate-y-0.5 cursor-pointer`}
               onClick={() => {}}
             >
               {/* File Icon with Glass Effect */}
