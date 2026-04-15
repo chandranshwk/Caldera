@@ -1,10 +1,22 @@
+import { faker } from "@faker-js/faker";
 import type { User } from "@supabase/supabase-js";
+import { useMemo, useState } from "react";
+import { IoIosArrowUp } from "react-icons/io";
+import { LuBook, LuBrush, LuHouse, LuPlane, LuWorkflow } from "react-icons/lu";
+import { RxDoubleArrowDown, RxDoubleArrowUp } from "react-icons/rx";
 import { Outlet, Link, useLocation } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   darkMode: boolean;
   user: User;
 }
+
+export type FILTERTYPE = {
+  title: string;
+  icon: React.ReactNode;
+  color: string;
+};
 
 const Nexus: React.FC<Props> = ({ darkMode, user }) => {
   const location = useLocation();
@@ -14,6 +26,101 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
   const currentPage = pathParts[pathParts.length - 1] || "Dashboard";
   const formattedPage =
     currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const RECOMMENDFILTER: FILTERTYPE[] = useMemo(
+    () => [
+      {
+        title: "Home Help",
+        icon: <LuHouse size={18} />,
+        color: `${darkMode ? "text-yellow-200" : "text-yellow-700"}`,
+      },
+      {
+        title: "Study",
+        icon: <LuBook size={18} />,
+        color: `${darkMode ? "text-blue-200" : "text-blue-700"}`,
+      },
+      {
+        title: "Work",
+        icon: <LuWorkflow size={18} />,
+        color: `${darkMode ? "text-indigo-200" : "text-indigo-700"}`,
+      },
+      {
+        title: "Drawing & Creativity",
+        icon: <LuBrush size={18} />,
+        color: `${darkMode ? "text-green-200" : "text-green-700"}`,
+      },
+      {
+        title: "Plan a Trip",
+        icon: <LuPlane size={18} />,
+        color: `${darkMode ? "text-orange-200" : "text-orange-700"}`,
+      },
+      {
+        title: "Priority - Low",
+        icon: <RxDoubleArrowDown size={18} />,
+        color: `${darkMode ? "text-green-200" : "text-green-700"}`,
+      },
+      {
+        title: "Priority - Medium",
+        icon: <IoIosArrowUp size={18} />,
+        color: `${darkMode ? "text-yellow-200" : "text-yellow-700"}`,
+      },
+      {
+        title: "Priority - High",
+        icon: <RxDoubleArrowUp size={18} />,
+        color: `${darkMode ? "text-red-200" : "text-red-700"}`,
+      },
+    ],
+    [darkMode],
+  );
+  type StatusType = "Not Started" | "In Progress" | "Done";
+  const FINALDATA = useMemo(() => {
+    const createMockItem = () => {
+      const taskName = faker.company.catchPhrase();
+      const subtaskCount = faker.number.int({ min: 5, max: 20 });
+
+      const subtasks = Array.from({ length: subtaskCount }, (_, i) => ({
+        name: i === 0 ? `Start: ${taskName}` : faker.lorem.words(3),
+        isCompleted: faker.datatype.boolean(),
+      }));
+
+      const completedCount = subtasks.filter((s) => s.isCompleted).length;
+      const calculatedProgress = Math.round(
+        (completedCount / subtaskCount) * 100,
+      );
+
+      // 1. USE SLICE, NOT SPLICE (to keep the original array intact)
+      const CATEGORY_OPTIONS = RECOMMENDFILTER.slice(0, 5).map((c) => c.title);
+
+      let currentStatus: StatusType = "In Progress";
+      if (calculatedProgress === 100) currentStatus = "Done";
+      if (calculatedProgress === 0) currentStatus = "Not Started";
+
+      return {
+        id: uuidv4(),
+        name: taskName,
+        des: faker.lorem.paragraph({ min: 2, max: 10 }),
+        // 2. Select exactly one valid category title that matches your buttons
+        tag: [faker.helpers.arrayElement(CATEGORY_OPTIONS)],
+        metaData: {
+          subtaskLength: subtaskCount,
+          subtask: subtasks,
+          currentStatus: currentStatus,
+          Importance: faker.helpers.arrayElement(["High", "Medium", "Low"]),
+          Time: `${faker.number.int({ min: 1, max: 30 })} days`,
+          Assignee: [], // ... (your assignee logic)
+          AssigneeNumber: 0,
+        },
+        progress: calculatedProgress,
+      };
+    };
+
+    const data = Array.from({ length: 12 }, createMockItem);
+
+    return data;
+  }, [RECOMMENDFILTER]);
+
+  const [data, setData] = useState(FINALDATA);
 
   return (
     <div
@@ -79,7 +186,7 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
 
       {/* Content Injection Point */}
       <div className="flex-1 overflow-auto forge-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
-        <Outlet context={{ user, darkMode }} />
+        <Outlet context={{ user, darkMode, RECOMMENDFILTER, setData, data }} />
       </div>
     </div>
   );

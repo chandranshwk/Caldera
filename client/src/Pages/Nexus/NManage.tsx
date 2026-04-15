@@ -1,8 +1,4 @@
-import { IoIosArrowUp } from "react-icons/io";
-import { LuBook, LuBrush, LuHouse, LuPlane, LuWorkflow } from "react-icons/lu";
-import { RxDoubleArrowDown, RxDoubleArrowUp } from "react-icons/rx";
 import { useOutletContext } from "react-router-dom";
-import { faker } from "@faker-js/faker";
 import TableView from "./TableView";
 import CardView, { type CardData } from "./CardView";
 import { useEffect, useMemo, useState } from "react";
@@ -10,11 +6,13 @@ import { CiGrid32, CiViewColumn } from "react-icons/ci";
 import TaskView from "./TaskView";
 import { AnimatePresence } from "motion/react";
 import Carasoul from "../../components/Carasoul";
-import { v4 as uuidv4 } from "uuid";
 
 const NManage = () => {
-  const { darkMode } = useOutletContext<{
+  const { darkMode, RECOMMENDFILTER, data, setData } = useOutletContext<{
     darkMode: boolean;
+    RECOMMENDFILTER: FILTERTYPE[];
+    data: CardData[];
+    setData: React.Dispatch<React.SetStateAction<CardData[]>>;
   }>();
 
   type FILTERTYPE = {
@@ -23,91 +21,6 @@ const NManage = () => {
     color: string;
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const RECOMMENDFILTER: FILTERTYPE[] = [
-    {
-      title: "Home Help",
-      icon: <LuHouse size={18} />,
-      color: `${darkMode ? "text-yellow-200" : "text-yellow-700"}`,
-    },
-    {
-      title: "Study",
-      icon: <LuBook size={18} />,
-      color: `${darkMode ? "text-blue-200" : "text-blue-700"}`,
-    },
-    {
-      title: "Work",
-      icon: <LuWorkflow size={18} />,
-      color: `${darkMode ? "text-indigo-200" : "text-indigo-700"}`,
-    },
-    {
-      title: "Drawing & Creativity",
-      icon: <LuBrush size={18} />,
-      color: `${darkMode ? "text-green-200" : "text-green-700"}`,
-    },
-    {
-      title: "Plan a Trip",
-      icon: <LuPlane size={18} />,
-      color: `${darkMode ? "text-orange-200" : "text-orange-700"}`,
-    },
-    {
-      title: "Priority - Low",
-      icon: <RxDoubleArrowDown size={18} />,
-      color: `${darkMode ? "text-green-200" : "text-green-700"}`,
-    },
-    {
-      title: "Priority - Medium",
-      icon: <IoIosArrowUp size={18} />,
-      color: `${darkMode ? "text-yellow-200" : "text-yellow-700"}`,
-    },
-    {
-      title: "Priority - High",
-      icon: <RxDoubleArrowUp size={18} />,
-      color: `${darkMode ? "text-red-200" : "text-red-700"}`,
-    },
-  ];
-  type StatusType = "Not Started" | "In Progress" | "Done";
-
-  const FINALDATA = useMemo(() => {
-    const createMockItem = () => {
-      const subtaskCount = faker.number.int({ min: 5, max: 20 });
-      const subtasks = Array.from({ length: subtaskCount }, () => ({
-        name: faker.lorem.words(3),
-        isCompleted: faker.datatype.boolean(),
-      }));
-
-      const completedCount = subtasks.filter((s) => s.isCompleted).length;
-      const calculatedProgress = Math.round(
-        (completedCount / subtaskCount) * 100,
-      );
-
-      // 1. USE SLICE, NOT SPLICE (to keep the original array intact)
-      const CATEGORY_OPTIONS = RECOMMENDFILTER.slice(0, 5).map((c) => c.title);
-
-      let currentStatus: StatusType = "In Progress";
-      if (calculatedProgress === 100) currentStatus = "Done";
-      if (calculatedProgress === 0) currentStatus = "Not Started";
-
-      return {
-        id: uuidv4(),
-        name: faker.company.catchPhrase(),
-        des: faker.lorem.paragraph({ min: 2, max: 10 }),
-        // 2. Select exactly one valid category title that matches your buttons
-        tag: [faker.helpers.arrayElement(CATEGORY_OPTIONS)],
-        metaData: {
-          subtaskLength: subtaskCount,
-          subtask: subtasks,
-          currentStatus: currentStatus,
-          Importance: faker.helpers.arrayElement(["High", "Medium", "Low"]),
-          Time: `${faker.number.int({ min: 1, max: 30 })} days`,
-          Assignee: [], // ... (your assignee logic)
-          AssigneeNumber: 0,
-        },
-        progress: calculatedProgress,
-      };
-    };
-
-    return Array.from({ length: 12 }, createMockItem);
-  }, [RECOMMENDFILTER]);
 
   const [view, setView] = useState<number>(0);
   const [selectedTask, setSelectedTask] = useState<CardData | null>(null);
@@ -131,7 +44,6 @@ const NManage = () => {
   ];
 
   const [selectedSubTask, setSelectedSubTask] = useState<number>(0);
-  const [data, setData] = useState(FINALDATA);
 
   useEffect(() => {
     if (!selectedTask || selectedSubTask === -1) return;

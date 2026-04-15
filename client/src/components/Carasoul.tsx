@@ -49,7 +49,7 @@ const Carasoul: React.FC<CarasoulProps> = ({ darkMode, options, view }) => {
                 : "text-zinc-900"
               : darkMode
                 ? "text-zinc-400 hover:text-zinc-100"
-                : "text-zinc-700 hover:text-zinc-900"
+                : "text-zinc-500 hover:text-zinc-900"
           }`}
           onClick={() => option.exec()}
         >
