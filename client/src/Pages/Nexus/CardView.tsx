@@ -43,6 +43,7 @@ export interface CardData {
     Importance: "High" | "Medium" | "Low";
     Time: string;
     Assignee: Assignee[];
+    createdAt: string;
   };
   progress: number;
 }

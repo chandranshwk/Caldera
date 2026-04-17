@@ -355,11 +355,6 @@ body {
   --shadow-card: 0 20px 50px rgba(0, 0, 0, 0.05);
   --color-app-icon-bg: #ffffff;
 }
-
-/* 
-   This ensures variables swap when the browser 
-   detects 'prefers-color-scheme: dark'
-*/
 :root {
   @variant dark {
     --color-app-bg: #09090b;

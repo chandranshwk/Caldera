@@ -108,6 +108,7 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
       let currentStatus: StatusType = "In-Progress";
       if (calculatedProgress === 100) currentStatus = "Done";
       if (calculatedProgress === 0) currentStatus = "To-Do";
+      const timeNow = new Date().toISOString();
 
       return {
         id: uuidv4(),
@@ -123,6 +124,7 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
           Time: `${faker.number.int({ min: 1, max: 30 })} days`,
           Assignee: assignees,
           AssigneeNumber: assignees.length,
+          createdAt: timeNow,
         },
         progress: calculatedProgress,
       };
@@ -141,30 +143,32 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
         darkMode
           ? "bg-[#18181b] border-slate-800 text-slate-100"
           : "bg-white border-slate-200 text-slate-900"
-      }`}
+      }
+        ${location.pathname === "/nexus/calendar" ? "pb-1 " : ""}`}
     >
       {/* Header Section */}
       <div
-        className={`flex mb-5 border-b justify-between pb-4 transition-colors ${
+        className={`flex border-b justify-between pb-4 transition-colors ${
           darkMode ? "border-slate-800" : "border-slate-100"
-        }`}
+        }
+        ${location.pathname === "/nexus/calendar" ? "mb-0" : "mb-5"}`}
       >
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
             {/* Root Link (Muted) */}
             <Link
               to="/nexus/dashboard"
-              className={`text-lg font-semibold transition-colors ${
+              className={`font-semibold transition-colors ${
                 darkMode
                   ? "text-slate-500 hover:text-slate-400"
                   : "text-slate-400 hover:text-slate-500"
-              }`}
+              } ${location.pathname === "/nexus/dashboard" ? "text-lg" : "text-sm"}`}
             >
               The Nexus
             </Link>
 
             <span
-              className={`text-lg font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
+              className={`font-light ${darkMode ? "text-slate-700" : "text-slate-200"} ${location.pathname === "/nexus/dashboard" ? "text-lg" : "text-sm"}`}
             >
               /
             </span>
@@ -172,7 +176,7 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
             {/* Dynamic Breadcrumb Logic */}
 
             <h1
-              className={`text-lg font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}
+              className={` font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}  ${location.pathname === "/nexus/dashboard" ? "text-lg" : "text-sm"}`}
             >
               {formattedPage}
             </h1>
@@ -181,7 +185,7 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
           <p
             className={`text-[11px] mt-1 font-medium uppercase tracking-wider ${
               darkMode ? "text-slate-600" : "text-slate-400"
-            }`}
+            } ${location.pathname === "/nexus/dashboard" ? "block" : "hidden"}`}
           >
             Project Management & Task Orchestration
           </p>
@@ -191,7 +195,7 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
         <span
           className={`text-[12px] mt-4 uppercase tracking-tighter font-bold ${
             darkMode ? "text-slate-700" : "text-slate-300"
-          }`}
+          }  ${location.pathname === "/nexus/dashboard" ? "block" : "hidden"}`}
         >
           V 1.0.4
         </span>

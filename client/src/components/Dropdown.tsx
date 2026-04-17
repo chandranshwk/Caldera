@@ -150,7 +150,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
                   <React.Fragment key={idx}>
                     {item.separator && (
                       <div
-                        className={`my-1 h-px w-full ${darkMode ? "bg-white/5" : "bg-black/5"}`}
+                        className={`my-1 h-px w-full text-left ${darkMode ? "bg-white/5" : "bg-black/5"}`}
                       />
                     )}
                     <button
@@ -160,7 +160,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
                         if (onClose) onClose(); // Close external menu
                         setInternalOpen(false); // Close internal menu
                       }}
-                      className={`group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-[13px] font-medium
+                      className={`group w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-[13px] font-medium
                     ${
                       darkMode
                         ? item.variant === "destructive"
