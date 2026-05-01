@@ -1,0 +1,146 @@
+interface Message {
+  id: string;
+  sender_id: string;
+  content: string;
+  timestamp: Date;
+}
+
+interface ChatRoom {
+  id: string;
+  name: string;
+  dp?: string;
+  groupName: string | null;
+  messages: Message[];
+}
+  const generateMockRooms = (count: number): ChatRoom[] => {
+    return Array.from({ length: count }, () => ({
+      id: faker.string.uuid(),
+      name: faker.person.fullName(),
+      dp: faker.image.avatar(),
+      groupName:
+        Math.floor(Math.random() * 100) % 7 === 0 ? faker.company.name() : null,
+      messages: Array.from({ length: 5 }, () => ({
+        id: faker.string.uuid(),
+        sender_id: faker.string.uuid(),
+        content: faker.lorem.sentence(),
+        timestamp: faker.date.recent(),
+      })),
+    }));
+  };
+
+  // 3. Generate the data once
+  const allRooms = generateMockRooms(15);
+  const groupRooms = allRooms.filter((room) => room.groupName !== null);
+  const people = allRooms.filter((room) => room.groupName === null);
+      
+      <div className="w-[calc(1/5 - 5%)] h-[calc(100%-100px)] overflow-y-auto space-y-4 border-gray-200 dark:border-stone-800">
+        {/* GROUPS SECTION */}
+        <div
+          className={`w-80 rounded-xl overflow-hidden ${darkMode ? "bg-stone-900/50 text-white" : "bg-white shadow-sm border border-mist-200 text-black"}`}
+        >
+          <div className="text-sm font-bold uppercase tracking-wider opacity-50 p-4 pb-2">
+            Groups
+          </div>
+
+          {groupRooms.length > 0 ? (
+            groupRooms.map((room, idx) => (
+              <div
+                key={room.id}
+                className="flex items-center px-4 py-3 gap-3 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer transition-colors group"
+              >
+                {/* Avatar Logic */}
+                <div className="shrink-0">
+                  {room.dp ? (
+                    <img
+                      src={room.dp}
+                      className="size-10 rounded-full object-cover"
+                      alt=""
+                    />
+                  ) : (
+                    <div className="size-10 rounded-full bg-indigo-500 flex items-center justify-center text-sm font-bold text-white shadow-inner">
+                      {room.groupName?.charAt(0)}
+                    </div>
+                  )}
+                </div>
+
+                {/* Content Logic */}
+                <div
+                  className={`flex-1 min-w-0 pr-2 ${idx !== groupRooms.length - 1 ? "border-b border-gray-100" : ""} pb-3 pt-1`}
+                >
+                  <div className="flex justify-between items-start gap-2">
+                    {" "}
+                    {/* Added gap and items-start */}
+                    {/* 1. Added truncate and min-w-0 to the name */}
+                    <h3 className="text-sm font-semibold truncate min-w-0 flex-1">
+                      {room.groupName}
+                    </h3>
+                    {/* 2. Added whitespace-nowrap and flex-shrink-0 to the time */}
+                    <span className="text-[10px] opacity-40 whitespace-nowrap shrink-0 mt-1">
+                      {faker.date.recent().toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+                  <p className="text-xs opacity-60 line-clamp-1 truncate">
+                    {room.messages[0]?.content}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="p-4 text-sm text-gray-500 italic">
+              No groups found.
+            </div>
+          )}
+        </div>
+
+        {/* PEOPLE SECTION */}
+        <div
+          className={`w-80 rounded-xl overflow-hidden ${darkMode ? "bg-stone-900/50 text-white" : "bg-white shadow-sm border border-mist-200 text-black"}`}
+        >
+          <div className="text-sm font-bold uppercase tracking-wider opacity-50 p-4 pb-2">
+            People
+          </div>
+
+          {people.map((person) => (
+            <div
+              key={person.id}
+              className="flex items-center px-4 py-3 gap-3 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer transition-colors group"
+            >
+              <div className="shrink-0 relative">
+                {person.dp ? (
+                  <img
+                    src={person.dp}
+                    className="size-10 rounded-full object-cover"
+                    alt=""
+                  />
+                ) : (
+                  <div className="size-10 rounded-full bg-emerald-500 flex items-center justify-center text-sm font-bold text-white shadow-inner">
+                    {person.name?.charAt(0)}
+                  </div>
+                )}
+                {/* Green Online Dot */}
+                <div className="absolute bottom-0 right-0 size-3 bg-green-500 border-2 border-white dark:border-stone-900 rounded-full"></div>
+              </div>
+
+              <div className={`flex-1 pr-2  pb-3 pt-1`}>
+                <div className="flex justify-between items-baseline">
+                  <h3 className="text-sm font-semibold truncate">
+                    {person.name}
+                  </h3>
+                  <span className="text-[10px] opacity-40">
+                    {faker.date.recent().toLocaleDateString([], {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+                <p className="text-xs opacity-60 line-clamp-1">
+                  {person.messages[0]?.content}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>

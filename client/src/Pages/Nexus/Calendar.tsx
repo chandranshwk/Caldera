@@ -60,6 +60,8 @@ const Calendar = () => {
       arr.push({
         id: current.toDateString(),
         dayName: current.toLocaleDateString("en-UK", { weekday: "long" }),
+        monthName: current.toLocaleDateString("en-UK", { month: "long" }),
+        year: current.toLocaleDateString("en-UK", { year: "numeric" }),
         dayNumber: current.getDate(),
         isToday: current.toDateString() === now.toDateString(),
       });
@@ -80,7 +82,7 @@ const Calendar = () => {
     const totalMinutes = (pixels / HOUR_HEIGHT) * 60;
     const hours = Math.floor(totalMinutes / 60) % 24;
     const minutes = Math.floor(totalMinutes % 60);
-    return `${hours % 12 || 12}:${minutes.toString().padStart(2, "0")} ${hours >= 12 ? "PM" : "AM"}`;
+    return `${hours % 12 || 12}:${minutes.toString().padStart(2, "0"  )} ${hours >= 12 ? "PM" : "AM"}`;
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -152,9 +154,24 @@ const Calendar = () => {
         <div
           className={`flex items-center justify-between p-4 md:p-6 border-b ${styles.border}`}
         >
-          <h1 className="text-xl md:text-2xl font-bold tracking-tight">
-            Weekly Schedule
-          </h1>
+          <div className="flex items-center gap-4">
+            <h1 className="text-xl font-bold tracking-tight">
+              Weekly Schedule
+            </h1>
+
+            <h1 className="text-xl font-bold tracking-tight">|</h1>
+            <h1 className="text-xl font-bold tracking-tight">
+              {days.map(
+                (day, idx) =>
+                  idx === 1 && (
+                    <div className="flex items-center gap-2">
+                      <div>{day.monthName},</div>
+                      <div>{day.year}</div>
+                    </div>
+                  ),
+              )}
+            </h1>
+          </div>
           <div className="flex items-center gap-5">
             <div className="flex gap-2">
               <button
@@ -191,14 +208,16 @@ const Calendar = () => {
 
         <div className="flex-1 overflow-auto relative">
           <div className="min-w-250 flex flex-col">
-            <div className="sticky top-0 z-40 flex border-b bg-inherit">
+            <div className="sticky top-0 z-40 flex border-b bg-white/70 backdrop-blur-lg">
               <div className="w-20 border-r" />
               {days.map((day) => (
                 <div
                   key={day.id}
                   className={`flex-1 h-20 flex flex-col items-center justify-center border-r ${styles.border} ${day.isToday ? "bg-blue-500/5" : ""}`}
                 >
-                  <span className="text-xs uppercase font-bold text-zinc-400">
+                  <span
+                    className={`text-xs uppercase font-bold ${day.isToday ? "text-blue-500" : "text-zinc-400"}`}
+                  >
                     {day.dayName}
                   </span>
                   <span

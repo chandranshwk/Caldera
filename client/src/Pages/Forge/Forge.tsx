@@ -38,7 +38,7 @@ const Forge: React.FC<Props> = ({ darkMode, user }) => {
             {/* Root Link (Muted) */}
             <Link
               to="/forge/dashboard"
-              className={`text-lg font-semibold transition-colors ${
+              className={`${location.pathname === "/forge/dashboard" ? "text-lg" : "text-sm"} font-semibold transition-colors ${
                 darkMode
                   ? "text-slate-500 hover:text-slate-400"
                   : "text-slate-400 hover:text-slate-500"
@@ -48,7 +48,7 @@ const Forge: React.FC<Props> = ({ darkMode, user }) => {
             </Link>
 
             <span
-              className={`text-lg font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
+              className={`${location.pathname === "/forge/dashboard" ? "text-lg" : "text-sm"}  font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
             >
               /
             </span>
@@ -56,29 +56,31 @@ const Forge: React.FC<Props> = ({ darkMode, user }) => {
             {/* Dynamic Breadcrumb Logic */}
 
             <h1
-              className={`text-lg font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}
+              className={`${location.pathname === "/forge/dashboard" ? "text-lg" : "text-sm"}  font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}
             >
               {formattedPage}
             </h1>
           </div>
-
-          <p
-            className={`text-[11px] mt-1 font-medium uppercase tracking-wider ${
-              darkMode ? "text-slate-600" : "text-slate-400"
+          {location.pathname === "/forge/dashboard" && (
+            <p
+              className={`text-[11px] mt-1 font-medium uppercase tracking-wider ${
+                darkMode ? "text-slate-600" : "text-slate-400"
+              }`}
+            >
+              Modular Document & Sheet Editor
+            </p>
+          )}
+        </div>
+        {/* Version Indicator */}
+        {location.pathname === "/forge/dashboard" && (
+          <span
+            className={`text-[12px] mt-4 uppercase tracking-tighter font-bold ${
+              darkMode ? "text-slate-700" : "text-slate-300"
             }`}
           >
-            Modular Document & Sheet Editor
-          </p>
-        </div>
-
-        {/* Version Indicator */}
-        <span
-          className={`text-[12px] mt-4 uppercase tracking-tighter font-bold ${
-            darkMode ? "text-slate-700" : "text-slate-300"
-          }`}
-        >
-          V 1.0.4
-        </span>
+            V 1.0.4
+          </span>
+        )}
       </div>
 
       {/* Content Injection Point */}

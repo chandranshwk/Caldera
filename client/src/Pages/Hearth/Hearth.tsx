@@ -18,68 +18,62 @@ const Hearth: React.FC<Props> = ({ darkMode, user }) => {
 
   return (
     <div
-      className={`h-screen w-full p-8 pt-5 transition-colors duration-300 border-l flex flex-col ${
+      className={`h-screen w-full flex flex-col transition-colors duration-300 border-l ${
         darkMode
           ? "bg-[#18181b] border-slate-800 text-slate-100"
           : "bg-white border-slate-200 text-slate-900"
+      } ${
+        // Clean up the conditional logic:
+        // If not dashboard, we want 0 padding so SideView can hit the bottom/sides
+        location.pathname === "/hearth/dashboard"
+          ? "pt-5 pb-4 pr-1 px-4"
+          : "p-0"
       }`}
     >
       {/* Header Section */}
-      <div
-        className={`flex mb-5 border-b justify-between pb-4 transition-colors ${
-          darkMode ? "border-slate-800" : "border-slate-100"
-        }`}
-      >
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2">
-            {/* Root Link (Muted) */}
-            <Link
-              to="/hearth/dashboard"
-              className={`text-lg font-semibold transition-colors ${
-                darkMode
-                  ? "text-slate-500 hover:text-slate-400"
-                  : "text-slate-400 hover:text-slate-500"
-              }`}
-            >
-              The Hearth
-            </Link>
-
-            <span
-              className={`text-lg font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
-            >
-              /
-            </span>
-
-            {/* Dynamic Breadcrumb Logic */}
-
-            <h1
-              className={`text-lg font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}
-            >
-              {formattedPage}
-            </h1>
-          </div>
-
-          <p
-            className={`text-[11px] mt-1 font-medium uppercase tracking-wider ${
-              darkMode ? "text-slate-600" : "text-slate-400"
-            }`}
-          >
-            Real-time Communication & Collaboration
-          </p>
-        </div>
-
-        {/* Version Indicator */}
-        <span
-          className={`text-[12px] mt-4 uppercase tracking-tighter font-bold ${
-            darkMode ? "text-slate-700" : "text-slate-300"
+      {/* Breadcrumb Navigation */}
+      {location.pathname === "/hearth/dashboard" && (
+        <div
+          className={`flex mb-2 border-b text-sm justify-between pb-2 transition-colors ${
+            darkMode ? "border-slate-800" : "border-slate-100"
           }`}
         >
-          V 1.0.4
-        </span>
-      </div>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              {/* Root Link (Muted) */}
+              <Link
+                to="/hearth/dashboard"
+                className={`font-semibold transition-colors ${
+                  darkMode
+                    ? "text-slate-500 hover:text-slate-400"
+                    : "text-slate-400 hover:text-slate-500"
+                }`}
+              >
+                The Hearth
+              </Link>
+
+              <span
+                className={`font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
+              >
+                /
+              </span>
+
+              {/* Dynamic Breadcrumb Logic */}
+
+              <h1
+                className={`font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}
+              >
+                {formattedPage}
+              </h1>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Content Injection Point */}
-      <div className="flex-1 overflow-auto forge-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {" "}
+        {/* Changed overflow-auto to hidden to prevent double scrollbars */}
         <Outlet context={{ user, darkMode }} />
       </div>
     </div>

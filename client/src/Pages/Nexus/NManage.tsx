@@ -75,6 +75,7 @@ const NManage = () => {
     if (selectedTask) {
       toggleSubtask(selectedTask?.id, selectedSubTask);
     }
+
     setSelectedSubTask(-1);
   }, [selectedSubTask, selectedTask, data, setData]);
 
@@ -106,7 +107,6 @@ const NManage = () => {
             currentStatus: statusValue, //YAY
           },
         };
-        // BUG: UI CHANGES: UI of task View is not working properly
         // DONE: REFRESHED THE UI: Update the selectedTask state with the new values
         setSelectedTask(updatedTask);
 
