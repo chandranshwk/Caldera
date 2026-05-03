@@ -3,6 +3,7 @@ import SideView from "./SideView";
 import TopDock from "./TopDock";
 import { useState } from "react";
 import { motion } from "framer-motion"; // Import motion
+import ChatRoom from "./ChatRoom";
 
 const Personal = () => {
   const { darkMode } = useOutletContext<{ darkMode: boolean }>();
@@ -11,9 +12,12 @@ const Personal = () => {
   return (
     <div
       // CHANGE 1: Use h-screen instead of h-full to ensure it hits the bottom of the browser
-      className={`flex h-[calc(100%+5vh)] p-0 w-full justify-start items-start flex-col ${
-        darkMode ? "bg-[#18181b]" : "bg-zinc-100"
-      } transition-colors duration-300 overflow-hidden`}
+      className={`flex h-[calc(100%+5vh)] p-0 w-full justify-start items-start flex-col transition-colors duration-300 `}
+      style={{
+        background: darkMode
+          ? `url("/bg-dark.png") no-repeat center/cover`
+          : `url("/bg-light.png") no-repeat center/cover`,
+      }}
     >
       {/* 1. The Dock */}
       <div className="flex-none w-full">
@@ -28,10 +32,20 @@ const Personal = () => {
       <motion.div
         layout
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        // CHANGE 2: Ensure flex-1 is paired with min-h-0 and remove any h-full here
-        className="flex-1 flex justify-start min-w-0 min-h-0 mt-4 w-full"
+        // Ensure we are using flex-row and items-stretch to fill vertical height
+        className="flex-1 flex flex-row items-stretch min-w-0 min-h-0 mt-4 w-full gap-0"
       >
-        <SideView darkMode={darkMode} isDockOpen={isDockOpen} />
+        {/* SideView: Give it a fixed width so it doesn't get squished or cut off */}
+        <div className={`w-100 shrink-0  border-slate-800/50`}>
+          <SideView darkMode={darkMode} isDockOpen={isDockOpen} />
+        </div>
+
+        {/* ChatRoom: This should take up all remaining space */}
+        <div
+          className={`flex-1 min-w-0 ${isDockOpen ? "h-[87.9vh]" : "h-[92.3vh]"}`}
+        >
+          <ChatRoom darkMode={darkMode} isDockOpen={isDockOpen} />
+        </div>
       </motion.div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker/locale/zu_ZA";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BiBadgeCheck, BiPhotoAlbum } from "react-icons/bi";
 import { FiZap } from "react-icons/fi";
 import { HiShieldCheck } from "react-icons/hi";
@@ -97,14 +97,28 @@ const SideView: React.FC<SideViewProps> = ({ darkMode, isDockOpen }) => {
       exec: () => setShowMedia(2),
     },
   ];
+  {
+    /* Local time automatically updated */
+  }
+
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    // Update every second so the minute change is captured immediately
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div
-      className={`relative -left-2 -top-5 bottom-0 ${isDockOpen ? "min-h-[93.6vh]" : "min-h-[97.6vh]"}  min-w-sm flex flex-col gap-1.5 p-4 overflow-y-auto scrollbar-hide origin-top `}
+      className={`relative -left-2 -top-5 bottom-0 ${isDockOpen ? "min-h-[94.5vh]" : "min-h-[99vh]"}  min-w-sm flex flex-col gap-1.5 p-4 overflow-y-auto scrollbar-hide origin-top `}
     >
       {/* Info */}
       <div
-        className={`w-95 m-0 min-h-max pb-0 mb-2 overflow-hidden rounded-lg border ${darkMode ? "bg-zinc-900 border-zinc-700" : "bg-white border-slate-200"} shadow-xl font-sans`}
+        className={`w-95 m-0 min-h-max pb-0 mb-2 overflow-hidden rounded-lg border ${darkMode ? "bg-zinc-900 border-zinc-700" : "bg-white border-slate-200"} shadow-md font-sans`}
       >
         {/* 1. Status Banner (Full width, top) */}
         <div
@@ -191,10 +205,11 @@ const SideView: React.FC<SideViewProps> = ({ darkMode, isDockOpen }) => {
                   </div>
                   <div className="bg-emerald-100/80 px-2 py-1 rounded-md shrink-0">
                     <p className="text-[9px] font-black text-emerald-700 uppercase">
-                      Local:{" "}
-                      {new Date().toLocaleTimeString([], {
+                      Local Time :{" "}
+                      {currentTime.toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
+                        hour12: true,
                       })}
                     </p>
                   </div>
@@ -248,7 +263,7 @@ const SideView: React.FC<SideViewProps> = ({ darkMode, isDockOpen }) => {
 
       {/* Details */}
       <div
-        className={`w-95 min-h-[calc(100%-28vh)] flex-1 m-0 overflow-hidden rounded-lg flex-col border ${darkMode ? "bg-zinc-900 border-zinc-700" : "bg-white border-slate-200"} shadow-xl font-sans`}
+        className={`w-95 min-h-[calc(100%-28vh)] flex-1 m-0 overflow-hidden rounded-lg flex-col border ${darkMode ? "bg-zinc-900 border-zinc-700" : "bg-white border-slate-200"} shadow-md font-sans`}
       >
         <div className="overflow-y-auto h-full p-4 ">
           <div className="w-full flex justify-center">

@@ -13,9 +13,6 @@ const TopDock: React.FC<Props> = ({ darkMode, openDock, setOpenDock }) => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
       // 1. Physical key 'H' (works regardless of caps/language)
       // 2. Alt modifier is held
       if (e.code === "KeyH" && e.altKey) {
@@ -47,7 +44,7 @@ const TopDock: React.FC<Props> = ({ darkMode, openDock, setOpenDock }) => {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="relative flex flex-col items-center justify-center pt-1 px-6">
+            <div className="relative flex flex-col items-center justify-center pt-1 pb-1 px-6">
               {/* Main Toolbar Row */}
               <div className="flex items-center justify-center w-full gap-2">
                 {/* Nav Left */}
@@ -87,7 +84,7 @@ const TopDock: React.FC<Props> = ({ darkMode, openDock, setOpenDock }) => {
                           {isActive && (
                             <motion.div
                               layoutId="activeDot"
-                              className={`absolute -bottom-1 size-1 rounded-full ${darkMode ? "bg-white" : "bg-slate-900"}`}
+                              className={`absolute -bottom-1 size-2 rounded-full ${darkMode ? "bg-white border border-black" : "bg-slate-900 border border-white"}`}
                             />
                           )}
                         </button>

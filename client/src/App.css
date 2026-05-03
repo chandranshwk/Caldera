@@ -364,3 +364,19 @@ body {
     --color-app-icon-bg: #121214;
   }
 }
+
+/* Add this to your index.css or App.css */
+.apple-emoji {
+  font-family:
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji", "Android Emoji", EmojiSymbols, sans-serif;
+}
+
+@font-face {
+  font-family: "Apple Color Emoji";
+  src: url("/fonts/apple-emoji.ttf") format("truetype");
+}
+
+.apple-input {
+  font-family: "Apple Color Emoji", sans-serif !important;
+}
