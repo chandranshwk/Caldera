@@ -12,7 +12,7 @@ const Hearth: React.FC<Props> = ({ darkMode, user }) => {
 
   // Logic to extract the sub-page name for the breadcrumb
   const pathParts = location.pathname.split("/").filter(Boolean);
-  const currentPage = pathParts[pathParts.length - 1] || "Dashboard";
+  const currentPage = pathParts[pathParts.length - 1] || "Settings";
   const formattedPage =
     currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
 
@@ -23,16 +23,12 @@ const Hearth: React.FC<Props> = ({ darkMode, user }) => {
           ? "bg-[#18181b] border-slate-800 text-slate-100"
           : "bg-white border-slate-200 text-slate-900"
       } ${
-        // Clean up the conditional logic:
-        // If not dashboard, we want 0 padding so SideView can hit the bottom/sides
-        location.pathname === "/hearth/dashboard"
-          ? "pt-5 pb-4 pr-1 px-4"
-          : "p-0"
+        location.pathname === "/hearth/settings" ? "pt-5 pb-4 pr-1 px-4" : "p-0"
       }`}
     >
       {/* Header Section */}
       {/* Breadcrumb Navigation */}
-      {location.pathname === "/hearth/dashboard" && (
+      {location.pathname === "/hearth/settings" && (
         <div
           className={`flex mb-2 border-b text-sm justify-between pb-2 transition-colors ${
             darkMode ? "border-slate-800" : "border-slate-100"
@@ -42,7 +38,7 @@ const Hearth: React.FC<Props> = ({ darkMode, user }) => {
             <div className="flex items-center gap-2">
               {/* Root Link (Muted) */}
               <Link
-                to="/hearth/dashboard"
+                to="/hearth/settings"
                 className={`font-semibold transition-colors ${
                   darkMode
                     ? "text-slate-500 hover:text-slate-400"

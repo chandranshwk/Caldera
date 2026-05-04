@@ -25,7 +25,7 @@ import NManage from "./Pages/Nexus/NManage";
 
 // Hearth
 import Hearth from "./Pages/Hearth/Hearth";
-import HDashboard from "./Pages/Hearth/HDashboard";
+import HSettings from "./Pages/Hearth/HSettings";
 import Personal from "./Pages/Hearth/Personal";
 import Channels from "./Pages/Hearth/Channels";
 
@@ -197,7 +197,7 @@ function App() {
             element={<Hearth user={user} darkMode={darkMode} />}
           >
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<HDashboard />} />
+            <Route path="settings" element={<HSettings />} />
             <Route path="personal" element={<Personal />} />
             <Route path="channels" element={<Channels />} />
           </Route>
