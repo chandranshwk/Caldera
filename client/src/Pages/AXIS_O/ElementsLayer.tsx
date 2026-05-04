@@ -1,12 +1,12 @@
 import { Layer, Rect } from "react-konva";
-import { useWorkspaceStore } from "./useAXIS_OTools";
+import { useWorkspaceStore, type WorkspaceElement } from "./useStrataTools";
 
 const ElementsLayer = () => {
   const elements = useWorkspaceStore((state) => state.elements);
 
   return (
     <Layer>
-      {elements.map((el) => {
+      {elements.map((el: WorkspaceElement) => {
         if (el.type === "rect") {
           return (
             <Rect

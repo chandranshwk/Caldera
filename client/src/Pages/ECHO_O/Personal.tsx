@@ -4,7 +4,7 @@ import TopDock from "./TopDock";
 import { useState } from "react";
 import { motion } from "framer-motion"; // Import motion
 import ChatRoom from "./ChatRoom";
-import type { Background } from "../../assets/BGECHO_O";
+import type { Background } from "../../assets/BGEcho_O";
 
 const Personal = () => {
   const { darkMode, selectedBg } = useOutletContext<{

@@ -27,10 +27,10 @@ import {
 import { RiDoubleQuotesL, RiFileSettingsLine } from "react-icons/ri";
 
 import { useMemo, useState } from "react";
-import type { ToolbarButtonProps } from "./TEXT_OView";
+import type { ToolbarButtonProps } from "./ForgeView";
 import { FiAlignCenter, FiAlignRight } from "react-icons/fi";
 
-export const useTEXT_OTools = (editor: Editor | null) => {
+export const useForgeTools = (editor: Editor | null) => {
   const [activeFont, setActiveFont] = useState<string>("Inter");
   const states = useEditorState({
     editor,

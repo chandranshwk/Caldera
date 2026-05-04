@@ -1,9 +1,9 @@
 import React from "react";
 import Dropdown from "../../components/Dropdown";
 import { AnimatePresence, motion } from "motion/react";
-import type { ToolbarButtonProps } from "./TEXT_OView";
-import { useTEXT_OTools } from "./TEXT_OTools";
+import type { ToolbarButtonProps } from "./ForgeView";
 import type { Editor } from "@tiptap/react";
+import { useForgeTools } from "./ForgeTools";
 
 interface LowerToolBarProps {
   editor: Editor | null;
@@ -27,7 +27,7 @@ const LowerToolBar: React.FC<LowerToolBarProps> = ({
     activeFont,
     activeColor,
     COLORSOPTIONS,
-  } = useTEXT_OTools(editor);
+  } = useForgeTools(editor);
 
   return (
     <div>

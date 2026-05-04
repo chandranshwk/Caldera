@@ -1,6 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 import { useOutletContext } from "react-router-dom";
-import { ALL_BACKGROUNDS, type Background } from "../../assets/BGECHO_O.tsx";
+import { ALL_BACKGROUNDS, type Background } from "../../assets/BGEcho_O.tsx";
 import { useState } from "react";
 import { LuChevronDown } from "react-icons/lu";
 import { motion, AnimatePresence } from "framer-motion";

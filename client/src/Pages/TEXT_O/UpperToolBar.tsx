@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import React, { useEffect, useRef, useState } from "react";
-import type { ToolbarButtonProps } from "./TEXT_OView";
-import { useTEXT_OTools } from "./TEXT_OTools";
+import type { ToolbarButtonProps } from "./ForgeView";
+import { useForgeTools } from "./ForgeTools";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import type { Editor } from "@tiptap/react";
 import Input from "../../components/Input";
@@ -33,7 +33,7 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
   setHoveredTopId,
   setActiveTool,
 }) => {
-  const { TOPTOOLS } = useTEXT_OTools(editor);
+  const { TOPTOOLS } = useForgeTools(editor);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [pickerLeft, setPickerLeft] = useState(0);
   const [color, setColor] = useState("bg-yellow-400");
@@ -218,7 +218,7 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
                       />
                     </button>
 
-                    {TOPTOOLS[topPage]?.map((tool, idx) => (
+                    {TOPTOOLS[topPage]?.map((tool, idx: number) => (
                       <div
                         key={tool.id + idx}
                         className="relative flex items-center"
@@ -322,7 +322,7 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
 
         {/* PAGINATION DOTS */}
         <div className="flex justify-center gap-1.5 pb-1.5 mt-1">
-          {TOPTOOLS.map((_, i) => (
+          {TOPTOOLS.map((_, i: number) => (
             <button
               key={i}
               onClick={() => {
