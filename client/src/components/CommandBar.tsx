@@ -111,7 +111,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
         icon: <FaRegFolderOpen />,
         title: "Open Document",
         shortcut: "/o",
-        module: "Caldera",
+        module: "OXU_O",
         category: "Quick Actions",
         action: () => navigate("/profile"),
         hideByDefault: true,
@@ -121,7 +121,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
         icon: <BiSolidHome />,
         title: "Profile",
         shortcut: "/profile",
-        module: "Caldera",
+        module: "OXU_O",
         hideByDefault: false,
         category: "Core",
         action: () => navigate("/profile"),
@@ -375,7 +375,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
                 ESC or <PiCommandLight size={15} />K to close
               </span>
             </div>
-            <span>Caldera OS V 1.0.4</span>
+            <span>OXU_O OS V 1.0.4</span>
           </div>
         </motion.div>
       </div>

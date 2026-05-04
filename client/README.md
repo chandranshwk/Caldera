@@ -1,8 +1,8 @@
-Caldera
-Caldera is a professional-grade productivity ecosystem designed for seamless coordination and high-performance creative work. It is built on a "Local-First, Lazy-Sync" architecture that ensures zero-latency and data resilience.
+OXU_O
+OXU_O is a professional-grade productivity ecosystem designed for seamless coordination and high-performance creative work. It is built on a "Local-First, Lazy-Sync" architecture that ensures zero-latency and data resilience.
 
 The Four Pillars
-Caldera is structured into four specialized modules, each serving a core pillar of professional workflows:
+OXU_O is structured into four specialized modules, each serving a core pillar of professional workflows:
 
 Forge: A unified document suite featuring a rich-text word editor and integrated sheet editor for data management.
 

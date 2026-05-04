@@ -40,9 +40,9 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
       link: "/project/llamatb",
     },
     {
-      label: "Caldera",
+      label: "OXU_O",
       color: "from-orange-400 to-rose-500",
-      link: "/project/caldera",
+      link: "/project/OXU_O",
     },
     {
       label: "Samridh",
@@ -93,7 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
   const [currentSite, setCurrentSide] = useState<{
     name: string;
     icon: React.ReactNode;
-  }>({ name: "Caldera", icon: null }); // Set a safe initial state
+  }>({ name: "OXU_O", icon: null }); // Set a safe initial state
 
   const location = useLocation();
 
@@ -122,12 +122,12 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
       }
     }
 
-    // 2. Default Fallback (Caldera)
+    // 2. Default Fallback (OXU_O)
     setCurrentSide({
-      name: "Caldera",
+      name: "OXU_O",
       icon: (
         <img
-          src="/icon-caldera.png"
+          src="/icon-OXU_O.png"
           alt="Logo"
           className={`h-8 w-8 rounded-full border transition-transform duration-300 group-hover:scale-110 relative ${
             darkMode
@@ -165,8 +165,8 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
         label: "Global Dashboard",
         icon: (
           <img
-            src="/icon-caldera.png"
-            alt="Caldera"
+            src="/icon-OXU_O.png"
+            alt="OXU_O"
             className="size-5 rounded-full border border-slate-700 shadow-sm"
           />
         ),

@@ -49,11 +49,11 @@ const LandingPage = () => {
               transition={{ duration: 0.6 }}
             >
               <img
-                src="/icon-caldera.png"
+                src="/icon-OXU_O.png"
                 className="h-10 w-10 rounded-full border border-black"
               />
               <span className="tracking-wider text-white font-bold text-4xl">
-                CALDERA
+                OXU_O
               </span>
             </motion.div>
 
@@ -77,8 +77,8 @@ const LandingPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                Stop switching tabs. Caldera merges your editor, tasks, chat,
-                and whiteboard into a single, high-performance desktop
+                Stop switching tabs. OXU_O merges your editor, tasks, chat, and
+                whiteboard into a single, high-performance desktop
                 workspace—designed to keep teams in flow.
               </motion.p>
               <motion.div
@@ -463,11 +463,11 @@ const LandingPage = () => {
           >
             <div className="flex items-center gap-2">
               <img
-                src="/icon-caldera.png"
+                src="/icon-OXU_O.png"
                 className="h-10 w-10 rounded-full border border-black"
               />
               <span className="text-sm text-slate-950">
-                © 2026 Caldera. Desktop-first Work OS.
+                © 2026 OXU_O. Desktop-first Work OS.
               </span>
             </div>
             <div className="flex gap-6 text-sm text-slate-950">

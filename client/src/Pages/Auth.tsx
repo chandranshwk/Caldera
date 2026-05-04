@@ -81,11 +81,11 @@ const Auth = () => {
           {/* Logo */}
           <div className="flex items-center gap-2 mb-12">
             <img
-              src="/icon-caldera.png"
+              src="/icon-OXU_O.png"
               className="h-10 w-10 rounded-full border border-black"
             />
             <span className="text-slate-900 font-bold tracking-tight text-xl">
-              CALDERA
+              OXU_O
             </span>
           </div>
 
@@ -186,7 +186,7 @@ const Auth = () => {
           </form>
 
           <p className="text-center text-slate-500 text-sm">
-            {login ? "New to Caldera?" : "Already have an account?"}{" "}
+            {login ? "New to OXU_O?" : "Already have an account?"}{" "}
             <button
               onClick={() => setLogin(!login)}
               className="text-indigo-600 font-bold hover:underline underline-offset-4"
@@ -223,7 +223,7 @@ const Auth = () => {
             {/* Mini Testimonial */}
             <div className="pt-12 border-t border-slate-200">
               <p className="text-slate-500 italic">
-                "Caldera has not only helped me to better{" "}
+                "OXU_O has not only helped me to better{" "}
                 {faker.person.jobDescriptor().toLowerCase()} with my team but
                 has also helped me to improve my own {faker.word.adjective()}{" "}
                 productivity."

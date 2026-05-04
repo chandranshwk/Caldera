@@ -240,8 +240,8 @@ const MobileRestriction = () => (
             Desktop Only
           </h1>
           <p className="text-[15px] leading-relaxed px-4 text-zinc-500 dark:text-zinc-400">
-            Caldera is a high-performance workstation optimized for large
-            screens. Please switch to a{" "}
+            OXU_O is a high-performance workstation optimized for large screens.
+            Please switch to a{" "}
             <span className="font-medium text-zinc-800 dark:text-zinc-200">
               desktop browser
             </span>{" "}
@@ -258,7 +258,7 @@ const MobileRestriction = () => (
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
             </span>
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-600">
-              Caldera OS v1.0.4
+              OXU_O OS v1.0.4
             </span>
           </div>
         </div>
