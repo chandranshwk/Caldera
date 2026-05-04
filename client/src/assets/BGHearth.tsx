@@ -58,19 +58,6 @@ const BACKGROUND_ASSETS = [
     },
   },
   {
-    file: "/bg(4).webp",
-    theme: "isometric-dark",
-    name: "Midnight Grid",
-    ui: {
-      bgUser: "#F9536C",
-      bgMessenger: "#3D4461",
-      text: "#FFFFFF",
-      secondaryText: "#A2ACC5",
-      border: "#282E48",
-      accent: "#F9536C",
-    },
-  },
-  {
     file: "/bg(5).webp",
     theme: "clay-minimal",
     name: "Clay Minimal",
@@ -413,3 +400,35 @@ export const ALL_BACKGROUNDS: Background[] = BACKGROUND_ASSETS.map((bg, i) => ({
   type: bg.file.endsWith(".png") ? "illustration" : "image",
   ui: bg.ui,
 }));
+
+export const getThemeActions = () => {
+  return ALL_BACKGROUNDS.map((bg) => ({
+    id: `Theme - ${bg.idx}`,
+    title: `Set Hearth theme to ${bg.name}`,
+    shortcut: `/t${bg.idx}-hearth`,
+    module: "Hearth",
+    category: "Themes",
+    hideByDefault: true,
+
+    // 1. The Icon: A solid circle of the theme's accent color
+    icon: (
+      <div
+        className="w-4 h-4 rounded-full shadow-sm border border-white"
+        style={{ backgroundColor: bg.ui.accent }}
+      />
+    ),
+
+    // 2. The Custom Styling for the Bar
+    style: {
+      // Use the actual background image, but crop it to a specific sliver
+      backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.65), rgba(255,255,255,0.5)), url("${bg.url}")`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    },
+
+    action: () => {
+      localStorage.setItem("selected-bg", JSON.stringify(bg));
+      window.dispatchEvent(new CustomEvent("theme-change", { detail: bg }));
+    },
+  }));
+};

@@ -144,3 +144,56 @@ interface ChatRoom {
           ))}
         </div>
       </div>
+
+
+
+
+      {Illustrations.map((ill: illustrationUI, index) => (
+              <motion.div
+                layout
+                key={ill.idx}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.1 } }}
+                transition={{
+                  duration: 0.3,
+                  delay: showAll ? 0 : index * 0.05,
+                }}
+                onClick={() => setSelectedIll(ill)}
+                className="group cursor-pointer flex flex-col gap-3 w-full max-w-72"
+              >
+                <div
+                  className={`relative aspect-video w-full min-h-64 rounded-xl transition-all duration-300 border-2 overflow-hidden ${
+                    selectedIll?.idx === ill.idx
+                      ? "border-blue-500 ring-4 ring-blue-500/20"
+                      : "border-transparent"
+                  } shadow-lg`}
+                  style={{
+                    backgroundImage: `url("${ill.file}")`, // Ensure double quotes inside url()
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    display: "block", // Ensure it's treated as a block element
+                  }}
+                >
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span className="text-white text-xs font-bold bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm">
+                      Select Illustration
+                    </span>
+                  </div>
+                </div>
+
+                {/* Info & Color Swatches */}
+                <div className="flex justify-between items-start px-1">
+                  <div className="flex flex-col gap-2">
+                    <span
+                      className={`text-sm font-bold capitalize ${darkMode ? "text-slate-200" : "text-slate-700"}`}
+                    >
+                      {ill.name}
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-tighter opacity-40 bg-slate-500/10 px-2 py-0.5 rounded">
+                    {ill.theme}
+                  </span>
+                </div>
+              </motion.div>
+            ))}

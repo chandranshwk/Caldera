@@ -32,7 +32,9 @@ const TopDock: React.FC<Props> = ({ darkMode, openDock, setOpenDock }) => {
   return (
     <div
       className={`relative flex flex-col z-999 justify-center h-max w-full transition-colors duration-300 ${
-        darkMode ? "bg-[#18181b] border-zinc-800" : "bg-white border-slate-200"
+        darkMode
+          ? "bg-[#18181b]/1 border-zinc-800"
+          : "bg-white/1 border-slate-200"
       }`}
     >
       <AnimatePresence>

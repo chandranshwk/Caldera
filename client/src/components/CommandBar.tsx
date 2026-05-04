@@ -12,6 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { PiCommandLight } from "react-icons/pi";
 import { FaRegFolderOpen } from "react-icons/fa";
+import { getThemeActions } from "../assets/BGHearth";
 
 interface CommandBarProps {
   isOpen: boolean;
@@ -21,12 +22,18 @@ interface CommandBarProps {
 }
 
 interface CommandItemProps {
-  icon: React.ReactNode;
+  id: string;
   title: string;
-  module: string;
-  darkMode: boolean;
+  icon: React.ReactNode;
+  action: () => void;
   shortcut?: string;
-  action?: () => void;
+  module?: string;
+  category?: string;
+  hideByDefault?: boolean;
+  // Change style from string to React.CSSProperties
+  style?: React.CSSProperties;
+  // Add these if you are passing them in the spread
+  darkMode?: boolean;
   isSelected?: boolean;
 }
 
@@ -55,6 +62,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
         title: "Switch to Dark Mode",
         shortcut: "/dark",
         module: "System",
+        hideByDefault: false,
         category: "System Setting",
         action: () => setDarkMode(true),
       },
@@ -64,6 +72,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
         title: "Switch to Light Mode",
         shortcut: "/light",
         module: "System",
+        hideByDefault: false,
         category: "System Setting",
         action: () => setDarkMode(false),
       },
@@ -73,6 +82,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
         title: "New Document",
         shortcut: "/n-docs",
         module: "Forge",
+        hideByDefault: false,
         category: "Quick Actions",
         action: () => navigate("/forge/docs"),
       },
@@ -92,6 +102,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
         title: "New Strata",
         shortcut: "/n-strata",
         module: "Strata",
+        hideByDefault: false,
         category: "Quick Actions",
         action: () => navigate("/strata/new"),
       },
@@ -111,6 +122,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
         title: "Profile",
         shortcut: "/profile",
         module: "Caldera",
+        hideByDefault: false,
         category: "Core",
         action: () => navigate("/profile"),
       },
@@ -120,6 +132,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
         title: "Forge",
         shortcut: "/forge",
         module: "Management",
+        hideByDefault: false,
         category: "Modules",
         action: () => navigate("/forge"),
       },
@@ -129,6 +142,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
         title: "Nexus Tasks",
         shortcut: "/nexus",
         module: "Management",
+        hideByDefault: false,
         category: "Modules",
         action: () => navigate("/nexus"),
       },
@@ -138,6 +152,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
         title: "Hearth Chat",
         shortcut: "/hearth",
         module: "Collaboration",
+        hideByDefault: false,
         category: "Modules",
         action: () => navigate("/hearth"),
       },
@@ -147,9 +162,11 @@ const CommandBar: React.FC<CommandBarProps> = ({
         title: "Strata",
         shortcut: "/strata",
         module: "Management",
+        hideByDefault: false,
         category: "Modules",
         action: () => navigate("/Strata"),
       },
+      ...getThemeActions(),
     ],
     [setDarkMode, navigate],
   );
@@ -374,29 +391,35 @@ const CommandItem: React.FC<CommandItemProps> = ({
   darkMode,
   action,
   isSelected,
+  style,
 }) => (
   <div
-    className={`mx-2 flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors ${isSelected ? (darkMode ? "bg-white/10" : "bg-black/5") : ""}`}
+    className={`mx-2 flex items-center ${style ? "my-2" : ""} ${darkMode ? "" : style ? "border border-black" : ""} justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors ${isSelected ? (darkMode ? "bg-white/10" : "bg-black/5") : ""}`}
     onClick={action}
+    style={style ? style : {}}
   >
     <div className="flex items-center gap-4">
       <div
-        className={`w-8 h-8 flex items-center justify-center rounded-md text-lg ${isSelected && darkMode ? "bg-blue-600 text-white" : darkMode ? "bg-zinc-800 text-zinc-400" : "bg-zinc-100 text-zinc-600"}`}
+        className={`w-8 h-8 flex items-center justify-center rounded-md text-lg ${isSelected ? "bg-blue-800/80 text-white" : darkMode ? "bg-zinc-800 text-zinc-400" : style ? "bg-zinc-800" : "bg-zinc-100 text-zinc-600"}`}
       >
         {icon}
       </div>
       <div>
         <div
-          className={`text-[13px] font-medium ${darkMode ? "text-zinc-200" : "text-zinc-800"}`}
+          className={`text-[13px] font-medium ${style ? "text-slate-950" : darkMode ? "text-zinc-200" : "text-zinc-800"}`}
         >
           {title}
         </div>
-        <div className="text-[11px] opacity-40 font-medium">{module}</div>
+        <div
+          className={`text-[11px] font-medium ${style ? "text-black opactiy-10" : "opacity-40"}`}
+        >
+          {module}
+        </div>
       </div>
     </div>
     {shortcut && (
       <span
-        className={`text-[10px] font-mono px-2 py-0.5 rounded border ${darkMode ? "border-white/10 text-zinc-500" : "border-black/10 text-zinc-400"}`}
+        className={`text-[10px] font-mono px-2 py-0.5 rounded border ${style ? "text-zinc-900 bg-zinc-100" : darkMode ? "border-white/10 text-zinc-500" : "border-black/10 text-zinc-400"}`}
       >
         {shortcut}
       </span>

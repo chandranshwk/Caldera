@@ -8,14 +8,20 @@ import { LuFileText, LuShieldAlert } from "react-icons/lu";
 import { SlArrowDown } from "react-icons/sl";
 import Carasoul, { type ViewOption } from "../../components/Carasoul";
 import { CiLock } from "react-icons/ci";
+import type { Background } from "../../assets/BGHearth";
 
 interface SideViewProps {
   darkMode: boolean;
   isDockOpen: boolean;
+  selectedBg: Background;
 }
 
 type StatusType = "encrypted" | "warning" | "premium" | "verified";
-const SideView: React.FC<SideViewProps> = ({ darkMode, isDockOpen }) => {
+const SideView: React.FC<SideViewProps> = ({
+  darkMode,
+  isDockOpen,
+  selectedBg,
+}) => {
   const [online] = useState(true);
 
   console.log(isDockOpen);
@@ -118,7 +124,9 @@ const SideView: React.FC<SideViewProps> = ({ darkMode, isDockOpen }) => {
     >
       {/* Info */}
       <div
-        className={`w-95 m-0 min-h-max pb-0 mb-2 overflow-hidden rounded-lg border ${darkMode ? "bg-zinc-900 border-zinc-700" : "bg-white border-slate-200"} shadow-md font-sans`}
+        className={`w-95 m-0 min-h-max pb-0 mb-2 overflow-hidden rounded-lg border ${
+          darkMode ? "bg-zinc-900 border-zinc-700" : "bg-white border-slate-200"
+        } shadow-md font-sans`}
       >
         {/* 1. Status Banner (Full width, top) */}
         <div
@@ -263,11 +271,35 @@ const SideView: React.FC<SideViewProps> = ({ darkMode, isDockOpen }) => {
 
       {/* Details */}
       <div
-        className={`w-95 min-h-[calc(100%-28vh)] flex-1 m-0 overflow-hidden rounded-lg flex-col border ${darkMode ? "bg-zinc-900 border-zinc-700" : "bg-white border-slate-200"} shadow-md font-sans`}
+        className={`w-95 min-h-[calc(100%-28vh)] flex-1 m-0 overflow-hidden rounded-lg flex-col border ${
+          selectedBg.idx === 5 ||
+          selectedBg.idx === 7 ||
+          selectedBg.idx === 8 ||
+          selectedBg.idx === 15 ||
+          selectedBg.idx === 18 ||
+          selectedBg.idx === 24
+            ? "bg-zinc-900 border-zinc-700 text-white"
+            : darkMode
+              ? "bg-zinc-900 border-zinc-700"
+              : "bg-white border-slate-200"
+        } shadow-md font-sans`}
       >
         <div className="overflow-y-auto h-full p-4 ">
           <div className="w-full flex justify-center">
-            <Carasoul darkMode={darkMode} view={showMedia} options={options} />
+            <Carasoul
+              darkMode={
+                selectedBg.idx === 5 ||
+                selectedBg.idx === 7 ||
+                selectedBg.idx === 8 ||
+                selectedBg.idx === 15 ||
+                selectedBg.idx === 18 ||
+                selectedBg.idx === 24
+                  ? true
+                  : darkMode
+              }
+              view={showMedia}
+              options={options}
+            />
           </div>
         </div>
       </div>

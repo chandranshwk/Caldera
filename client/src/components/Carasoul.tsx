@@ -10,9 +10,15 @@ interface CarasoulProps {
   darkMode: boolean;
   options: ViewOption[];
   view: number;
+  accent?: string;
 }
 
-const Carasoul: React.FC<CarasoulProps> = ({ darkMode, options, view }) => {
+const Carasoul: React.FC<CarasoulProps> = ({
+  darkMode,
+  options,
+  view,
+  accent,
+}) => {
   const [style, setStyle] = useState({ width: 0, left: 0 });
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -30,10 +36,11 @@ const Carasoul: React.FC<CarasoulProps> = ({ darkMode, options, view }) => {
     >
       {/* Sliding Background Indicator */}
       <div
-        className={`absolute h-0.5 bottom-1.5  rounded-xl shadow-sm transition-all duration-300 ease-in-out z-0  bg-indigo-700/40`}
+        className={`absolute h-0.5 bottom-1.5  rounded-xl shadow-sm transition-all duration-300 ease-in-out z-0`}
         style={{
           width: `${style.width - 15}px`,
           transform: `translateX(${style.left}px)`,
+          background: accent ? accent : "#3730a366",
         }}
       />
       {options.map((option, idx) => (

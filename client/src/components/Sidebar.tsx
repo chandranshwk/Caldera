@@ -75,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
       icon: <BiMessageSquare size={22} />,
       label: "The Hearth",
       subLinks: [
-        { name: "Dashboard", link: "/hearth/dashboard" }, // Added for consistency
+        { name: "Settings", link: "/hearth/settings" }, // Added for consistency
         { name: "Personal", link: "/hearth/personal" },
         { name: "Channels", link: "/hearth/channels" },
       ],

@@ -7,20 +7,27 @@ import EmojiPicker, { Theme, EmojiStyle, Emoji } from "emoji-picker-react";
 import emojiRegex from "emoji-regex";
 import { PiPlusLight } from "react-icons/pi";
 import { VscSmiley } from "react-icons/vsc";
+import type { Background } from "../../assets/BGHearth.tsx";
 
 interface Props {
   darkMode: boolean;
   isDockOpen: boolean;
+  selectedBg: Background;
 }
 
-const AppleEmojiMessage = ({
-  text,
-  darkMode,
-  writer,
-}: {
+interface AppleEmojiMessageProps {
   text: string;
   darkMode: boolean;
   writer: string;
+  color: string;
+  selectedBg: Background;
+}
+
+const AppleEmojiMessage: React.FC<AppleEmojiMessageProps> = ({
+  text,
+  color,
+  selectedBg,
+  writer,
 }) => {
   const regex = emojiRegex();
   const parts = text.split(regex);
@@ -36,7 +43,23 @@ const AppleEmojiMessage = ({
 
   return (
     <span
-      className={`apple-emoji ${writer === "User" ? "text-slate-200" : darkMode ? "text-slate-200" : "text-slate-900"}`}
+      className={`apple-emoji `}
+      style={{
+        color:
+          selectedBg.idx === 12
+            ? writer === "User"
+              ? "#000"
+              : "#fff"
+            : selectedBg.idx === 10 || selectedBg.idx === 21
+              ? writer === "User"
+                ? "#fff"
+                : "#000"
+              : selectedBg.idx === 26
+                ? writer === "User"
+                  ? "#000"
+                  : "#fff"
+                : color,
+      }}
     >
       {parts.map((part, i) => (
         <React.Fragment key={i}>
@@ -62,7 +85,7 @@ const initialMessages = Array.from({ length: 5 }, (_, i) => ({
   message: faker.lorem.sentence(),
 }));
 
-const ChatRoom: React.FC<Props> = ({ darkMode }) => {
+const ChatRoom: React.FC<Props> = ({ darkMode, selectedBg }) => {
   const [messages, setMessages] = useState(initialMessages);
   const [inputValue, setInputValue] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
@@ -127,14 +150,21 @@ const ChatRoom: React.FC<Props> = ({ darkMode }) => {
                 >
                   <motion.div
                     layout
-                    className={`relative max-w-[85%] px-4 py-2 shadow-sm ${
+                    className={`relative max-w-[85%] px-4 py-2 shadow-md text-black ${
                       isUser
-                        ? "bg-[#007AFF] text-white rounded-[18px] rounded-br-none"
-                        : `${darkMode ? "bg-[#262629] text-white" : "bg-[#E9E9EB] text-black"} rounded-[18px] rounded-bl-none`
+                        ? " rounded-[18px] rounded-br-none"
+                        : ` rounded-[18px] rounded-bl-none`
                     }`}
+                    style={{
+                      background: isUser
+                        ? selectedBg.ui.bgUser
+                        : selectedBg.ui.bgMessenger,
+                    }}
                   >
                     <p className="text-[15px] leading-tight whitespace-pre-wrap">
                       <AppleEmojiMessage
+                        selectedBg={selectedBg}
+                        color={selectedBg.ui.text}
                         text={msg.message}
                         darkMode={darkMode}
                         writer={msg.MType}
@@ -143,15 +173,21 @@ const ChatRoom: React.FC<Props> = ({ darkMode }) => {
 
                     {/* The Tail */}
                     <div
-                      className={`absolute bottom-0 w-3 h-3 ${isUser ? "-right-1 bg-[#007AFF]" : `-left-1 ${darkMode ? "bg-[#262629]" : "bg-[#E9E9EB]"}`}`}
+                      className={`absolute bottom-0 w-3 h-3`}
                       style={{
                         clipPath: isUser
                           ? "polygon(0 0, 0% 100%, 100% 100%)"
                           : "polygon(100% 0, 0 100%, 100% 100%)",
+                        background: isUser
+                          ? selectedBg.ui.bgUser
+                          : selectedBg.ui.bgMessenger,
                       }}
                     />
                   </motion.div>
-                  <span className="text-[10px] mt-2 uppercase font-bold tracking-widest opacity-40">
+                  <span
+                    className="text-[10px] mt-2 uppercase font-bold tracking-widest opacity-40"
+                    style={{ color: selectedBg.ui.secondaryText }}
+                  >
                     {msg.MType}
                   </span>
                 </motion.div>
@@ -183,15 +219,19 @@ const ChatRoom: React.FC<Props> = ({ darkMode }) => {
 
         <div
           className={`flex items-center gap-2 p-2 rounded-xl border transition-all duration-300 focus-within:ring-1 ${
-            darkMode
-              ? "bg-zinc-950/20 border-zinc-800 focus-within:ring-zinc-500/10"
-              : "bg-zinc-50 border-zinc-200 focus-within:ring-blue-400/10"
+            darkMode ? "border-transparent " : "border-zinc-200/10 "
           }`}
+          style={{
+            background: selectedBg.ui.bgMessenger,
+          }}
         >
           <button className="p-2 text-slate-400 hover:text-blue-500 transition-colors">
             <PiPlusLight
               size={22}
-              className={`font-black ${darkMode ? "text-white" : "text-black"}`}
+              className={`font-black `}
+              style={{
+                color: selectedBg.ui.text,
+              }}
             />
           </button>
 
@@ -202,27 +242,40 @@ const ChatRoom: React.FC<Props> = ({ darkMode }) => {
           >
             <VscSmiley
               size={22}
-              className={`font-black ${darkMode ? "text-white" : "text-black"}`}
+              className={`font-black`}
+              style={{
+                color: selectedBg.ui.text,
+              }}
             />
           </button>
 
           <input
             type="text"
             placeholder="Type a message..."
-            className={`flex-1 bg-transparent py-2 px-1 focus:outline-none text-sm ${darkMode ? "text-slate-200" : "text-slate-900"}`}
+            className={`flex-1 bg-transparent py-2 px-1 focus:outline-none text-sm `}
             onChange={(e) => setInputValue(e.target.value)}
             value={inputValue}
             onKeyDown={(e) => e.key === "Enter" && ADD()}
+            style={{
+              background: selectedBg.ui.bgMessenger,
+              color: selectedBg.ui.text,
+            }}
           />
           <motion.button
             onClick={ADD}
             disabled={inputValue.trim() === ""}
             animate={{
               backgroundColor:
-                inputValue.trim() === "" ? "transparent" : "#007AFF",
+                inputValue.trim() === "" ? "transparent" : selectedBg.ui.accent,
+              color:
+                inputValue.trim() === ""
+                  ? selectedBg.idx === 28
+                    ? "#fff"
+                    : `${selectedBg.ui.text}4A`
+                  : selectedBg.ui.text,
               scale: inputValue.trim() === "" ? 1 : 1.05,
             }}
-            className={`p-2.5 rounded-xl transition-colors ${inputValue.trim() === "" ? "text-slate-400" : "text-white"}`}
+            className={`p-2.5 rounded-xl transition-colors `}
           >
             <FiSend size={18} />
           </motion.button>

@@ -1,5 +1,7 @@
 import type { User } from "@supabase/supabase-js";
 import { Outlet, Link, useLocation } from "react-router-dom";
+import { ALL_BACKGROUNDS, type Background } from "../../assets/BGHearth.tsx";
+import { useEffect, useState } from "react";
 
 interface Props {
   darkMode: boolean;
@@ -15,6 +17,38 @@ const Hearth: React.FC<Props> = ({ darkMode, user }) => {
   const currentPage = pathParts[pathParts.length - 1] || "Settings";
   const formattedPage =
     currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
+  const [selectedBg, setSelectedBg] = useState<Background>(() => {
+    const saved = localStorage.getItem("selected-bg");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return ALL_BACKGROUNDS[0];
+      }
+    }
+    return ALL_BACKGROUNDS[0];
+  });
+
+  // Inside Hearth.tsx (or your main layout)
+  useEffect(() => {
+    //FIXED: CHANGES NOT REFLECTING
+    // 1. Define the event as a CustomEvent to avoid 'any'
+    // 2. Use 'event' instead of 'e' (or just remove the name if unused)
+    const handleThemeChange = (event: Event) => {
+      const customEvent = event as CustomEvent<Background>;
+      if (customEvent.detail) {
+        setSelectedBg(customEvent.detail);
+      }
+    };
+
+    window.addEventListener("theme-change", handleThemeChange);
+    return () => window.removeEventListener("theme-change", handleThemeChange);
+  }, [setSelectedBg]);
+
+  // 2. Save to localStorage whenever selectedBg changes
+  useEffect(() => {
+    localStorage.setItem("selected-bg", JSON.stringify(selectedBg));
+  }, [selectedBg]);
 
   return (
     <div
@@ -70,7 +104,7 @@ const Hearth: React.FC<Props> = ({ darkMode, user }) => {
       <div className="flex-1 flex flex-col overflow-hidden">
         {" "}
         {/* Changed overflow-auto to hidden to prevent double scrollbars */}
-        <Outlet context={{ user, darkMode }} />
+        <Outlet context={{ user, darkMode, selectedBg, setSelectedBg }} />
       </div>
     </div>
   );
