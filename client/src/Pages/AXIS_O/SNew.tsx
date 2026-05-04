@@ -2,10 +2,10 @@ import { useOutletContext } from "react-router-dom";
 import { Stage, Layer, Rect, Circle, RegularPolygon } from "react-konva";
 import { useRef, useState, useCallback, useEffect } from "react";
 import Konva from "konva";
-import ToolbarStrata from "../../components/ToolbarStrata";
 import Grid from "./Grid";
-import { useWorkspaceStore, type WorkspaceElement } from "./useStrataTools";
 import type { KonvaEventObject } from "konva/lib/Node";
+import { useWorkspaceStore, type WorkspaceElement } from "./useStrataTools";
+import ToolbarAXIS_O from "../../components/ToolbarAXIS_O";
 
 const SNew = () => {
   const { darkMode } = useOutletContext<{ darkMode: boolean }>();
@@ -311,7 +311,7 @@ const SNew = () => {
           })}
         </Layer>
       </Stage>
-      <ToolbarStrata darkMode={darkMode} setShape={setShape} />
+      <ToolbarAXIS_O darkMode={darkMode} setShape={setShape} />
     </div>
   );
 };

@@ -10,38 +10,37 @@ import Home from "./Pages/Home";
 import LandingPage from "./Pages/LandingPage";
 import ProjectView from "./Pages/ProjectView";
 
-// Forge
-import Forge from "./Pages/Forge/Forge";
-import FDashboard from "./Pages/Forge/FDashboard";
-import FDoc from "./Pages/Forge/FDoc";
-import FSheets from "./Pages/Forge/FSheets";
-import FPdfs from "./Pages/Forge/FPdfs";
+// TEXT_O
+import TEXT_O from "./Pages/TEXT_O/TEXT_O";
+import FDashboard from "./Pages/TEXT_O/FDashboard";
+import FDoc from "./Pages/TEXT_O/FDoc";
+import FSheets from "./Pages/TEXT_O/FSheets";
+import FPdfs from "./Pages/TEXT_O/FPdfs";
 
-// Nexus
-import Nexus from "./Pages/Nexus/Nexus";
-import NDashboard from "./Pages/Nexus/NDashboard";
-import Calendar from "./Pages/Nexus/Calendar";
-import NManage from "./Pages/Nexus/NManage";
+// FLOW_O
+import NDashboard from "./Pages/FLOW_O/NDashboard";
+import Calendar from "./Pages/FLOW_O/Calendar";
+import NManage from "./Pages/FLOW_O/NManage";
 
-// Hearth
-import Hearth from "./Pages/Hearth/Hearth";
-import HSettings from "./Pages/Hearth/HSettings";
-import Personal from "./Pages/Hearth/Personal";
-import Channels from "./Pages/Hearth/Channels";
+// ECHO_O
+import HSettings from "./Pages/ECHO_O/HSettings";
+import Personal from "./Pages/ECHO_O/Personal";
+import Channels from "./Pages/ECHO_O/Channels";
 
-//Strata
-import Strata from "./Pages/Strata/Strata";
-import SDashboard from "./Pages/Strata/SDashboard";
-import SNew from "./Pages/Strata/SNew";
+//AXIS_O
+import SDashboard from "./Pages/AXIS_O/SDashboard";
+import SNew from "./Pages/AXIS_O/SNew";
 
 // Components & Routes
 import PrivateRoute from "./Routes/privateRoute";
 import CommandBar from "./components/CommandBar";
 import "./App.css";
 import type { User } from "@supabase/supabase-js";
-import ForgeView from "./Pages/Forge/ForgeView";
-import ForgeViewSheets from "./Pages/Forge/ForgeViewSheets";
 import { LuMonitor } from "react-icons/lu";
+import ForgeViewSheets from "./Pages/TEXT_O/ForgeViewSheets";
+import AXIS_O from "./Pages/AXIS_O/AXIS_O";
+import FLOW_O from "./Pages/FLOW_O/FLOW_O";
+import ECHO_O from "./Pages/ECHO_O/ECHO_O";
 
 function App() {
   const navigate = useNavigate();
@@ -160,18 +159,18 @@ function App() {
           />
 
           <Route
-            path="/forge/doc/open/:projectId"
-            element={<ForgeView darkMode={darkMode} />}
+            path="/TEXT_O/doc/open/:projectId"
+            element={<ProjectView user={user} darkMode={darkMode} />}
           />
           <Route
-            path="/forge/sheet/open/:projectId"
+            path="/TEXT_O/sheet/open/:projectId"
             element={<ForgeViewSheets darkMode={darkMode} />}
           />
 
-          {/* Module: The Forge */}
+          {/* Module: The TEXT_O */}
           <Route
-            path="/forge"
-            element={<Forge user={user} darkMode={darkMode} />}
+            path="/TEXT_O"
+            element={<TEXT_O user={user} darkMode={darkMode} />}
           >
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<FDashboard />} />
@@ -180,10 +179,10 @@ function App() {
             <Route path="pdfs" element={<FPdfs />} />
           </Route>
 
-          {/* Module: The Nexus */}
+          {/* Module: The FLOW_O */}
           <Route
-            path="/nexus"
-            element={<Nexus user={user} darkMode={darkMode} />}
+            path="/FLOW_O"
+            element={<FLOW_O user={user} darkMode={darkMode} />}
           >
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<NDashboard />} />
@@ -191,10 +190,10 @@ function App() {
             <Route path="manage" element={<NManage />} />
           </Route>
 
-          {/* Module: The Hearth */}
+          {/* Module: The ECHO_O */}
           <Route
-            path="/hearth"
-            element={<Hearth user={user} darkMode={darkMode} />}
+            path="/ECHO_O"
+            element={<ECHO_O user={user} darkMode={darkMode} />}
           >
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="settings" element={<HSettings />} />
@@ -202,10 +201,10 @@ function App() {
             <Route path="channels" element={<Channels />} />
           </Route>
 
-          {/* Module: The Strata */}
+          {/* Module: The AXIS_O */}
           <Route
-            path="/Strata"
-            element={<Strata user={user} darkMode={darkMode} />}
+            path="/AXIS_O"
+            element={<AXIS_O user={user} darkMode={darkMode} />}
           >
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<SDashboard />} />

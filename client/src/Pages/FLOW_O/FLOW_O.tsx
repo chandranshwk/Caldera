@@ -18,7 +18,7 @@ export type FILTERTYPE = {
   color: string;
 };
 
-const Nexus: React.FC<Props> = ({ darkMode, user }) => {
+const FLOW_O: React.FC<Props> = ({ darkMode, user }) => {
   const location = useLocation();
 
   // Logic to extract the sub-page name for the breadcrumb
@@ -144,31 +144,31 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
           ? "bg-[#18181b] border-slate-800 text-slate-100"
           : "bg-white border-slate-200 text-slate-900"
       }
-        ${location.pathname === "/nexus/calendar" ? "pb-1 " : ""}`}
+        ${location.pathname === "/FLOW_O/calendar" ? "pb-1 " : ""}`}
     >
       {/* Header Section */}
       <div
         className={`flex border-b justify-between pb-4 transition-colors ${
           darkMode ? "border-slate-800" : "border-slate-100"
         }
-        ${location.pathname === "/nexus/calendar" ? "mb-0" : "mb-5"}`}
+        ${location.pathname === "/FLOW_O/calendar" ? "mb-0" : "mb-5"}`}
       >
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
             {/* Root Link (Muted) */}
             <Link
-              to="/nexus/dashboard"
+              to="/FLOW_O/dashboard"
               className={`font-semibold transition-colors ${
                 darkMode
                   ? "text-slate-500 hover:text-slate-400"
                   : "text-slate-400 hover:text-slate-500"
-              } ${location.pathname === "/nexus/dashboard" ? "text-lg" : "text-sm"}`}
+              } ${location.pathname === "/FLOW_O/dashboard" ? "text-lg" : "text-sm"}`}
             >
-              The Nexus
+              The FLOW_O
             </Link>
 
             <span
-              className={`font-light ${darkMode ? "text-slate-700" : "text-slate-200"} ${location.pathname === "/nexus/dashboard" ? "text-lg" : "text-sm"}`}
+              className={`font-light ${darkMode ? "text-slate-700" : "text-slate-200"} ${location.pathname === "/FLOW_O/dashboard" ? "text-lg" : "text-sm"}`}
             >
               /
             </span>
@@ -176,7 +176,7 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
             {/* Dynamic Breadcrumb Logic */}
 
             <h1
-              className={` font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}  ${location.pathname === "/nexus/dashboard" ? "text-lg" : "text-sm"}`}
+              className={` font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}  ${location.pathname === "/FLOW_O/dashboard" ? "text-lg" : "text-sm"}`}
             >
               {formattedPage}
             </h1>
@@ -185,7 +185,7 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
           <p
             className={`text-[11px] mt-1 font-medium uppercase tracking-wider ${
               darkMode ? "text-slate-600" : "text-slate-400"
-            } ${location.pathname === "/nexus/dashboard" ? "block" : "hidden"}`}
+            } ${location.pathname === "/FLOW_O/dashboard" ? "block" : "hidden"}`}
           >
             Project Management & Task Orchestration
           </p>
@@ -195,18 +195,18 @@ const Nexus: React.FC<Props> = ({ darkMode, user }) => {
         <span
           className={`text-[12px] mt-4 uppercase tracking-tighter font-bold ${
             darkMode ? "text-slate-700" : "text-slate-300"
-          }  ${location.pathname === "/nexus/dashboard" ? "block" : "hidden"}`}
+          }  ${location.pathname === "/FLOW_O/dashboard" ? "block" : "hidden"}`}
         >
           V 1.0.4
         </span>
       </div>
 
       {/* Content Injection Point */}
-      <div className="flex-1 overflow-auto forge-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="flex-1 overflow-auto TEXT_O-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
         <Outlet context={{ user, darkMode, RECOMMENDFILTER, setData, data }} />
       </div>
     </div>
   );
 };
 
-export default Nexus;
+export default FLOW_O;

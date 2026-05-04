@@ -7,7 +7,7 @@ import EmojiPicker, { Theme, EmojiStyle, Emoji } from "emoji-picker-react";
 import emojiRegex from "emoji-regex";
 import { PiPlusLight } from "react-icons/pi";
 import { VscSmiley } from "react-icons/vsc";
-import type { Background } from "../../assets/BGHearth.tsx";
+import type { Background } from "../../assets/BGECHO_O.tsx";
 
 interface Props {
   darkMode: boolean;

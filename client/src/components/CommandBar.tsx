@@ -12,7 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { PiCommandLight } from "react-icons/pi";
 import { FaRegFolderOpen } from "react-icons/fa";
-import { getThemeActions } from "../assets/BGHearth";
+import { getThemeActions } from "../assets/BGEcho_O";
 
 interface CommandBarProps {
   isOpen: boolean;
@@ -81,30 +81,30 @@ const CommandBar: React.FC<CommandBarProps> = ({
         icon: <FiFilePlus />,
         title: "New Document",
         shortcut: "/n-docs",
-        module: "Forge",
+        module: "TEXT_O",
         hideByDefault: false,
         category: "Quick Actions",
-        action: () => navigate("/forge/docs"),
+        action: () => navigate("/TEXT_O/docs"),
       },
       {
         id: "new-sheet",
         icon: <FiGrid />,
         title: "New Spreadsheet",
         shortcut: "/n-sheets",
-        module: "Forge",
+        module: "TEXT_O",
         category: "Quick Actions",
-        action: () => navigate("/forge/sheets"),
+        action: () => navigate("/TEXT_O/sheets"),
         hideByDefault: true,
       },
       {
-        id: "new-Strata",
+        id: "new-AXIS_O",
         icon: <FiLayers />,
-        title: "New Strata",
-        shortcut: "/n-strata",
-        module: "Strata",
+        title: "New AXIS_O",
+        shortcut: "/n-AXIS_O",
+        module: "AXIS_O",
         hideByDefault: false,
         category: "Quick Actions",
-        action: () => navigate("/strata/new"),
+        action: () => navigate("/AXIS_O/new"),
       },
       {
         id: "open",
@@ -127,44 +127,44 @@ const CommandBar: React.FC<CommandBarProps> = ({
         action: () => navigate("/profile"),
       },
       {
-        id: "forge",
+        id: "TEXT_O",
         icon: <BiCheckSquare />,
-        title: "Forge",
-        shortcut: "/forge",
+        title: "TEXT_O",
+        shortcut: "/TEXT_O",
         module: "Management",
         hideByDefault: false,
         category: "Modules",
-        action: () => navigate("/forge"),
+        action: () => navigate("/TEXT_O"),
       },
       {
-        id: "nexus",
+        id: "FLOW_O",
         icon: <BiCheckSquare />,
-        title: "Nexus Tasks",
-        shortcut: "/nexus",
+        title: "FLOW_O Tasks",
+        shortcut: "/FLOW_O",
         module: "Management",
         hideByDefault: false,
         category: "Modules",
-        action: () => navigate("/nexus"),
+        action: () => navigate("/FLOW_O"),
       },
       {
-        id: "hearth",
+        id: "ECHO_O",
         icon: <BiMessageSquare />,
-        title: "Hearth Chat",
-        shortcut: "/hearth",
+        title: "ECHO_O Chat",
+        shortcut: "/ECHO_O",
         module: "Collaboration",
         hideByDefault: false,
         category: "Modules",
-        action: () => navigate("/hearth"),
+        action: () => navigate("/ECHO_O"),
       },
       {
-        id: "Strata",
+        id: "AXIS_O",
         icon: <BiCheckSquare />,
-        title: "Strata",
-        shortcut: "/strata",
+        title: "AXIS_O",
+        shortcut: "/AXIS_O",
         module: "Management",
         hideByDefault: false,
         category: "Modules",
-        action: () => navigate("/Strata"),
+        action: () => navigate("/AXIS_O"),
       },
       ...getThemeActions(),
     ],
@@ -196,9 +196,9 @@ const CommandBar: React.FC<CommandBarProps> = ({
         exactMatch.action();
       } else if (query.startsWith("/n")) {
         // Space-agnostic sub-command parsing
-        if (query.includes("-docs")) navigate("/forge/docs");
-        else if (query.includes("-sheets")) navigate("/forge/sheets");
-        else if (query.includes("-Strata")) navigate("/Strata");
+        if (query.includes("-docs")) navigate("/TEXT_O/docs");
+        else if (query.includes("-sheets")) navigate("/TEXT_O/sheets");
+        else if (query.includes("-AXIS_O")) navigate("/AXIS_O");
         else navigate("/profile");
       }
     }
@@ -312,7 +312,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
                     exit={{ opacity: 0, x: 10 }}
                     className="text-[10px] font-medium text-blue-500 animate-pulse pr-4 whitespace-nowrap"
                   >
-                    Try -docs, -sheets, or -Strata
+                    Try -docs, -sheets, or -AXIS_O
                   </motion.span>
                 )}
               </AnimatePresence>

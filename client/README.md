@@ -4,11 +4,11 @@ OXU_O is a professional-grade productivity ecosystem designed for seamless coord
 The Four Pillars
 OXU_O is structured into four specialized modules, each serving a core pillar of professional workflows:
 
-Forge: A unified document suite featuring a rich-text word editor and integrated sheet editor for data management.
+TEXT_O: A unified document suite featuring a rich-text word editor and integrated sheet editor for data management.
 
-Nexus: A robust task management engine designed for both personal focus and cross-team coordination.
+FLOW_O: A robust task management engine designed for both personal focus and cross-team coordination.
 
-Hearth: A real-time communication hub for persistent chat and collaborative presence.
+ECHO_O: A real-time communication hub for persistent chat and collaborative presence.
 
 Canvas: An infinite 2D whiteboard plane for visual brainstorming, architectural planning, and freeform drawing.
 

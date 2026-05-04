@@ -1,7 +1,7 @@
 import type { User } from "@supabase/supabase-js";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import Carasoul from "../../components/Carasoul";
-import type { FILTERTYPE } from "./Nexus";
+import type { FILTERTYPE } from "./FLOW_O";
 import type { CardData } from "./CardView";
 import { IoIosArrowUp, IoIosCheckbox } from "react-icons/io";
 import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
@@ -186,7 +186,7 @@ const NDashboard = () => {
 
               {/* RIGHT SECTION: Navigation Hitbox (The "Manage" Zone) */}
               <div
-                onClick={() => navigate("/nexus/manage")}
+                onClick={() => navigate("/FLOW_O/manage")}
                 className={`flex items-center gap-4 px-6 cursor-pointer border-l transition-all duration-200 group/nav ${
                   darkMode
                     ? "border-zinc-800/50 hover:bg-indigo-500/10"

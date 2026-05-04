@@ -54,38 +54,38 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
   const PAGES = [
     {
       icon: <FiEdit3 size={22} />,
-      label: "The Forge",
+      label: "TEXT_O",
       subLinks: [
-        { name: "Dashboard", link: "/forge/dashboard" },
-        { name: "Documents", link: "/forge/docs" },
-        { name: "Sheets", link: "/forge/sheets" },
-        { name: "Pdfs", link: "/forge/pdfs" },
+        { name: "Dashboard", link: "/TEXT_O/dashboard" },
+        { name: "Documents", link: "/TEXT_O/docs" },
+        { name: "Sheets", link: "/TEXT_O/sheets" },
+        { name: "Pdfs", link: "/TEXT_O/pdfs" },
       ],
     },
     {
       icon: <BiCheckSquare size={22} />,
-      label: "The Nexus",
+      label: "FLOW_O",
       subLinks: [
-        { name: "Dashboard", link: "/nexus/dashboard" },
-        { name: "Manage Tasks", link: "/nexus/manage" },
-        { name: "Calendar", link: "/nexus/calendar" },
+        { name: "Dashboard", link: "/FLOW_O/dashboard" },
+        { name: "Manage Tasks", link: "/FLOW_O/manage" },
+        { name: "Calendar", link: "/FLOW_O/calendar" },
       ],
     },
     {
       icon: <BiMessageSquare size={22} />,
-      label: "The Hearth",
+      label: "ECHO_O",
       subLinks: [
-        { name: "Settings", link: "/hearth/settings" }, // Added for consistency
-        { name: "Personal", link: "/hearth/personal" },
-        { name: "Channels", link: "/hearth/channels" },
+        { name: "Settings", link: "/ECHO_O/settings" }, // Added for consistency
+        { name: "Personal", link: "/ECHO_O/personal" },
+        { name: "Channels", link: "/ECHO_O/channels" },
       ],
     },
     {
       icon: <FiLayers size={22} />,
-      label: "The Strata",
+      label: "AXIS_O",
       subLinks: [
-        { name: "Dashboard", link: "/Strata/dashboard" },
-        { name: "New", link: "/Strata/new" },
+        { name: "Dashboard", link: "/AXIS_O/dashboard" },
+        { name: "New", link: "/AXIS_O/new" },
       ],
     },
   ];

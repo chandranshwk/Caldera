@@ -140,8 +140,8 @@ const Help: React.FC<HelpProps> = ({ type, darkMode, extra }) => {
                     }`}
                   >
                     {type === "docs"
-                      ? "Forge Editor Guide"
-                      : "Forge Sheets Guide"}
+                      ? "TEXT_O Editor Guide"
+                      : "TEXT_O Sheets Guide"}
                   </h2>
                 </div>
                 <button
@@ -301,7 +301,7 @@ const Help: React.FC<HelpProps> = ({ type, darkMode, extra }) => {
                     darkMode ? "text-slate-500" : "text-slate-400"
                   }`}
                 >
-                  Forge Editor v1.2.0
+                  TEXT_O Editor v1.2.0
                 </span>
                 <p
                   className={`text-[11px] ${darkMode ? "text-slate-500" : "text-slate-400"}`}

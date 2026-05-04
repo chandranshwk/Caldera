@@ -34,14 +34,14 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode, user }) => {
           <div className="flex items-center gap-2">
             {/* Root Link (Muted) */}
             <Link
-              to="/hearth/dashboard"
+              to="/ECHO_O/dashboard"
               className={`text-lg font-semibold transition-colors ${
                 darkMode
                   ? "text-slate-500 hover:text-slate-400"
                   : "text-slate-400 hover:text-slate-500"
               }`}
             >
-              The Hearth
+              The ECHO_O
             </Link>
 
             <span
@@ -79,7 +79,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode, user }) => {
       </div>
 
       {/* Content Injection Point */}
-      <div className="flex-1 overflow-auto forge-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="flex-1 overflow-auto TEXT_O-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
         <Outlet context={{ user, darkMode }} />
       </div>
     </div>

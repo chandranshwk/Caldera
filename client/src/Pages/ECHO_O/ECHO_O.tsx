@@ -1,6 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { ALL_BACKGROUNDS, type Background } from "../../assets/BGHearth.tsx";
+import { ALL_BACKGROUNDS, type Background } from "../../assets/BGEcho_O.tsx";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
   user: User;
 }
 
-const Hearth: React.FC<Props> = ({ darkMode, user }) => {
+const ECHO_O: React.FC<Props> = ({ darkMode, user }) => {
   console.log(user.email);
   const location = useLocation();
 
@@ -29,7 +29,7 @@ const Hearth: React.FC<Props> = ({ darkMode, user }) => {
     return ALL_BACKGROUNDS[0];
   });
 
-  // Inside Hearth.tsx (or your main layout)
+  // Inside ECHO_O.tsx (or your main layout)
   useEffect(() => {
     //FIXED: CHANGES NOT REFLECTING
     // 1. Define the event as a CustomEvent to avoid 'any'
@@ -57,12 +57,12 @@ const Hearth: React.FC<Props> = ({ darkMode, user }) => {
           ? "bg-[#18181b] border-slate-800 text-slate-100"
           : "bg-white border-slate-200 text-slate-900"
       } ${
-        location.pathname === "/hearth/settings" ? "pt-5 pb-4 pr-1 px-4" : "p-0"
+        location.pathname === "/ECHO_O/settings" ? "pt-5 pb-4 pr-1 px-4" : "p-0"
       }`}
     >
       {/* Header Section */}
       {/* Breadcrumb Navigation */}
-      {location.pathname === "/hearth/settings" && (
+      {location.pathname === "/ECHO_O/settings" && (
         <div
           className={`flex mb-2 border-b text-sm justify-between pb-2 transition-colors ${
             darkMode ? "border-slate-800" : "border-slate-100"
@@ -72,14 +72,14 @@ const Hearth: React.FC<Props> = ({ darkMode, user }) => {
             <div className="flex items-center gap-2">
               {/* Root Link (Muted) */}
               <Link
-                to="/hearth/settings"
+                to="/ECHO_O/settings"
                 className={`font-semibold transition-colors ${
                   darkMode
                     ? "text-slate-500 hover:text-slate-400"
                     : "text-slate-400 hover:text-slate-500"
                 }`}
               >
-                The Hearth
+                The ECHO_O
               </Link>
 
               <span
@@ -110,4 +110,4 @@ const Hearth: React.FC<Props> = ({ darkMode, user }) => {
   );
 };
 
-export default Hearth;
+export default ECHO_O;

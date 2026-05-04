@@ -29,8 +29,8 @@ import {
 import { MdOutlineStickyNote2 } from "react-icons/md";
 import { HiOutlinePhoto } from "react-icons/hi2";
 import { FiCircle, FiFilePlus, FiSquare, FiTriangle } from "react-icons/fi";
-import { useWorkspaceStore } from "../Pages/Strata/useStrataTools";
 import Dropdown, { type MenuItem } from "./Dropdown";
+import { useWorkspaceStore } from "../Pages/AXIS_O/useStrataTools";
 
 // --- Types ---
 export type ToolId = string;
@@ -50,7 +50,7 @@ interface ToolbarProps {
   setShape: (shape: string) => void;
 }
 
-const ToolbarStrata: React.FC<ToolbarProps> = ({
+const ToolbarAXIS_O: React.FC<ToolbarProps> = ({
   darkMode,
   onToolSelect,
   setShape,
@@ -373,4 +373,4 @@ const ToolbarStrata: React.FC<ToolbarProps> = ({
   );
 };
 
-export default ToolbarStrata;
+export default ToolbarAXIS_O;

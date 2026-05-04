@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import React, { useEffect, useRef, useState } from "react";
-import type { ToolbarButtonProps } from "./ForgeView";
-import { useForgeTools } from "./ForgeTools";
+import type { ToolbarButtonProps } from "./TEXT_OView";
+import { useTEXT_OTools } from "./TEXT_OTools";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import type { Editor } from "@tiptap/react";
 import Input from "../../components/Input";
@@ -33,7 +33,7 @@ const UpperToolBar: React.FC<UpperToolBarProps> = ({
   setHoveredTopId,
   setActiveTool,
 }) => {
-  const { TOPTOOLS } = useForgeTools(editor);
+  const { TOPTOOLS } = useTEXT_OTools(editor);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [pickerLeft, setPickerLeft] = useState(0);
   const [color, setColor] = useState("bg-yellow-400");

@@ -35,7 +35,7 @@ const METRICS: MetricProps[] = [
     name: "Sheet",
     color: "bg-emerald-500",
     des: "Create professional excel sheets.",
-    link: "/forge/sheets",
+    link: "/TEXT_O/sheets",
     createLink: () => "#",
   },
   {
@@ -44,8 +44,8 @@ const METRICS: MetricProps[] = [
     name: "Docs",
     color: "bg-blue-600",
     des: "Create a comprehensive document for the team!",
-    link: "/forge/docs",
-    createLink: () => "/forge/docs/new",
+    link: "/TEXT_O/docs",
+    createLink: () => "/TEXT_O/docs/new",
   },
   {
     id: "pdf",
@@ -53,7 +53,7 @@ const METRICS: MetricProps[] = [
     name: "PDFs",
     color: "bg-red-600",
     des: "Create, merge, convert from or to PDFs.",
-    link: "/forge/pdfs",
+    link: "/TEXT_O/pdfs",
     createLink: () => "#",
   },
   {
@@ -101,7 +101,7 @@ const FDashboard = () => {
       content: {},
     };
     console.log("New document created:", newDoc);
-    navigate(`/forge/doc/open/${newDoc.id}`); // Navigate to the new document's page
+    navigate(`/TEXT_O/doc/open/${newDoc.id}`); // Navigate to the new document's page
     localStorage.setItem(`doc-${newDoc.id}`, JSON.stringify(newDoc)); // Save the new document to localStorage
   };
 

@@ -314,7 +314,7 @@ const BACKGROUND_ASSETS = [
   },
   {
     file: "/bg(27).png",
-    theme: "warm-hearth",
+    theme: "warm-ECHO_O",
     name: "Urban Transit",
     ui: {
       bgUser: "#E3E7E9",
@@ -404,9 +404,9 @@ export const ALL_BACKGROUNDS: Background[] = BACKGROUND_ASSETS.map((bg, i) => ({
 export const getThemeActions = () => {
   return ALL_BACKGROUNDS.map((bg) => ({
     id: `Theme - ${bg.idx}`,
-    title: `Set Hearth theme to ${bg.name}`,
-    shortcut: `/t${bg.idx}-hearth`,
-    module: "Hearth",
+    title: `Set ECHO_O theme to ${bg.name}`,
+    shortcut: `/t${bg.idx}-ECHO_O`,
+    module: "ECHO_O",
     category: "Themes",
     hideByDefault: true,
 

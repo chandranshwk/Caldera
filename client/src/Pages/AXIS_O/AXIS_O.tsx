@@ -6,7 +6,7 @@ interface Props {
   user: User;
 }
 
-const Strata: React.FC<Props> = ({ darkMode, user }) => {
+const AXIS_O: React.FC<Props> = ({ darkMode, user }) => {
   const location = useLocation();
 
   const pathParts = location.pathname.split("/").filter(Boolean);
@@ -33,10 +33,10 @@ const Strata: React.FC<Props> = ({ darkMode, user }) => {
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               <Link
-                to="/strata/dashboard"
+                to="/AXIS_O/dashboard"
                 className={`text-lg font-semibold ${darkMode ? "text-slate-500 hover:text-slate-400" : "text-slate-400 hover:text-slate-500"}`}
               >
-                The Strata
+                The AXIS_O
               </Link>
               <span
                 className={`text-lg font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
@@ -76,4 +76,4 @@ const Strata: React.FC<Props> = ({ darkMode, user }) => {
   );
 };
 
-export default Strata;
+export default AXIS_O;

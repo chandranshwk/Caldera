@@ -27,10 +27,10 @@ import {
 import { RiDoubleQuotesL, RiFileSettingsLine } from "react-icons/ri";
 
 import { useMemo, useState } from "react";
-import type { ToolbarButtonProps } from "./ForgeView";
+import type { ToolbarButtonProps } from "./TEXT_OView";
 import { FiAlignCenter, FiAlignRight } from "react-icons/fi";
 
-export const useForgeTools = (editor: Editor | null) => {
+export const useTEXT_OTools = (editor: Editor | null) => {
   const [activeFont, setActiveFont] = useState<string>("Inter");
   const states = useEditorState({
     editor,
@@ -201,9 +201,9 @@ export const useForgeTools = (editor: Editor | null) => {
           isActive: isCode ?? false,
         },
         {
-          id: "nexus",
+          id: "FLOW_O",
           icon: <BiTask />,
-          title: "Nexus Link",
+          title: "FLOW_O Link",
           color: "bg-rose-500",
           onClick: () => console.log("Task Create"),
         },
@@ -279,7 +279,7 @@ export const useForgeTools = (editor: Editor | null) => {
     ];
   }, [editor, states]);
 
-  // Inside useForgeTools.ts
+  // Inside useTEXT_OTools.ts
 
   // 1. Font Family Logic
 

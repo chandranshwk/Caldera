@@ -8,7 +8,7 @@ import { LuFileText, LuShieldAlert } from "react-icons/lu";
 import { SlArrowDown } from "react-icons/sl";
 import Carasoul, { type ViewOption } from "../../components/Carasoul";
 import { CiLock } from "react-icons/ci";
-import type { Background } from "../../assets/BGHearth";
+import type { Background } from "../../assets/BGECHO_O";
 
 interface SideViewProps {
   darkMode: boolean;

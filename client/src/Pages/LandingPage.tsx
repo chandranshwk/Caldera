@@ -49,7 +49,7 @@ const LandingPage = () => {
               transition={{ duration: 0.6 }}
             >
               <img
-                src="/icon-OXU_O.png"
+                src="/Hero.png"
                 className="h-10 w-10 rounded-full border border-black"
               />
               <span className="tracking-wider text-white font-bold text-4xl">
@@ -153,7 +153,7 @@ const LandingPage = () => {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* The Forge */}
+              {/* The TEXT_O */}
               <motion.div
                 className="group p-8 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 hover:bg-white hover:shadow-xl hover:shadow-orange-500/20 transition-all"
                 initial={{ opacity: 0, y: 40 }}
@@ -169,7 +169,7 @@ const LandingPage = () => {
                 >
                   <FiEdit3 className="w-7 h-7 text-white" />
                 </motion.div>
-                <h3 className="mb-3 text-slate-900">The Forge</h3>
+                <h3 className="mb-3 text-slate-900">The TEXT_O</h3>
                 <p className="text-slate-600 mb-4">
                   Rich-text editor for final documentation, reports, and
                   scripts. Features version history to rewind changes and
@@ -185,7 +185,7 @@ const LandingPage = () => {
                 </div>
               </motion.div>
 
-              {/* The Nexus */}
+              {/* The FLOW_O */}
               <motion.div
                 className="group p-8 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 hover:bg-white hover:shadow-xl hover:shadow-teal-500/20 transition-all"
                 initial={{ opacity: 0, y: 40 }}
@@ -201,7 +201,7 @@ const LandingPage = () => {
                 >
                   <BiCheckSquare className="w-7 h-7 text-white" />
                 </motion.div>
-                <h3 className="mb-3 text-slate-900">The Nexus</h3>
+                <h3 className="mb-3 text-slate-900">The FLOW_O</h3>
                 <p className="text-slate-600 mb-4">
                   Professional project management with Kanban boards and
                   timelines along with efficient team or personal assignment
@@ -218,7 +218,7 @@ const LandingPage = () => {
                 </div>
               </motion.div>
 
-              {/* The Hearth */}
+              {/* The ECHO_O */}
               <motion.div
                 className="group p-8 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 hover:bg-white hover:shadow-xl hover:shadow-rose-500/20 transition-all"
                 initial={{ opacity: 0, y: 40 }}
@@ -234,7 +234,7 @@ const LandingPage = () => {
                 >
                   <BiMessageSquare className="w-7 h-7 text-white" />
                 </motion.div>
-                <h3 className="mb-3 text-slate-900">The Hearth</h3>
+                <h3 className="mb-3 text-slate-900">The ECHO_O</h3>
                 <p className="text-slate-600 mb-4">
                   Real-time communication hub with channels and threads. Lives
                   as a persistent sidebar—your team is always one click away.
@@ -249,7 +249,7 @@ const LandingPage = () => {
                 </div>
               </motion.div>
 
-              {/* The Strata */}
+              {/* The AXIS_O */}
               <motion.div
                 className="group p-8 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 hover:bg-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all"
                 initial={{ opacity: 0, y: 40 }}
@@ -265,7 +265,7 @@ const LandingPage = () => {
                 >
                   <FiPenTool className="w-7 h-7 text-white" />
                 </motion.div>
-                <h3 className="mb-3 text-slate-900">The Strata</h3>
+                <h3 className="mb-3 text-slate-900">The AXIS_O</h3>
                 <p className="text-slate-600 mb-4">
                   Infinite 2D space for visual brainstorming, flowcharts, and
                   wireframes. Export ideas directly into the word editor to
@@ -273,7 +273,7 @@ const LandingPage = () => {
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <span className="px-3 py-1 bg-emerald-100 border border-emerald-200 rounded-full text-sm text-emerald-800">
-                    Infinite Strata
+                    Infinite AXIS_O
                   </span>
                   <span className="px-3 py-1 bg-emerald-100 border border-emerald-200 rounded-full text-sm text-emerald-800">
                     Export to Docs

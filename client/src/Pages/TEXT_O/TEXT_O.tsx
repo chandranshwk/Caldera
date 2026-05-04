@@ -6,10 +6,10 @@ interface Props {
   user: User;
 }
 
-const Forge: React.FC<Props> = ({ darkMode, user }) => {
+const TEXT_O: React.FC<Props> = ({ darkMode, user }) => {
   const location = useLocation();
   const email = user?.email || "unknown";
-  console.log("Forge loaded with user:", email);
+  console.log("TEXT_O loaded with user:", email);
 
   // Logic to extract the sub-page name for the breadcrumb
   const pathParts = location.pathname.split("/").filter(Boolean);
@@ -37,18 +37,18 @@ const Forge: React.FC<Props> = ({ darkMode, user }) => {
           <div className="flex items-center gap-2">
             {/* Root Link (Muted) */}
             <Link
-              to="/forge/dashboard"
-              className={`${location.pathname === "/forge/dashboard" ? "text-lg" : "text-sm"} font-semibold transition-colors ${
+              to="/TEXT_O/dashboard"
+              className={`${location.pathname === "/TEXT_O/dashboard" ? "text-lg" : "text-sm"} font-semibold transition-colors ${
                 darkMode
                   ? "text-slate-500 hover:text-slate-400"
                   : "text-slate-400 hover:text-slate-500"
               }`}
             >
-              The Forge
+              The TEXT_O
             </Link>
 
             <span
-              className={`${location.pathname === "/forge/dashboard" ? "text-lg" : "text-sm"}  font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
+              className={`${location.pathname === "/TEXT_O/dashboard" ? "text-lg" : "text-sm"}  font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
             >
               /
             </span>
@@ -56,12 +56,12 @@ const Forge: React.FC<Props> = ({ darkMode, user }) => {
             {/* Dynamic Breadcrumb Logic */}
 
             <h1
-              className={`${location.pathname === "/forge/dashboard" ? "text-lg" : "text-sm"}  font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}
+              className={`${location.pathname === "/TEXT_O/dashboard" ? "text-lg" : "text-sm"}  font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}
             >
               {formattedPage}
             </h1>
           </div>
-          {location.pathname === "/forge/dashboard" && (
+          {location.pathname === "/TEXT_O/dashboard" && (
             <p
               className={`text-[11px] mt-1 font-medium uppercase tracking-wider ${
                 darkMode ? "text-slate-600" : "text-slate-400"
@@ -72,7 +72,7 @@ const Forge: React.FC<Props> = ({ darkMode, user }) => {
           )}
         </div>
         {/* Version Indicator */}
-        {location.pathname === "/forge/dashboard" && (
+        {location.pathname === "/TEXT_O/dashboard" && (
           <span
             className={`text-[12px] mt-4 uppercase tracking-tighter font-bold ${
               darkMode ? "text-slate-700" : "text-slate-300"
@@ -84,11 +84,11 @@ const Forge: React.FC<Props> = ({ darkMode, user }) => {
       </div>
 
       {/* Content Injection Point */}
-      <div className="flex-1 overflow-auto forge-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="flex-1 overflow-auto TEXT_O-content-area animate-in fade-in slide-in-from-bottom-2 duration-500">
         <Outlet context={{ user, darkMode }} />
       </div>
     </div>
   );
 };
 
-export default Forge;
+export default TEXT_O;

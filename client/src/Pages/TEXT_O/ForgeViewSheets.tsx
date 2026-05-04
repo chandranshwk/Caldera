@@ -1,7 +1,7 @@
 // ForgeViewSheets.tsx
 
 import { Link, useLocation } from "react-router-dom";
-import type { ForgeDocument } from "../../assets/assets";
+import type { TEXT_ODocument } from "../../assets/assets";
 import { EditorContext, useEditor, EditorContent } from "@tiptap/react"; // Added EditorContent
 import { useMemo } from "react";
 import Help from "./Help";
@@ -42,9 +42,9 @@ const ForgeViewSheets: React.FC<ForgeViewSheetsProps> = ({ darkMode }) => {
     `sheet-${location.pathname.split("/").pop()}`,
   );
 
-  const sheet: ForgeDocument = savedData
+  const sheet: TEXT_ODocument = savedData
     ? JSON.parse(savedData)
-    : ({} as ForgeDocument);
+    : ({} as TEXT_ODocument);
 
   // Logic to extract the sub-page name for the breadcrumb
   const pathParts = location.pathname.split("/").filter(Boolean);
@@ -80,14 +80,14 @@ const ForgeViewSheets: React.FC<ForgeViewSheetsProps> = ({ darkMode }) => {
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               <Link
-                to="/forge/dashboard"
+                to="/TEXT_O/dashboard"
                 className={`text-sm font-semibold transition-colors ${
                   darkMode
                     ? "text-slate-500 hover:text-slate-400"
                     : "text-slate-400 hover:text-slate-500"
                 }`}
               >
-                The Forge
+                The TEXT_O
               </Link>
               <span
                 className={`text-md font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
@@ -95,7 +95,7 @@ const ForgeViewSheets: React.FC<ForgeViewSheetsProps> = ({ darkMode }) => {
                 /
               </span>
               <Link
-                to="/forge/docs"
+                to="/TEXT_O/docs"
                 className={`text-sm font-semibold transition-colors ${
                   darkMode
                     ? "text-slate-500 hover:text-slate-400"

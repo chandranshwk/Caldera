@@ -1,10 +1,10 @@
 import type { User } from "@supabase/supabase-js";
 import { useOutletContext } from "react-router-dom";
-import { ALL_BACKGROUNDS, type Background } from "../../assets/BGHearth.tsx";
+import { ALL_BACKGROUNDS, type Background } from "../../assets/BGECHO_O.tsx";
 import { useState } from "react";
 import { LuChevronDown } from "react-icons/lu";
 import { motion, AnimatePresence } from "framer-motion";
-import { Illustrations } from "../../assets/CIllustrations";
+import { Illustrations } from "../../assets/CIllustrations.ts";
 import { faker } from "@faker-js/faker";
 import { FiBell } from "react-icons/fi";
 

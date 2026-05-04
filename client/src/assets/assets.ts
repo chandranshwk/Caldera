@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-export interface ForgeDocument {
+export interface TEXT_ODocument {
   id: number;
   type: "pdf" | "words" | "excel";
   name: string;
@@ -46,7 +46,7 @@ export const RECENT_FILES = Array.from({ length: 20 }, (_, index) => {
       "Finance Core",
       "Marketing 2024",
       "Product Dev",
-      "Nexus Launch",
+      "FLOW_O Launch",
     ]),
     status: faker.helpers.arrayElement(["Final", "In Review", "Draft"]),
     size: `${faker.number.float({ min: 0.5, max: 15, fractionDigits: 1 })} MB`,
