@@ -10,7 +10,7 @@ import {
 } from "react-icons/hi";
 import Dropdown from "../../components/Dropdown";
 import { BiDownload } from "react-icons/bi";
-import { SiGoogledocs, SiGooglesheets } from "react-icons/si";
+import { SiGoogledocs } from "react-icons/si";
 import { FaFilePdf } from "react-icons/fa";
 import { RECENT_FILES } from "../../assets/assets";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -164,16 +164,12 @@ const FDoc = () => {
                         <div
                           className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-inner
                     ${
-                      file.type === "excel"
-                        ? "text-emerald-500 bg-emerald-500/10"
-                        : file.type === "pdf"
-                          ? "text-rose-500 bg-rose-500/10"
-                          : "text-blue-500 bg-blue-500/10"
+                      file.type === "pdf"
+                        ? "text-rose-500 bg-rose-500/10"
+                        : "text-blue-500 bg-blue-500/10"
                     }`}
                         >
-                          {file.type === "excel" ? (
-                            <SiGooglesheets />
-                          ) : file.type === "pdf" ? (
+                          {file.type === "pdf" ? (
                             <FaFilePdf />
                           ) : (
                             <SiGoogledocs />
