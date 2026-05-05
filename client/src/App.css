@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
 /* Fix the hardcoded background */
 body {
   transition: background 0.3s ease; /* Smooth Apple-like transition */
