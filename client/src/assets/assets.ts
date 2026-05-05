@@ -2,9 +2,9 @@ import { faker } from "@faker-js/faker";
 
 export interface TEXT_ODocument {
   id: number;
-  type: "pdf" | "words" | "excel";
+  type: "pdf" | "words";
   name: string;
-  extension: ".docx" | ".xlsx" | ".pdf";
+  extension: ".docx" | ".pdf";
   des: string;
   sharedCount: number;
   downloadCount: number;
@@ -15,9 +15,8 @@ export interface TEXT_ODocument {
 }
 
 export const RECENT_FILES = Array.from({ length: 20 }, (_, index) => {
-  const type = faker.helpers.arrayElement(["pdf", "words", "excel"]);
-  const extension =
-    type === "words" ? ".docx" : type === "excel" ? ".xlsx" : ".pdf";
+  const type = faker.helpers.arrayElement(["pdf", "words"]);
+  const extension = type === "words" ? ".docx" : ".pdf";
 
   return {
     id: index + 1,

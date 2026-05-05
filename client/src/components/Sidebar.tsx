@@ -58,7 +58,6 @@ const Sidebar: React.FC<SidebarProps> = ({ darkMode, user }) => {
       subLinks: [
         { name: "Dashboard", link: "/TEXT_O/dashboard" },
         { name: "Documents", link: "/TEXT_O/docs" },
-        { name: "Sheets", link: "/TEXT_O/sheets" },
         { name: "Pdfs", link: "/TEXT_O/pdfs" },
       ],
     },

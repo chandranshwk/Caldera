@@ -14,7 +14,6 @@ import ProjectView from "./Pages/ProjectView";
 import TEXT_O from "./Pages/TEXT_O/TEXT_O";
 import FDashboard from "./Pages/TEXT_O/FDashboard";
 import FDoc from "./Pages/TEXT_O/FDoc";
-import FSheets from "./Pages/TEXT_O/FSheets";
 import FPdfs from "./Pages/TEXT_O/FPdfs";
 
 // FLOW_O
@@ -175,7 +174,6 @@ function App() {
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<FDashboard />} />
             <Route path="docs" element={<FDoc />} />
-            <Route path="sheets" element={<FSheets />} />
             <Route path="pdfs" element={<FPdfs />} />
           </Route>
 

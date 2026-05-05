@@ -1,6 +1,4 @@
-import { faker } from "@faker-js/faker";
-import { FiDownload, FiShare, FiPlus } from "react-icons/fi";
-import { SiGoogledocs, SiGooglesheets } from "react-icons/si";
+import { SiGoogledocs } from "react-icons/si";
 import { FaFilePdf } from "react-icons/fa";
 import { RECENT_FILES } from "../../assets/assets";
 import { BiDownload } from "react-icons/bi";
@@ -11,69 +9,13 @@ import {
   HiOutlineShare,
   HiOutlineTrash,
 } from "react-icons/hi";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import Dropdown from "../../components/Dropdown";
 import { IoIosArrowForward } from "react-icons/io";
 import type { User } from "@supabase/supabase-js";
-import { v4 as uuidv4 } from "uuid";
-
-interface MetricProps {
-  id: string;
-  icon: React.ReactNode;
-  name: string;
-  color: string;
-  des?: string;
-  link?: string;
-  createLink: () => string;
-}
-
-// 1. Centralized Data Config
-const METRICS: MetricProps[] = [
-  {
-    id: "excel",
-    icon: <SiGooglesheets />,
-    name: "Sheet",
-    color: "bg-emerald-500",
-    des: "Create professional excel sheets.",
-    link: "/TEXT_O/sheets",
-    createLink: () => "#",
-  },
-  {
-    id: "words",
-    icon: <SiGoogledocs />,
-    name: "Docs",
-    color: "bg-blue-600",
-    des: "Create a comprehensive document for the team!",
-    link: "/TEXT_O/docs",
-    createLink: () => "/TEXT_O/docs/new",
-  },
-  {
-    id: "pdf",
-    icon: <FaFilePdf className="font-black text-white" />,
-    name: "PDFs",
-    color: "bg-red-600",
-    des: "Create, merge, convert from or to PDFs.",
-    link: "/TEXT_O/pdfs",
-    createLink: () => "#",
-  },
-  {
-    id: "downloads",
-    icon: <FiDownload />,
-    name: "Downloads",
-    color: "bg-amber-400",
-    createLink: () => "#",
-  },
-  {
-    id: "shared",
-    icon: <FiShare />,
-    name: "Shared",
-    color: "bg-purple-600",
-    createLink: () => "#",
-  },
-];
+import { generateFakeLog } from "../../assets/Logs";
 
 const FDashboard = () => {
-  const navigate = useNavigate();
   const { user, darkMode } = useOutletContext<{
     user: User;
     darkMode: boolean;
@@ -83,99 +25,80 @@ const FDashboard = () => {
   const cardBg = darkMode ? "bg-[#1a1a1c]" : "bg-white";
   const subText = darkMode ? "text-gray-400" : "text-gray-500";
 
-  const generateNewDOC = () => {
-    // Logic to generate a new document
-    console.log("Generating new document...");
-    const newDoc = {
-      id: uuidv4(),
-      name: faker.word.words({ count: 3 }),
-      extension: ".docx",
-      type: "words",
-      des: faker.lorem.paragraphs(14),
-      sharedCount: 0,
-      downloadCount: 0,
-      editedAt: new Date().toISOString(),
-      status: "Local Only",
-      project: "projectName",
-      size: "0.0 KB",
-      content: {},
-    };
-    console.log("New document created:", newDoc);
-    navigate(`/TEXT_O/doc/open/${newDoc.id}`); // Navigate to the new document's page
-    localStorage.setItem(`doc-${newDoc.id}`, JSON.stringify(newDoc)); // Save the new document to localStorage
-  };
+  const logs = Array.from({ length: 100 }, () => generateFakeLog());
 
   return (
     <div
       className={`p-6 h-screen overflow-y-auto transition-colors duration-300 my-scrollbar ${darkMode ? "bg-[#0f0f1000]" : "bg-gray-50"}`}
     >
-      {/* Upper Stats Grid */}
-      <div className="grid md:grid-cols-5 grid-cols-2 gap-6 mb-10">
-        {METRICS.map((data) => (
-          <div
-            key={data.id}
-            onClick={() => navigate(data.link ?? "")}
-            className={`flex items-center p-4 rounded-xl shadow-sm border ${darkMode ? "border-gray-800" : "border-gray-100"} ${cardBg} hover:shadow-md transition-all cursor-pointer group`}
-          >
-            <span
-              className={`text-2xl rounded-lg ${data.color} text-white p-3 group-hover:scale-110 transition-transform`}
-            >
-              {data.icon}
-            </span>
-            <div className="ml-4 flex flex-col">
-              <span
-                className={`text-xs font-medium uppercase tracking-wider ${subText}`}
+      {/* Terminal Logs */}
+      <div
+        className={`font-mono text-[10px] leading-[1.6] h-124 mb-4 tracking-tight  p-4 rounded-xl border-x border-t  overflow-y-auto scrollbar-hide backdrop-blur-md shadow-lg border  ${darkMode ? "bg-black/60 border-white/10" : "bg-white/60 border-black/20"}`}
+      >
+        <h1
+          className={`text-[10px] uppercase tracking-[0.2em] font-bold mb-4 sticky -top-4 z-10 ${darkMode ? "text-white/30 bg-black/5" : "text-black/40 bg-white/50"} backdrop-blur-2xl -mx-4 -mt-4 p-4 border-b ${darkMode ? "border-white/5" : "border-black/5"}`}
+        >
+          System Telemetry
+        </h1>
+
+        <div className="flex flex-col gap-1.5">
+          {logs
+            .filter((log) => log.action.split("_")[0] === "TEXT")
+            .map((log, index) => (
+              <div
+                key={index}
+                className={`flex items-start gap-4 group ${darkMode ? "hover:bg-white/3" : "hover:bg-black/3"} px-1 -mx-1 transition-colors`}
               >
-                {data.name}
-              </span>
-              <span className={`text-2xl font-bold ${textColor}`}>
-                {faker.number.int({ min: 10, max: 99 })}
+                {/* Timestamp - Fixed Width */}
+                <span
+                  className={`${darkMode ? "text-white/20" : "text-black/70"} tabular-nums shrink-0`}
+                >
+                  [{log.timestamp}]
+                </span>
+
+                {/* Level Tag - Visual Indicator */}
+                <span
+                  className={`px-1.5 py-0.5 rounded-[3px] text-[9px] font-bold uppercase tracking-widest shrink-0 ${
+                    log.level === "WARN"
+                      ? "bg-orange-500/10 text-orange-400"
+                      : log.level === "SYNC"
+                        ? "bg-blue-500/10 text-blue-400"
+                        : "bg-green-500/10 text-green-400"
+                  }`}
+                >
+                  {log.level}
+                </span>
+
+                {/* Action & Context */}
+                <div className="flex flex-col flex-1 overflow-hidden">
+                  <span
+                    className={`${darkMode ? "text-gray-300" : "text-gray-950"} truncate font-medium`}
+                  >
+                    {log.action.replace("TEXT_", "").replace(/_/g, " ")}
+                  </span>
+                  <span
+                    className={`${darkMode ? "text-white/20" : "text-black/60"} text-[9px] uppercase tracking-tighter`}
+                  >
+                    id: {log.module} • status: verified
+                  </span>
+                </div>
+              </div>
+            ))}
+
+          {/* Persistent Awaiting Line */}
+          <div className="flex gap-4 items-center mt-1 border-t border-white/5 pt-2 mb-4 opacity-80">
+            <span className={`${darkMode ? "text-white" : "text-black"}`}>
+              [{new Date().toLocaleTimeString()}]
+            </span>
+            <div className="flex items-center gap-2">
+              <div className="size-1 rounded-full bg-green-500 animate-pulse" />
+              <span
+                className={`${darkMode ? "text-white/40" : "text-black"} italic`}
+              >
+                System awaiting telemetry stream...
               </span>
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* Creation Shortcuts */}
-      <div className="mb-10">
-        <div className="flex items-center justify-between mb-6">
-          <h2
-            className={`text-xl font-bold flex items-center gap-2 ${textColor}`}
-          >
-            <FiPlus className="text-blue-500" /> Quick Create
-          </h2>
-        </div>
-        <div className="grid lg:grid-cols-3 gap-6">
-          {METRICS.slice(0, 3).map((data: MetricProps) => (
-            <div
-              key={`create-${data.id}`}
-              onClick={() => {
-                if (data.id === "words") {
-                  generateNewDOC();
-                }
-              }}
-              className={`flex items-start p-6 rounded-lg border-2 border-transparent ${cardBg} shadow-sm hover:border-l-blue-500/50 hover:border-l-4 hover:bg-blue-500/5 transition-all cursor-pointer group relative overflow-hidden`}
-            >
-              <span
-                className={`text-3xl rounded-xl ${data.color} text-white p-4 shadow-lg`}
-              >
-                {data.icon}
-              </span>
-              <div className="ml-5 pr-8">
-                <h3 className={`text-lg font-bold ${textColor}`}>
-                  {data.name}
-                </h3>
-                <p
-                  className={`text-sm w-[75%] text-wrap mt-1 leading-relaxed ${subText}`}
-                >
-                  {data.des}
-                </p>
-              </div>
-              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <FiPlus className={textColor} />
-              </div>
-            </div>
-          ))}
         </div>
       </div>
 
@@ -196,17 +119,13 @@ const FDashboard = () => {
                 className={`
           relative w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0 transition-transform duration-300 group-hover:scale-110
           ${
-            file.type === "excel"
-              ? "bg-emerald-500/10 text-emerald-500"
-              : file.type === "pdf"
-                ? "bg-red-500/10 text-red-500"
-                : "bg-blue-500/10 text-blue-500"
+            file.type === "pdf"
+              ? "bg-red-500/10 text-red-500"
+              : "bg-blue-500/10 text-blue-500"
           }
         `}
               >
-                {file.type === "excel" ? (
-                  <SiGooglesheets />
-                ) : file.type === "pdf" ? (
+                {file.type === "pdf" ? (
                   <FaFilePdf className="font-black" />
                 ) : (
                   <SiGoogledocs />
@@ -227,8 +146,8 @@ const FDashboard = () => {
                     className={`
             text-[9px] px-1.5 py-0.5 rounded-md uppercase font-black tracking-widest
             ${
-              file.type === "excel"
-                ? "bg-emerald-500/10 text-emerald-800 dark:text-emerald-400"
+              !(file.type === "words")
+                ? "bg-red-500/10 text-red-800 dark:text-red-400"
                 : "bg-blue-500/10 text-blue-800 dark:text-blue-400"
             }
           `}
@@ -246,7 +165,7 @@ const FDashboard = () => {
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1.5">
                     <div
-                      className={`w-1.5 h-1.5 rounded-full ${file.type === "excel" ? "bg-emerald-500" : "bg-blue-500"} opacity-40`}
+                      className={`w-1.5 h-1.5 rounded-full ${file.type === "words" ? "bg-blue-500" : "bg-red-700"} opacity-40`}
                     />
                     <span
                       className={`text-[11px] font-medium ${subText} opacity-60`}
@@ -314,20 +233,12 @@ const FDashboard = () => {
                       <div
                         className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-inner
                   ${
-                    file.type === "excel"
-                      ? "text-emerald-500 bg-emerald-500/10"
-                      : file.type === "pdf"
-                        ? "text-rose-500 bg-rose-500/10"
-                        : "text-blue-500 bg-blue-500/10"
+                    file.type === "pdf"
+                      ? "text-rose-500 bg-rose-500/10"
+                      : "text-blue-500 bg-blue-500/10"
                   }`}
                       >
-                        {file.type === "excel" ? (
-                          <SiGooglesheets />
-                        ) : file.type === "pdf" ? (
-                          <FaFilePdf />
-                        ) : (
-                          <SiGoogledocs />
-                        )}
+                        {file.type === "pdf" ? <FaFilePdf /> : <SiGoogledocs />}
                       </div>
                       <div>
                         <div
