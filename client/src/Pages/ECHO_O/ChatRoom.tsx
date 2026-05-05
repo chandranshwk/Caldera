@@ -218,7 +218,7 @@ const ChatRoom: React.FC<Props> = ({ darkMode, selectedBg }) => {
         </AnimatePresence>
 
         <div
-          className={`flex items-center gap-2 p-2 rounded-xl border transition-all duration-300 focus-within:ring-1 ${
+          className={`flex items-center gap-2 p-2 rounded-xl border transition-all duration-300 border-zinc-800 focus-within:ring-1 ${
             darkMode ? "border-transparent " : "border-zinc-200/10 "
           }`}
           style={{
@@ -277,7 +277,24 @@ const ChatRoom: React.FC<Props> = ({ darkMode, selectedBg }) => {
             }}
             className={`p-2.5 rounded-xl transition-colors `}
           >
-            <FiSend size={18} />
+            <FiSend
+              size={18}
+              style={{
+                color: !(inputValue.trim() === "")
+                  ? selectedBg.idx === 6 ||
+                    selectedBg.idx === 5 ||
+                    selectedBg.idx === 9 ||
+                    selectedBg.idx === 16
+                    ? "#fff"
+                    : selectedBg.idx === 24 ||
+                        selectedBg.idx === 7 ||
+                        selectedBg.idx === 8 ||
+                        selectedBg.idx === 4
+                      ? "#000"
+                      : `${selectedBg.ui.text}`
+                  : selectedBg.ui.text,
+              }}
+            />
           </motion.button>
         </div>
       </motion.div>

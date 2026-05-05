@@ -279,9 +279,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ darkMode }) => {
                     ? "text-slate-500 hover:text-slate-400"
                     : "text-slate-400 hover:text-slate-500"
                 }`}
-              >
-                The TEXT_O
-              </Link>
+              ></Link>
               <span
                 className={`text-md font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
               >

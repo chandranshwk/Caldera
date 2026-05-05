@@ -188,7 +188,7 @@ const BACKGROUND_ASSETS = [
       text: "#E8E9EB",
       secondaryText: "#6B7280",
       border: "#3F444D",
-      accent: "#B91C1C",
+      accent: "#743844",
     },
   },
   {
@@ -401,7 +401,11 @@ export const ALL_BACKGROUNDS: Background[] = BACKGROUND_ASSETS.map((bg, i) => ({
   ui: bg.ui,
 }));
 
-export const getThemeActions = () => {
+export const getThemeActions = ({
+  setDarkMode,
+}: {
+  setDarkMode: (value: boolean) => void;
+}) => {
   return ALL_BACKGROUNDS.map((bg) => ({
     id: `Theme - ${bg.idx}`,
     title: `Set ECHO_O theme to ${bg.name}`,
@@ -429,6 +433,17 @@ export const getThemeActions = () => {
     action: () => {
       localStorage.setItem("selected-bg", JSON.stringify(bg));
       window.dispatchEvent(new CustomEvent("theme-change", { detail: bg }));
+      if (
+        bg.idx === 5 ||
+        bg.idx === 7 ||
+        bg.idx === 8 ||
+        bg.idx === 15 ||
+        bg.idx === 18 ||
+        bg.idx === 24 ||
+        bg.idx === 27
+      )
+        setDarkMode(true);
+      else setDarkMode(false);
     },
   }));
 };

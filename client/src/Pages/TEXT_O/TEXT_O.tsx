@@ -44,7 +44,7 @@ const TEXT_O: React.FC<Props> = ({ darkMode, user }) => {
                   : "text-slate-400 hover:text-slate-500"
               }`}
             >
-              The TEXT_O
+              TEXT_O
             </Link>
 
             <span

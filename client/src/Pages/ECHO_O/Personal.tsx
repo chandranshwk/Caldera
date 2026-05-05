@@ -18,8 +18,15 @@ const Personal = () => {
       // CHANGE 1: Use h-screen instead of h-full to ensure it hits the bottom of the browser
       className={`flex h-[calc(100%+5vh)] p-0 w-full justify-start items-start flex-col transition-colors duration-300 `}
       style={{
-        backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.25), rgba(255,255,255,0.1)), url("${selectedBg.url}")`,
+        backgroundImage:
+          selectedBg.idx === 5 || selectedBg.idx === 7 || selectedBg.idx === 9
+            ? `linear-gradient(to right, rgba(255, 255, 255, 0.16), rgba(255,255,255,0.1)), url("${selectedBg.url}")`
+            : `linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)), url("${selectedBg.url}")`,
         backgroundSize: "cover",
+        backdropFilter:
+          selectedBg.idx === 5 || selectedBg.idx === 7 || selectedBg.idx === 9
+            ? `blur(5000px)`
+            : ``,
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}

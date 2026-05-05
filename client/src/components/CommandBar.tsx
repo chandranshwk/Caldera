@@ -166,7 +166,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
         category: "Modules",
         action: () => navigate("/AXIS_O"),
       },
-      ...getThemeActions(),
+      ...getThemeActions({ setDarkMode }),
     ],
     [setDarkMode, navigate],
   );
