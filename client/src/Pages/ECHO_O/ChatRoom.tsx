@@ -85,7 +85,7 @@ const initialMessages = Array.from({ length: 5 }, (_, i) => ({
   message: faker.lorem.sentence(),
 }));
 
-const ChatRoom: React.FC<Props> = ({ darkMode, selectedBg }) => {
+const ChatRoom: React.FC<Props> = ({ darkMode, selectedBg, isDockOpen }) => {
   const [messages, setMessages] = useState(initialMessages);
   const [inputValue, setInputValue] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
@@ -220,7 +220,7 @@ const ChatRoom: React.FC<Props> = ({ darkMode, selectedBg }) => {
         <div
           className={`flex items-center gap-2 p-2 rounded-xl border transition-all duration-300 border-zinc-800 focus-within:ring-1 ${
             darkMode ? "border-transparent " : "border-zinc-200/10 "
-          }`}
+          } ${isDockOpen ? "-mb-1" : "-mb-2"}`}
           style={{
             background: selectedBg.ui.bgMessenger,
           }}
