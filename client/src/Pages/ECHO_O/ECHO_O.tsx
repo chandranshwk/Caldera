@@ -1,11 +1,27 @@
-import type { User } from "@supabase/supabase-js";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { ALL_BACKGROUNDS, type Background } from "../../assets/BGEcho_O.tsx";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Search from "./Search.tsx";
+import { faker } from "@faker-js/faker";
+import { v4 as uuid } from "uuid";
 
 interface Props {
   darkMode: boolean;
   user: User;
+}
+export interface User {
+  type: "user";
+  id: string;
+  name: string;
+  dp: string;
+}
+
+export interface Group {
+  type: "group";
+  id: string;
+  name: string;
+  dp: string;
+  users: User[];
 }
 
 const ECHO_O: React.FC<Props> = ({ darkMode, user }) => {
@@ -49,6 +65,33 @@ const ECHO_O: React.FC<Props> = ({ darkMode, user }) => {
     localStorage.setItem("selected-bg", JSON.stringify(selectedBg));
   }, [selectedBg]);
 
+  const [openSearch, setOpenSearch] = useState<boolean>(false);
+
+  const messegers = useMemo(() => {
+    faker.seed(123);
+    const generateUser = (): User => ({
+      type: "user",
+      id: uuid(),
+      name: faker.person.firstName(),
+      dp: faker.image.personPortrait(),
+    });
+
+    return Array.from({ length: 65 }, () =>
+      faker.number.int({ min: 1, max: 10 }) > 5
+        ? generateUser()
+        : ({
+            type: "group",
+            id: uuid(),
+            name: faker.color.human(),
+            dp: faker.image.avatarGitHub(),
+            users: Array.from(
+              { length: faker.number.int({ min: 1, max: 5 }) },
+              () => generateUser(),
+            ),
+          } as Group),
+    );
+  }, []);
+
   return (
     <div
       className={`h-screen w-full flex flex-col transition-colors duration-300 border-l ${
@@ -59,7 +102,7 @@ const ECHO_O: React.FC<Props> = ({ darkMode, user }) => {
         location.pathname === "/ECHO_O/settings" ? "pt-5 pb-4 pr-1 px-4" : "p-0"
       }`}
     >
-      {/* Header Section */}
+      {openSearch && <Search darkMode={darkMode} setSearch={setOpenSearch} />}
       {/* Breadcrumb Navigation */}
       {location.pathname === "/ECHO_O/settings" && (
         <div
@@ -103,7 +146,9 @@ const ECHO_O: React.FC<Props> = ({ darkMode, user }) => {
       <div className="flex-1 flex flex-col overflow-hidden">
         {" "}
         {/* Changed overflow-auto to hidden to prevent double scrollbars */}
-        <Outlet context={{ user, darkMode, selectedBg, setSelectedBg }} />
+        <Outlet
+          context={{ user, darkMode, selectedBg, setSelectedBg, messegers }}
+        />
       </div>
     </div>
   );
