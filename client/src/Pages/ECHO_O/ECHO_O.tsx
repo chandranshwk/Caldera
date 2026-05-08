@@ -4,12 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import Search from "./Search.tsx";
 import { faker } from "@faker-js/faker";
 import { v4 as uuid } from "uuid";
+import type { User } from "@supabase/supabase-js";
 
 interface Props {
   darkMode: boolean;
   user: User;
 }
-export interface User {
+interface UserP {
   type: "user";
   id: string;
   name: string;
@@ -21,7 +22,7 @@ export interface Group {
   id: string;
   name: string;
   dp: string;
-  users: User[];
+  users: UserP[];
 }
 
 const ECHO_O: React.FC<Props> = ({ darkMode, user }) => {
@@ -69,7 +70,7 @@ const ECHO_O: React.FC<Props> = ({ darkMode, user }) => {
 
   const messegers = useMemo(() => {
     faker.seed(123);
-    const generateUser = (): User => ({
+    const generateUser = (): UserP => ({
       type: "user",
       id: uuid(),
       name: faker.person.firstName(),
