@@ -10,7 +10,8 @@ interface Props {
   darkMode: boolean;
   user: User;
 }
-interface UserP {
+
+export interface UserP {
   type: "user";
   id: string;
   name: string;
@@ -27,12 +28,15 @@ export interface Group {
 
 const ECHO_O: React.FC<Props> = ({ darkMode, user }) => {
   const location = useLocation();
+  const [openSearch, setOpenSearch] = useState<boolean>(false);
 
-  // Logic to extract the sub-page name for the breadcrumb
+  // Extract page names for breadcrumbs
   const pathParts = location.pathname.split("/").filter(Boolean);
   const currentPage = pathParts[pathParts.length - 1] || "Settings";
   const formattedPage =
     currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
+
+  // Initialize selected background
   const [selectedBg, setSelectedBg] = useState<Background>(() => {
     const saved = localStorage.getItem("selected-bg");
     if (saved) {
@@ -45,29 +49,38 @@ const ECHO_O: React.FC<Props> = ({ darkMode, user }) => {
     return ALL_BACKGROUNDS[0];
   });
 
-  // Inside ECHO_O.tsx (or your main layout)
+  // CRITICAL FIX 1: Global shortcut listener placed in layout
   useEffect(() => {
-    //FIXED: CHANGES NOT REFLECTING
-    // 1. Define the event as a CustomEvent to avoid 'any'
-    // 2. Use 'event' instead of 'e' (or just remove the name if unused)
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "KeyM" && e.ctrlKey) {
+        e.preventDefault();
+        setOpenSearch((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalKeyDown, true);
+    return () =>
+      window.removeEventListener("keydown", handleGlobalKeyDown, true);
+  }, []);
+
+  // Sync theme changes from custom application events
+  useEffect(() => {
     const handleThemeChange = (event: Event) => {
       const customEvent = event as CustomEvent<Background>;
       if (customEvent.detail) {
         setSelectedBg(customEvent.detail);
       }
     };
-
     window.addEventListener("theme-change", handleThemeChange);
     return () => window.removeEventListener("theme-change", handleThemeChange);
-  }, [setSelectedBg]);
+  }, []);
 
-  // 2. Save to localStorage whenever selectedBg changes
+  // Save selection states to disk
   useEffect(() => {
     localStorage.setItem("selected-bg", JSON.stringify(selectedBg));
   }, [selectedBg]);
 
-  const [openSearch, setOpenSearch] = useState<boolean>(false);
-
+  // Generate mockup search items
   const messegers = useMemo(() => {
     faker.seed(123);
     const generateUser = (): UserP => ({
@@ -99,40 +112,35 @@ const ECHO_O: React.FC<Props> = ({ darkMode, user }) => {
         darkMode
           ? "bg-[#18181b] border-slate-800 text-slate-100"
           : "bg-white border-slate-200 text-slate-900"
-      } ${
-        location.pathname === "/ECHO_O/settings" ? "pt-5 pb-4 pr-1 px-4" : "p-0"
-      }`}
+      } ${location.pathname === "/ECHO_O/settings" ? "pt-5 pb-4 pr-1 px-4" : "p-0"}`}
     >
-      {openSearch && <Search darkMode={darkMode} setSearch={setOpenSearch} />}
+      {openSearch && (
+        <Search
+          darkMode={darkMode}
+          setSearchOpen={setOpenSearch}
+          contacts={messegers}
+        />
+      )}
+
       {/* Breadcrumb Navigation */}
       {location.pathname === "/ECHO_O/settings" && (
         <div
-          className={`flex mb-2 border-b text-sm justify-between pb-2 transition-colors ${
-            darkMode ? "border-slate-800" : "border-slate-100"
-          }`}
+          className={`flex mb-2 border-b text-sm justify-between pb-2 transition-colors ${darkMode ? "border-slate-800" : "border-slate-100"}`}
         >
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              {/* Root Link (Muted) */}
               <Link
                 to="/ECHO_O/settings"
-                className={`font-semibold transition-colors ${
-                  darkMode
-                    ? "text-slate-500 hover:text-slate-400"
-                    : "text-slate-400 hover:text-slate-500"
-                }`}
+                className={`font-semibold transition-colors ${darkMode ? "text-slate-500 hover:text-slate-400" : "text-slate-400 hover:text-slate-500"}`}
               >
                 The ECHO_O
               </Link>
-
               <span
                 className={`font-light ${darkMode ? "text-slate-700" : "text-slate-200"}`}
               >
-                /
+                {" "}
+                /{" "}
               </span>
-
-              {/* Dynamic Breadcrumb Logic */}
-
               <h1
                 className={`font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}
               >
@@ -144,9 +152,8 @@ const ECHO_O: React.FC<Props> = ({ darkMode, user }) => {
       )}
 
       {/* Content Injection Point */}
+      {/* CRITICAL FIX 2: Removed layout-breaking whitespace text element */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {" "}
-        {/* Changed overflow-auto to hidden to prevent double scrollbars */}
         <Outlet
           context={{ user, darkMode, selectedBg, setSelectedBg, messegers }}
         />

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiFilePlus, FiGrid, FiLayers } from "react-icons/fi";
+import { FiEdit3, FiFilePlus, FiGrid, FiLayers } from "react-icons/fi";
 import {
   BiCheckSquare,
   BiMessageSquare,
@@ -8,11 +8,13 @@ import {
   BiSun,
   BiSearch,
   BiSolidHome,
+  BiCog,
 } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { PiCommandLight } from "react-icons/pi";
 import { FaRegFolderOpen } from "react-icons/fa";
 import { getThemeActions } from "../assets/BGEcho_O";
+import { RiWechatChannelsLine } from "react-icons/ri";
 
 interface CommandBarProps {
   isOpen: boolean;
@@ -30,9 +32,7 @@ interface CommandItemProps {
   module?: string;
   category?: string;
   hideByDefault?: boolean;
-  // Change style from string to React.CSSProperties
   style?: React.CSSProperties;
-  // Add these if you are passing them in the spread
   darkMode?: boolean;
   isSelected?: boolean;
 }
@@ -44,16 +44,21 @@ const CommandBar: React.FC<CommandBarProps> = ({
   setDarkMode,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+
   const [search, setSearch] = useState<string>("");
-  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+  const [prevSearch, setPrevSearch] = useState<string>("");
+
   const navigate = useNavigate();
   const searchRef = useRef(search);
 
-  // Sync ref to avoid stale closures in the keydown event listener
   useEffect(() => {
     searchRef.current = search;
   }, [search]);
 
+  // Defined the core allActions array using component imports
   const allActions = useMemo(
     () => [
       {
@@ -128,7 +133,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
       },
       {
         id: "TEXT_O",
-        icon: <BiCheckSquare />,
+        icon: <FiEdit3 />,
         title: "TEXT_O",
         shortcut: "/TEXT_O",
         module: "Management",
@@ -147,18 +152,38 @@ const CommandBar: React.FC<CommandBarProps> = ({
         action: () => navigate("/FLOW_O"),
       },
       {
-        id: "ECHO_O",
+        id: "ECHO_OS",
+        icon: <BiCog />,
+        title: "ECHO_O Setting",
+        shortcut: "/ECHO_O",
+        module: "Collaboration",
+        hideByDefault: false,
+        category: "Quick Actions",
+        action: () => navigate("/ECHO_O/settings"),
+      },
+      {
+        id: "ECHO_OC",
         icon: <BiMessageSquare />,
         title: "ECHO_O Chat",
         shortcut: "/ECHO_O",
         module: "Collaboration",
         hideByDefault: false,
         category: "Modules",
-        action: () => navigate("/ECHO_O"),
+        action: () => navigate("/ECHO_O/settings"),
+      },
+      {
+        id: "ECHO_OCH",
+        icon: <RiWechatChannelsLine />,
+        title: "ECHO_O Channels",
+        shortcut: "/ECHO_O",
+        module: "Collaboration",
+        hideByDefault: false,
+        category: "Modules",
+        action: () => navigate("/ECHO_O/settings"),
       },
       {
         id: "AXIS_O",
-        icon: <BiCheckSquare />,
+        icon: <FiLayers />,
         title: "AXIS_O",
         shortcut: "/AXIS_O",
         module: "Management",
@@ -174,7 +199,6 @@ const CommandBar: React.FC<CommandBarProps> = ({
   const filteredActions = useMemo(() => {
     const query = search.toLowerCase().trim();
     if (query === "") return allActions.filter((item) => !item.hideByDefault);
-
     return allActions.filter(
       (item) =>
         item.title.toLowerCase().includes(query) ||
@@ -182,20 +206,36 @@ const CommandBar: React.FC<CommandBarProps> = ({
     );
   }, [search, allActions]);
 
+  if (search !== prevSearch) {
+    setPrevSearch(search);
+    setSelectedIndex(-1);
+  }
+
+  useEffect(() => {
+    itemRefs.current.clear();
+  }, [search]);
+
+  useEffect(() => {
+    if (selectedIndex === -1) return;
+    const targetNode = itemRefs.current.get(selectedIndex);
+    if (targetNode) {
+      targetNode.scrollIntoView({
+        behavior: "auto",
+        block: "nearest",
+      });
+    }
+  }, [selectedIndex]);
+
   const handleExecute = (commandText: string) => {
     const query = commandText.toLowerCase().trim();
 
-    // 1. Priority: If an item is highlighted via Arrow Keys, execute it
     if (selectedIndex >= 0 && filteredActions[selectedIndex]) {
       filteredActions[selectedIndex].action();
-    }
-    // 2. Fallback: Parse the typed string (handles /dark, /n-sheets, /n -sheets, etc.)
-    else {
+    } else {
       const exactMatch = allActions.find((a) => a.shortcut === query);
       if (exactMatch) {
         exactMatch.action();
       } else if (query.startsWith("/n")) {
-        // Space-agnostic sub-command parsing
         if (query.includes("-docs")) navigate("/TEXT_O/docs");
         else if (query.includes("-sheets")) navigate("/TEXT_O/sheets");
         else if (query.includes("-AXIS_O")) navigate("/AXIS_O");
@@ -214,7 +254,6 @@ const CommandBar: React.FC<CommandBarProps> = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
-
       if (e.key === "ArrowDown") {
         e.preventDefault();
         setSelectedIndex((prev) =>
@@ -234,15 +273,9 @@ const CommandBar: React.FC<CommandBarProps> = ({
         onClose();
       }
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, filteredActions, selectedIndex]);
-
-  useEffect(() => {
-    setSelectedIndex(-1);
-  }, [search]);
 
   useEffect(() => {
     if (isOpen) {
@@ -319,7 +352,10 @@ const CommandBar: React.FC<CommandBarProps> = ({
             </div>
           </div>
 
-          <div className="max-h-[50vh] overflow-y-auto py-3">
+          <div
+            ref={scrollContainerRef}
+            className="max-h-[50vh] overflow-y-auto py-3 relative layoutScroll"
+          >
             <AnimatePresence mode="popLayout">
               {filteredActions.length > 0 ? (
                 filteredActions.map((item, index) => (
@@ -331,22 +367,30 @@ const CommandBar: React.FC<CommandBarProps> = ({
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.15 }}
                   >
-                    {(index === 0 ||
-                      item.category !==
-                        filteredActions[index - 1].category) && (
-                      <p className="px-4 py-2 text-[11px] font-semibold text-zinc-500 uppercase tracking-widest">
-                        {item.category}
-                      </p>
-                    )}
-                    <CommandItem
-                      {...item}
-                      darkMode={darkMode}
-                      isSelected={index === selectedIndex}
-                      action={() => {
-                        item.action();
-                        cleanup();
+                    {/* Plain native un-transformed tracking element isolates browser geometry data metrics */}
+                    <div
+                      ref={(el) => {
+                        if (el) itemRefs.current.set(index, el);
+                        else itemRefs.current.delete(index);
                       }}
-                    />
+                    >
+                      {(index === 0 ||
+                        item.category !==
+                          filteredActions[index - 1].category) && (
+                        <p className="px-4 py-2 text-[11px] font-semibold text-zinc-500 uppercase tracking-widest pointer-events-none select-none">
+                          {item.category}
+                        </p>
+                      )}
+                      <CommandItem
+                        {...item}
+                        darkMode={darkMode}
+                        isSelected={index === selectedIndex}
+                        action={() => {
+                          item.action();
+                          cleanup();
+                        }}
+                      />
+                    </div>
                   </motion.div>
                 ))
               ) : (
@@ -394,32 +438,56 @@ const CommandItem: React.FC<CommandItemProps> = ({
   style,
 }) => (
   <div
-    className={`mx-2 flex items-center ${style ? "my-2" : ""} ${darkMode ? "" : style ? "border border-black" : ""} justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors ${isSelected ? (darkMode ? "bg-white/10" : "bg-black/5") : ""}`}
+    className={`mx-2 flex items-center ${style ? "my-2" : ""} ${
+      darkMode ? "" : style ? "border border-black" : ""
+    } justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors ${
+      isSelected
+        ? darkMode
+          ? "bg-white/10 text-white"
+          : "bg-black/5 text-zinc-900"
+        : "text-zinc-400"
+    }`}
     onClick={action}
-    style={style ? style : {}}
+    style={style || {}}
   >
     <div className="flex items-center gap-4">
       <div
-        className={`w-8 h-8 flex items-center justify-center rounded-md text-lg ${isSelected ? "bg-blue-800/80 text-white" : darkMode ? "bg-zinc-800 text-zinc-400" : style ? "bg-zinc-800" : "bg-zinc-100 text-zinc-600"}`}
+        className={`w-8 h-8 flex items-center justify-center rounded-md text-lg transition-colors ${
+          isSelected
+            ? darkMode
+              ? "bg-indigo-900 text-white"
+              : "bg-blue-900 text-white"
+            : darkMode
+              ? "bg-zinc-800 text-zinc-400"
+              : style
+                ? "bg-zinc-800"
+                : "bg-zinc-100 text-zinc-600"
+        }`}
       >
         {icon}
       </div>
       <div>
         <div
-          className={`text-[13px] font-medium ${style ? "text-slate-950" : darkMode ? "text-zinc-200" : "text-zinc-800"}`}
+          className={`text-[13px] font-medium ${style ? "text-slate-950" : isSelected ? (darkMode ? "text-white" : "text-zinc-900") : darkMode ? "text-zinc-200" : "text-zinc-800"}`}
         >
           {title}
         </div>
         <div
-          className={`text-[11px] font-medium ${style ? "text-black opactiy-10" : "opacity-40"}`}
+          className={`text-[11px] font-medium ${style ? "text-black opacity-10" : "opacity-40"}`}
         >
-          {module}
+          {module || shortcut}
         </div>
       </div>
     </div>
     {shortcut && (
       <span
-        className={`text-[10px] font-mono px-2 py-0.5 rounded border ${style ? "text-zinc-900 bg-zinc-100" : darkMode ? "border-white/10 text-zinc-500" : "border-black/10 text-zinc-400"}`}
+        className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
+          style
+            ? "text-zinc-900 bg-zinc-100"
+            : darkMode
+              ? "border-white/10 text-zinc-500"
+              : "border-black/10 text-zinc-400"
+        }`}
       >
         {shortcut}
       </span>

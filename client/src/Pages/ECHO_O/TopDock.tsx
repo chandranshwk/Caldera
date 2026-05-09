@@ -136,6 +136,7 @@ export const TopDock: React.FC<Props> = ({
       window.removeEventListener("keydown", listenToWindow, true);
       if (bufferTimeoutRef.current) clearTimeout(bufferTimeoutRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.length, setOpenDock]);
 
   return (
@@ -256,7 +257,7 @@ export const TopDock: React.FC<Props> = ({
             onClick={() => setOpenDock(true)}
           >
             <div
-              className={`relative flex items-center justify-center py-1 px-6 mx-auto max-w-max rounded-b-2xl border-b border-x shadow-2xl backdrop-blur-md transition-colors duration-300 ${
+              className={`relative flex items-center justify-center px-6 mx-auto max-w-max rounded-b-2xl border-b border-x shadow-2xl backdrop-blur-md transition-colors duration-300 ${
                 darkMode
                   ? "bg-[#18181b]/90 border-zinc-200/80 shadow-black/40"
                   : "bg-white/90 border-slate-900/80 shadow-slate-200/50"
